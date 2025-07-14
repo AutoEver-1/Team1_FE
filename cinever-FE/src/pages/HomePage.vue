@@ -1,7 +1,7 @@
 <script setup>
 import HeroSection from "../components/home/HeroSection.vue";
 import QuoteSection from "../components/home/QuoteSection.vue";
-import OTTBestSection from "../components/home/OTTBestSection.vue";
+import OTTExpectSection from "../components/home/OTTExpectSection.vue";
 import OTTRecentlySection from "../components/home/OTTRecentlySection.vue";
 import { onMounted, onUnmounted, defineEmits } from "vue";
 
@@ -27,13 +27,14 @@ onUnmounted(() => {
 
 <template>
   <div class="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth">
-    <!-- section 2 -->
+    <!-- section 1 -->
     <div
       id="section-1"
       class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
     >
       <HeroSection />
     </div>
+
     <div class="bg-[url('../assets/background.png')] bg-cover bg-center">
       <!-- section 2 -->
       <div
@@ -46,12 +47,14 @@ onUnmounted(() => {
       <div
         class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
       >
-        <OTTBestSection />
+        <OTTExpectSection />
       </div>
+
+      <!-- section 4 -->
       <div
         class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
       >
-        <OTTRecentlySection />
+        <!-- <OTTRecentlySection /> -->
       </div>
     </div>
   </div>

@@ -1,5 +1,6 @@
 <script setup>
 import BasePoster from "../common/BasePoster.vue";
+import BaseButton from "../common/BaseButton.vue";
 
 defineProps({
   dataList: Object,
@@ -14,15 +15,19 @@ defineProps({
     >
       <div
         v-for="data in dataList"
-        :key="data.id"
+        :key="data.movieId"
         class="min-w-[160px] shrink-0"
       >
         <BasePoster
-          :posterUrl="data.posterUrl"
-          :title="data.title"
-          :releaseDate="data.releaseDate"
+          :averageScore="data.averageScore"
           :director="data.director"
-          :actors="data.actors"
+          :genre="data.genre"
+          :isAdult="data.isAdult"
+          :movieId="data.movieId"
+          :posterPath="data.posterPath"
+          :releaseDate="data.releaseDate"
+          :title="data.title"
+          :tmdbScore="data.tmdbScore"
         />
       </div>
     </div>

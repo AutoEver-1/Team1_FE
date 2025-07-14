@@ -21,7 +21,7 @@ const movies = Array.from({ length: 20 }, (_, i) => ({
     class="relative z-10 flex flex-col items-center justify-center min-h-[100vh] text-white pt-16"
   >
     <div class="w-[70%]">
-      <p class="text-white text-2xl font-bold mb-4">OTT별 최신 영화</p>
+      <p class="text-white text-2xl font-bold mb-4">OTT별 최근 개봉작</p>
 
       <div class="flex gap-4 mb-10">
         <BaseButton
