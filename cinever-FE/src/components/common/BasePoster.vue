@@ -47,7 +47,7 @@ defineProps({
             <div class="flex items-center text-amber-400">
               <BaseRating :score="averageScore" size="14" />
 
-              <span class="text-sm font-medium text-amber-400">
+              <span class="ml-2 text-sm font-medium text-amber-400">
                 {{ isHover ? averageScore : "-" }}
               </span>
               <span class="text-xs font-medium text-gray-200 opacity-50">
@@ -71,40 +71,48 @@ defineProps({
           </div>
         </h2>
 
-        <div class="p-2">
-          <p
-            class="text-xs transition-all duration-500 ease-in-out"
+        <div class="p-1 space-y-2">
+          <div
+            class="flex flex-wrap gap-1 transition-all duration-500 ease-in-out"
             :class="
               isHover
                 ? 'opacity-100 translate-y-0 delay-200'
                 : 'opacity-0 translate-y-2 delay-0'
             "
           >
-            {{ isHover ? "개봉: " + releaseDate.split("-")[0] : "" }}
-          </p>
+            <span
+              v-for="(g, i) in genre"
+              :key="i"
+              class="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-sm"
+            >
+              {{ isHover ? "#" + g : "" }}
+            </span>
+          </div>
+          <div>
+            <p
+              class="text-xs transition-all duration-500 ease-in-out"
+              :class="
+                isHover
+                  ? 'opacity-100 translate-y-0 delay-200'
+                  : 'opacity-0 translate-y-2 delay-0'
+              "
+            >
+              {{ isHover ? "개봉: " + releaseDate.split("-")[0] : "" }}
+            </p>
 
-          <p
-            class="text-xs transition-all duration-500 ease-in-out"
-            :class="
-              isHover
-                ? 'opacity-100 translate-y-0 delay-200'
-                : 'opacity-0 translate-y-2 delay-0'
-            "
-          >
-            {{
-              isHover ? "감독: " + director.map((d) => d.name).join(", ") : ""
-            }}
-          </p>
-          <p
-            class="text-xs transition-all duration-500 ease-in-out"
-            :class="
-              isHover
-                ? 'opacity-100 translate-y-0 delay-200'
-                : 'opacity-0 translate-y-2 delay-0'
-            "
-          >
-            {{ isHover ? "장르: " + genre : "" }}
-          </p>
+            <p
+              class="text-xs transition-all duration-500 ease-in-out"
+              :class="
+                isHover
+                  ? 'opacity-100 translate-y-0 delay-200'
+                  : 'opacity-0 translate-y-2 delay-0'
+              "
+            >
+              {{
+                isHover ? "감독: " + director.map((d) => d.name).join(", ") : ""
+              }}
+            </p>
+          </div>
         </div>
 
         <div
