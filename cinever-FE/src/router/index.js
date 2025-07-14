@@ -5,13 +5,24 @@ import MainLayout from "../layouts/MainLayout.vue";
 import HomePage from "../pages/HomePage.vue";
 import ReviewPage from "../pages/ReviewPage.vue";
 import UserPage from "../pages/UserPage.vue";
+import MovieDetailPage from "../pages/MovieDetailPage.vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
 
 const routes = [
   {
     path: "/",
     component: MainLayout,
-    children: [{ path: "", name: "Home", component: HomePage }],
+    children: [
+      { path: "", name: "Home", component: HomePage },
+      { path: "/review", name: "Review", component: ReviewPage },
+      { path: "/user", name: "User", component: UserPage },
+      {
+        path: "/movie/:id",
+        name: "MovieDetail",
+        component: MovieDetailPage,
+        props: true,
+      },
+    ],
   },
 
   {

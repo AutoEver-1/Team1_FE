@@ -35,7 +35,9 @@ onUnmounted(() => {
       <HeroSection />
     </div>
 
-    <div class="bg-[url('../assets/background.png')] bg-cover bg-center">
+    <div
+      class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center"
+    >
       <!-- section 2 -->
       <div
         class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"

@@ -123,12 +123,13 @@ defineProps({
               : 'opacity-0 translate-y-2 delay-0'
           "
         >
-          <button
+          <RouterLink
             class="border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black"
             v-if="isHover"
+            :to="`/movie/${movieId}`"
           >
             ＋ 자세히
-          </button>
+          </RouterLink>
         </div>
       </div>
     </div>

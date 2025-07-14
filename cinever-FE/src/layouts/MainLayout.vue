@@ -2,7 +2,7 @@
 import Header from "../components/common/Header.vue";
 import { ref } from "vue";
 
-const isLargeHeader = ref(true);
+const isLargeHeader = ref(false);
 </script>
 
 <template>

@@ -15,7 +15,9 @@ defineProps({ isLarge: Boolean });
     ]"
   >
     <div class="w-40 mr-10 p-6">
-      <img src="../../assets/images/logo.png" />
+      <RouterLink to="/">
+        <img src="../../assets/images/logo.png" />
+      </RouterLink>
     </div>
 
     <nav class="flex gap-8 text-lg text-gray-300">
