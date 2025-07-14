@@ -3,6 +3,8 @@ import SignupPage from "../pages/SignupPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import HomePage from "../pages/HomePage.vue";
+import ReviewPage from "../pages/ReviewPage.vue";
+import UserPage from "../pages/UserPage.vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
 
 const routes = [
