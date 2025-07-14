@@ -8,20 +8,25 @@ const ottList = [
   {
     name: "넷플릭스",
     id: 1,
+    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Netflix_2015_N_logo.svg",
   },
   {
     name: "왓챠",
     id: 2,
+    logo: "src/assets/watcha_icon.svg",
   },
   {
     name: "디즈니+",
     id: 3,
+    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
   },
   {
     name: "웨이브",
     id: 4,
+    logo: "src/assets/wave_icon.png",
   },
 ];
+
 const selectedOtt = ref(ottList[0].id);
 const dataList = ref();
 
@@ -52,11 +57,12 @@ const handleOttSelect = (ottId) => {
           v-for="ott in ottList"
           :key="ott.id"
           :label="ott.name"
+          :icon="ott.logo"
           :btnClass="
             [
               ott.id === selectedOtt
                 ? 'bg-amber-400 text-black font-semibold'
-                : 'bg-amber-700 text-amber-300 font-semibold',
+                : 'bg-transparent text-amber-200 border border-amber-400 rounded px-2 py-0.5 text-xs font-semibold',
               'px-6 py-2 rounded-full w-32',
             ].join(' ')
           "
