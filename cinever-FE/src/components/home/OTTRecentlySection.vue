@@ -61,7 +61,7 @@ const handleOttSelect = (ottId) => {
           :btnClass="
             [
               ott.id === selectedOtt
-                ? 'bg-amber-400 text-black font-semibold'
+                ? 'bg-amber-400 text-black font-semibold w-40'
                 : 'bg-transparent text-amber-200 border border-amber-400 rounded px-2 py-0.5 text-xs font-semibold',
               'px-6 py-2 rounded-full w-32',
             ].join(' ')
