@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import SearchPage from "../pages/SearchPage.vue";
+import SearchPage from "../pages/HomePage.vue";
 
 const routes = [{ path: "/", component: SearchPage }];
 
