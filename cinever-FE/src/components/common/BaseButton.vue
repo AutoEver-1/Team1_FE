@@ -3,7 +3,7 @@ defineProps({
   label: String,
   btnClass: {
     type: String,
-    default: "bg-yellow-400 hover:bg-yellow-500 text-black",
+    default: "bg-amber-400 hover:bg-amber-500 text-black",
   },
 });
 defineEmits(["click"]);

@@ -22,7 +22,6 @@ const ottList = [
     id: 4,
   },
 ];
-
 const selectedOtt = ref(ottList[0].id);
 const dataList = ref();
 
@@ -33,7 +32,6 @@ onMounted(() => {
 const getExpectList = async (ottId) => {
   const res = await getOttExpect(ottId);
   dataList.value = res.data.expectedReleaseMovieList;
-  console.log(dataList.value);
 };
 
 const handleOttSelect = (ottId) => {
@@ -57,8 +55,8 @@ const handleOttSelect = (ottId) => {
           :btnClass="
             [
               ott.id === selectedOtt
-                ? 'bg-yellow-400 text-black font-semibold'
-                : 'bg-yellow-700 text-yellow-300 font-semibold',
+                ? 'bg-amber-400 text-black font-semibold'
+                : 'bg-amber-700 text-amber-300 font-semibold',
               'px-6 py-2 rounded-full w-32',
             ].join(' ')
           "

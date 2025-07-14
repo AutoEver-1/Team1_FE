@@ -4,7 +4,7 @@ import { computed } from "vue";
 const props = defineProps({
   modelValue: String,
   placeholder: { type: String, default: "검색어를 입력하세요" },
-  inputClass: { type: String, default: "border-yellow-400 bg-[#12100E]" },
+  inputClass: { type: String, default: "border-amber-400 bg-[#12100E]" },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -17,7 +17,7 @@ const inputValue = computed({
 
 <template>
   <div :class="['flex items-center border rounded-full', inputClass]">
-    <span class="mr-2 text-yellow-400 text-xl">🔍</span>
+    <span class="mr-2 text-amber-400 text-xl">🔍</span>
     <input
       type="text"
       :placeholder="placeholder"

@@ -54,7 +54,7 @@ onUnmounted(() => {
       <div
         class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
       >
-        <!-- <OTTRecentlySection /> -->
+        <OTTRecentlySection />
       </div>
     </div>
   </div>

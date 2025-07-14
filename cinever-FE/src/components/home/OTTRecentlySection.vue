@@ -1,19 +1,43 @@
 <script setup>
 import BaseButton from "../common/BaseButton.vue";
 import BasePosterSlider from "../common/BasePosterSlider.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { getOttRecently } from "../../api/movieApi";
 
-const ottList = ["넷플릭스", "왓챠", "디즈니+", "웨이브"];
-const selectedOtt = ref(ottList[0]);
+const ottList = [
+  {
+    name: "넷플릭스",
+    id: 1,
+  },
+  {
+    name: "왓챠",
+    id: 2,
+  },
+  {
+    name: "디즈니+",
+    id: 3,
+  },
+  {
+    name: "웨이브",
+    id: 4,
+  },
+];
+const selectedOtt = ref(ottList[0].id);
+const dataList = ref();
 
-const movies = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  title: "아바타" + i,
-  releaseDate: "2025.07",
-  director: "김세민",
-  actors: "오창은, 김호집",
-  posterUrl: new URL("../../assets/common.jpeg", import.meta.url).href,
-}));
+onMounted(() => {
+  getRecentlyList(selectedOtt.value);
+});
+
+const getRecentlyList = async (ottId) => {
+  const res = await getOttRecently(ottId);
+  dataList.value = res.data.recentlyReleaseMovieList;
+};
+
+const handleOttSelect = (ottId) => {
+  selectedOtt.value = ottId;
+  getRecentlyList(ottId);
+};
 </script>
 
 <template>
@@ -26,23 +50,23 @@ const movies = Array.from({ length: 20 }, (_, i) => ({
       <div class="flex gap-4 mb-10">
         <BaseButton
           v-for="ott in ottList"
-          :key="ott"
-          :label="ott"
+          :key="ott.id"
+          :label="ott.name"
           :btnClass="
             [
-              ott === selectedOtt
-                ? 'bg-yellow-400 text-black font-semibold'
-                : 'bg-yellow-700 text-yellow-300 font-semibold',
+              ott.id === selectedOtt
+                ? 'bg-amber-400 text-black font-semibold'
+                : 'bg-amber-700 text-amber-300 font-semibold',
               'px-6 py-2 rounded-full w-32',
             ].join(' ')
           "
-          @click="selectedOtt = ott"
+          @click="handleOttSelect(ott.id)"
         />
       </div>
 
       <div class="grid gap-4">
-        <BasePosterSlider :dataList="movies" />
-        <BasePosterSlider :dataList="movies" />
+        <BasePosterSlider :dataList="dataList" />
+        <!-- <BasePosterSlider :dataList="dataList" /> -->
       </div>
     </div>
   </div>

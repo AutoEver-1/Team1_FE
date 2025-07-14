@@ -19,7 +19,7 @@ onMounted(async () => {
         <p class="text-white text-[300%] font-bold mb-4">이 대사 기억나 ?</p>
 
         <blockquote
-          class="text-yellow-400 text-[500%] font-extrabold leading-snug mb-16"
+          class="text-amber-400 text-[500%] font-extrabold leading-snug mb-16"
         >
           {{ famous }}
         </blockquote>
@@ -27,7 +27,7 @@ onMounted(async () => {
         <div class="text-right">
           <RouterLink
             to="/movie"
-            class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black text-xl font-bold px-6 py-3 rounded transition"
+            class="inline-block bg-amber-400 hover:bg-amber-500 text-black text-xl font-bold px-6 py-3 rounded transition"
           >
             영화보러가기 →
           </RouterLink>

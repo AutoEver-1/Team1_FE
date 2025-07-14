@@ -9,7 +9,7 @@ defineProps({
   director: Object,
   genre: Object,
   isAdult: Boolean,
-  movieId: String,
+  movieId: Number,
   posterPath: String,
   releaseDate: String,
   title: String,

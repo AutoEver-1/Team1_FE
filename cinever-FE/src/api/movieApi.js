@@ -21,3 +21,13 @@ export const getOttExpect = async (ottId) => {
     throw error;
   }
 };
+
+export const getOttRecently = async (ottId) => {
+  try {
+    const response = await api.get(`${movieApi}/ott/${ottId}/recently/release`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패:", error);
+    throw error;
+  }
+};
