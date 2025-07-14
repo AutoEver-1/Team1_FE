@@ -124,7 +124,7 @@ defineProps({
           "
         >
           <button
-            class="border border-white px-3 py-1.5 rounded text-sm"
+            class="border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black"
             v-if="isHover"
           >
             ＋ 자세히
