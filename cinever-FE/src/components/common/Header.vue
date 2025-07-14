@@ -6,7 +6,7 @@ const $route = useRoute();
 <template>
   <header class="flex items-center px-10 py-6 bg-[#12100E]">
     <div class="w-40 mr-10 p-6">
-      <img src="../../assets/logo.png" />
+      <img src="../../assets/images/logo.png" />
     </div>
 
     <nav class="flex gap-8 text-lg text-gray-300">

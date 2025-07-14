@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-center text-center mt-24">
+  <div
+    class="w-full flex flex-col items-center justify-center text-center mt-24"
+  >
     <h1 class="text-5xl md:text-6xl font-extrabold leading-tight">
       보고싶은 영화를<br />
       검색해보세요
