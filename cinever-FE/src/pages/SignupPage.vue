@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-w-[384px] max-h-[468px] p-8 pb-5 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 shadow-lg"
+    class="w-[384px] max-h-[468px] p-8 pb-5 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 shadow-lg"
   >
     <h2 class="text-2xl font-extrabold text-white/90 mb-8">회원가입</h2>
 

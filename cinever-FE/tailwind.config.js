@@ -22,4 +22,10 @@ export default {
     },
   },
   plugins: [],
+  variants: {
+    extend: {
+      opacity: ["group-hover"],
+      translate: ["group-hover"],
+    },
+  },
 };
