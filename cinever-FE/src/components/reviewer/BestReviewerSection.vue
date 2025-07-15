@@ -20,6 +20,8 @@ const scrollRight = () => {
 </script>
 
 <template>
+  <p class="text-left mb-5 text-[28px]">Best Reviewer</p>
+
   <div class="relative overflow-hidden group w-full mx-auto">
     <!-- 슬라이더 리스트 -->
     <div
