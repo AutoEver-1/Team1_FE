@@ -1,5 +1,6 @@
 <script setup>
 import BaseRating from "../common/BaseRating.vue";
+import BaseBadge from "./BaseBadge.vue";
 import { ref } from "vue";
 
 const isHover = ref(false);
@@ -80,13 +81,7 @@ defineProps({
                 : 'opacity-0 translate-y-2 delay-0'
             "
           >
-            <span
-              v-for="(g, i) in genre"
-              :key="i"
-              class="bg-gray-700 text-white text-xs px-2 py-0.5 rounded-sm"
-            >
-              {{ isHover ? "#" + g : "" }}
-            </span>
+            <BaseBadge v-show="isHover" :dataList="genre" index="#" />
           </div>
           <div>
             <p
