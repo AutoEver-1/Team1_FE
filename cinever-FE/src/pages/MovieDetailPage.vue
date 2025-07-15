@@ -1,11 +1,13 @@
 <script setup>
 import { getMovieDetail } from "../api/movieApi";
+import { getReview } from "../api/reviewApi";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import YoutubeVideo from "../components/movie-detail/YoutubeVideo.vue";
 import MovieDetailLeft from "../components/movie-detail/MovieDetailLeft.vue";
 import MovieTitleBox from "../components/movie-detail/MovieTitleBox.vue";
 import BaseTab from "../components/common/BaseTab.vue";
+import MovieReviewTab from "../components/movie-detail/MovieReviewTab.vue";
 import MovieDetailTab from "../components/movie-detail/MovieDetailTab.vue";
 
 const detailTab = [
@@ -15,13 +17,21 @@ const detailTab = [
 
 const route = useRoute();
 const movieData = ref();
+const reviewData = ref();
 const movieId = route.params.id;
 const youtubeId = ref();
 const selectedTab = ref(detailTab[0].id);
 
 onMounted(() => {
   getMovieById();
+  getReviewById();
 });
+
+const getReviewById = async () => {
+  const res = await getReview(movieId);
+  reviewData.value = res.data.reviewList;
+  console.log(reviewData);
+};
 
 const getMovieById = async () => {
   const res = await getMovieDetail(movieId);
@@ -42,14 +52,17 @@ const getMovieById = async () => {
         class="relative z-10 flex flex-col items-center justify-center text-white"
         v-if="movieData"
       >
-        <YoutubeVideo :videoId="youtubeId" />
-        <div class="w-[70%]">
-          <div class="text-white min-h-screen p-10">
-            <div class="flex gap-10 mt-[25%] items-start">
-              <div class="w-[30%] sticky top-16 self-start">
+        <YoutubeVideo :videoId="youtubeId" class="hidden md:block" />
+        <div class="w-full px-4 md:px-8 lg:w-[70%]">
+          <div class="text-white min-h-screen py-10">
+            <div
+              class="flex flex-col lg:flex-row gap-10 lg:mt-[25%] items-start"
+            >
+              <div class="w-full lg:w-[30%] lg:sticky top-16 self-start">
                 <MovieDetailLeft :dataList="movieData" />
               </div>
-              <div class="w-[70%] space-y-6">
+
+              <div class="w-full lg:w-[70%] space-y-6">
                 <MovieTitleBox :dataList="movieData" />
                 <BaseTab
                   v-model:selectedId="selectedTab"
@@ -57,6 +70,9 @@ const getMovieById = async () => {
                 />
                 <div v-if="selectedTab == 1">
                   <MovieDetailTab :dataList="movieData" />
+                </div>
+                <div v-if="selectedTab == 2">
+                  <MovieReviewTab :dataList="reviewData" />
                 </div>
               </div>
             </div>

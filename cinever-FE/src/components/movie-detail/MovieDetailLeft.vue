@@ -19,7 +19,7 @@ defineProps({
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke="white"
+          :stroke="dataList.isReviewed ? '#FDC500' : currentColor"
           stroke-width="1.5"
           class="w-5 h-5"
         >
@@ -47,7 +47,7 @@ defineProps({
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill="currentColor"
+          :fill="dataList.isWishlisted ? '#FDC500' : currentColor"
           class="w-5 h-5"
         >
           <path
