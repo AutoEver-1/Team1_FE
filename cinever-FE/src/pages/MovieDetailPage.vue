@@ -1,11 +1,13 @@
 <script setup>
 import { getMovieDetail } from "../api/movieApi";
+import { getReview } from "../api/reviewApi";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import YoutubeVideo from "../components/movie-detail/YoutubeVideo.vue";
 import MovieDetailLeft from "../components/movie-detail/MovieDetailLeft.vue";
 import MovieTitleBox from "../components/movie-detail/MovieTitleBox.vue";
 import BaseTab from "../components/common/BaseTab.vue";
+import MovieReviewTab from "../components/movie-detail/MovieReviewTab.vue";
 import MovieDetailTab from "../components/movie-detail/MovieDetailTab.vue";
 
 const detailTab = [
@@ -15,13 +17,21 @@ const detailTab = [
 
 const route = useRoute();
 const movieData = ref();
+const reviewData = ref();
 const movieId = route.params.id;
 const youtubeId = ref();
 const selectedTab = ref(detailTab[0].id);
 
 onMounted(() => {
   getMovieById();
+  getReviewById();
 });
+
+const getReviewById = async () => {
+  const res = await getReview(movieId);
+  reviewData.value = res.data.reviewList;
+  console.log(reviewData);
+};
 
 const getMovieById = async () => {
   const res = await getMovieDetail(movieId);
@@ -57,6 +67,9 @@ const getMovieById = async () => {
                 />
                 <div v-if="selectedTab == 1">
                   <MovieDetailTab :dataList="movieData" />
+                </div>
+                <div v-if="selectedTab == 2">
+                  <MovieReviewTab :dataList="reviewData" />
                 </div>
               </div>
             </div>
