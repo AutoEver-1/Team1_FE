@@ -52,14 +52,17 @@ const getMovieById = async () => {
         class="relative z-10 flex flex-col items-center justify-center text-white"
         v-if="movieData"
       >
-        <YoutubeVideo :videoId="youtubeId" />
-        <div class="w-[70%]">
-          <div class="text-white min-h-screen p-10">
-            <div class="flex gap-10 mt-[25%] items-start">
-              <div class="w-[30%] sticky top-16 self-start">
+        <YoutubeVideo :videoId="youtubeId" class="hidden md:block" />
+        <div class="w-full px-4 md:px-8 lg:w-[70%]">
+          <div class="text-white min-h-screen py-10">
+            <div
+              class="flex flex-col lg:flex-row gap-10 lg:mt-[25%] items-start"
+            >
+              <div class="w-full lg:w-[30%] lg:sticky top-16 self-start">
                 <MovieDetailLeft :dataList="movieData" />
               </div>
-              <div class="w-[70%] space-y-6">
+
+              <div class="w-full lg:w-[70%] space-y-6">
                 <MovieTitleBox :dataList="movieData" />
                 <BaseTab
                   v-model:selectedId="selectedTab"

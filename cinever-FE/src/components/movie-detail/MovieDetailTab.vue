@@ -191,7 +191,7 @@ const prevImage = () => {
         </svg>
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-x-scroll">
+        <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
           <div
             class="flex flex-col items-center min-w-20 text-center mt-5"
             v-for="company in dataList.productionCompanies"
@@ -264,7 +264,7 @@ const prevImage = () => {
         </svg>
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-scroll">
+        <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
           <div
             class="flex flex-col items-center min-w-20 text-center cursor-pointer"
             v-for="actor in dataList.actors"
