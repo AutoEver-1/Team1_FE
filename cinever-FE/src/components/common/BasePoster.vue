@@ -15,12 +15,13 @@ defineProps({
   releaseDate: String,
   title: String,
   tmdbScore: Number,
+  cumulativeAttendance: Number,
 });
 </script>
 
 <template>
   <div
-    class="relative w-[160px] h-[240px] hover:w-[335px] transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
+    class="relative w-[160px] h-[240px] hover:w-[400px] cursor-pointer transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
@@ -34,6 +35,19 @@ defineProps({
       />
 
       <div class="p-4 w-[240px] flex flex-col justify-center space-y-1">
+        <!-- 박스오피스 관객수 -->
+        <div
+          v-if="cumulativeAttendance > 0"
+          class="text-sm font-semibold text-amber-400 ease-in-out"
+          :class="
+            isHover
+              ? 'opacity-100 translate-y-0 delay-200'
+              : 'opacity-0 translate-y-2 delay-0'
+          "
+        >
+          🔥관객 {{ cumulativeAttendance.toLocaleString() }}명 돌파!
+        </div>
+
         <h2
           class="text-xl font-bold transition-all duration-500 ease-in-out"
           :class="
@@ -45,7 +59,10 @@ defineProps({
           {{ isHover ? title : "" }}
 
           <div class="font-light pt-1 pl-1 text-sm" v-show="isHover">
-            <div class="flex items-center text-amber-400">
+            <div
+              class="flex items-center text-amber-400"
+              v-if="averageScore != null"
+            >
               <BaseRating :score="averageScore" size="14" />
 
               <span class="ml-2 text-sm font-medium text-amber-400">
@@ -56,7 +73,7 @@ defineProps({
               </span>
             </div>
 
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2" v-if="tmdbScore != null">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
                 alt="IMDb"

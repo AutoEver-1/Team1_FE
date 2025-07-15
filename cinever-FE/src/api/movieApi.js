@@ -41,3 +41,53 @@ export const getMovieDetail = async (movieId) => {
     throw error;
   }
 };
+
+export const getBoxOfficeRanking = async () => {
+  try {
+    const response = await api.get(`${movieApi}/boxoffice`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};
+
+export const getLatest = async () => {
+  try {
+    const response = await api.get(`${movieApi}/latest`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};
+
+export const getPopular = async () => {
+  try {
+    const response = await api.get(`${movieApi}/popular`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};
+
+export const getTopRated = async () => {
+  try {
+    const response = await api.get(`${movieApi}/top-rated`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};
+
+export const getTop100 = async () => {
+  try {
+    const response = await api.get(`${movieApi}/top100`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};
