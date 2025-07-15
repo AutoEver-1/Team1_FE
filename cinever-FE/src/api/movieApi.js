@@ -81,3 +81,13 @@ export const getTopRated = async () => {
     throw error;
   }
 };
+
+export const getTop100 = async () => {
+  try {
+    const response = await api.get(`${movieApi}/top100`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패: ", error);
+    throw error;
+  }
+};

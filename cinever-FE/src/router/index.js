@@ -8,6 +8,7 @@ import UserPage from "../pages/UserPage.vue";
 import MovieDetailPage from "../pages/MovieDetailPage.vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
 import MoviePage from "../pages/MoviePage.vue";
+import Top100Page from "../pages/Top100Page.vue";
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
       { path: "/review", name: "Review", component: ReviewPage },
       { path: "/user", name: "User", component: UserPage },
       { path: "/movie", name: "MovieList", component: MoviePage },
+      { path: "/top100", name: "Top100", component: Top100Page },
       {
         path: "/movie/:id",
         name: "MovieDetail",

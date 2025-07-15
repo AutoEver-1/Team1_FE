@@ -3,10 +3,10 @@
     class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center"
   >
     <div class="w-full flex justify-center">
-      <div class="w-[70%] my-20">
+      <div class="w-[70%] my-36">
         <div class="flex flex-col gap-16">
           <!-- 영화 검색 -->
-          <div class="flex gap-3 items-center mt-16">
+          <div class="flex gap-3 items-center">
             <!-- 필터링 선택 상자 -->
             <BaseSelectbox :option="searchOption" />
             <!-- 검색 입력창 -->

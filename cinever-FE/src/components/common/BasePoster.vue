@@ -21,7 +21,7 @@ defineProps({
 
 <template>
   <div
-    class="relative w-[160px] h-[240px] hover:w-[335px] transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
+    class="relative w-[160px] h-[240px] hover:w-[400px] cursor-pointer transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
@@ -38,7 +38,7 @@ defineProps({
         <!-- 박스오피스 관객수 -->
         <div
           v-if="cumulativeAttendance > 0"
-          class="text-sm font-semibold text-center text-amber-400 transition-all duration-500 ease-in-out"
+          class="text-sm font-semibold text-amber-400 ease-in-out"
           :class="
             isHover
               ? 'opacity-100 translate-y-0 delay-200'
