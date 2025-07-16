@@ -6,7 +6,7 @@
   />
   <BaseButton
     label="검색"
-    class="w-[10%] max-w-xs bg-yellow-400 hover:bg-yellow-500 text-black"
+    class="w-[10%] text-sm max-w-xs min-w-[60px] bg-yellow-400 hover:bg-yellow-500 text-black"
     @click="console.log(keyword)"
   />
 </template>
