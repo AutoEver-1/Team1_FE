@@ -31,7 +31,7 @@ onMounted(() => {
   >
     <div class="w-full max-w-5xl">
       <h1
-        class="text-4xl sm:text-4xl md:text-5xl lg:text-[72px] font-extrabold leading-tight drop-shadow-md text-center md:text-left"
+        class="text-4xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold leading-tight drop-shadow-md text-center md:text-left"
       >
         보고싶은 영화를<br />검색해보세요
       </h1>
