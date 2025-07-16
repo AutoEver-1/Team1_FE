@@ -62,7 +62,7 @@ const scrollRight = () => {
             {{ data.role }}
           </p>
         </div>
-        <div class="flex py-2 gap-1">
+        <div class="flex py-2 ml-1">
           <BaseBadge :dataList="data.genre_preference" index="#" />
         </div>
         <p class="text-xs text-gray-300 mt-1">

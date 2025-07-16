@@ -1,30 +1,106 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { getReviewerAll } from "../../../src/api/reviewerApi";
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { getReviewerAll } from "../../api/reviewerApi";
 import BaseBadge from "../common/BaseBadge.vue";
 
+// 상태 변수
 const dataList = ref([]);
-const totalPages = ref(0);
 const currentPage = ref(1);
+const totalPages = ref(1);
 
-const pageBlockSize = 4; // 한 번에 몇 페이지씩 보여줄지
-const pageBlockStart = ref(1); // 현재 블록의 시작 페이지
+const isMobile = ref(window.innerWidth < 640);
+const observerEl = ref(null);
+let observer = null;
 
-const reviewerAll = async (page = 1) => {
+// 페이지네이션 블록
+const pageBlockSize = 5;
+const pageBlockStart = ref(1);
+
+// 모바일에서 현재까지 로드한 페이지 기록
+const loadedPages = ref(new Set());
+
+// reviewer 데이터 로드
+const reviewerAll = async (page = 1, append = false) => {
   const res = await getReviewerAll(page);
-  dataList.value = res.data.reviewerList.content;
-  totalPages.value = res.data.reviewerList.totalPages;
+  const content = res.data.reviewerList.content;
+  totalPages.value = res.data.reviewerList.totalPages - 1;
   currentPage.value = page;
 
-  // 현재 페이지가 블록 범위 밖이면 블록 이동
-  if (page < pageBlockStart.value) {
-    pageBlockStart.value = Math.max(1, page - pageBlockSize + 1);
-  } else if (page >= pageBlockStart.value + pageBlockSize) {
-    pageBlockStart.value = page;
+  // 모바일: 누적
+  if (isMobile.value && append) {
+    if (!loadedPages.value.has(page)) {
+      dataList.value.push(...content);
+      loadedPages.value.add(page);
+    }
+  } else {
+    // 데스크탑: 현재 페이지만 교체
+    dataList.value = content;
+  }
+
+  // 페이지 블록 조정 (데스크탑 한정)
+  if (!isMobile.value) {
+    if (page < pageBlockStart.value) {
+      pageBlockStart.value = Math.max(1, page - pageBlockSize + 1);
+    } else if (page >= pageBlockStart.value + pageBlockSize) {
+      pageBlockStart.value = page;
+    }
   }
 };
 
-// 현재 블록에서 보여줄 페이지 번호 배열
+// 옵저버 설정
+const setupObserver = () => {
+  if (observer) observer.disconnect();
+
+  observer = new IntersectionObserver(async ([entry]) => {
+    if (entry.isIntersecting && isMobile.value) {
+      const nextPage = Math.floor(dataList.value.length / 10) + 1;
+      if (nextPage <= totalPages.value && !loadedPages.value.has(nextPage)) {
+        await reviewerAll(nextPage, true);
+      }
+    }
+  });
+
+  nextTick(() => {
+    if (observerEl.value) observer.observe(observerEl.value);
+  });
+};
+
+// 화면 크기 변경 시 처리
+const handleResize = () => {
+  const wasMobile = isMobile.value;
+  isMobile.value = window.innerWidth < 640;
+
+  if (wasMobile !== isMobile.value) {
+    if (isMobile.value) {
+      // 데스크탑 → 모바일
+      const pagesToLoad = currentPage.value;
+      loadedPages.value = new Set();
+      dataList.value = [];
+
+      const loadAllPages = async () => {
+        for (let i = 1; i <= pagesToLoad; i++) {
+          await reviewerAll(i, true);
+        }
+
+        // ✅ 렌더링 이후, 마지막 아이템 위치로 스크롤 이동
+        await nextTick();
+        const targetEl = document.querySelector(`[data-page-end]`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: "auto" }); // 또는 smooth
+        }
+      };
+
+      loadAllPages();
+    } else {
+      // 모바일 → 데스크탑
+      reviewerAll(currentPage.value);
+    }
+
+    setupObserver();
+  }
+};
+
+// 페이지네이션 번호 목록
 const visiblePages = computed(() => {
   const end = Math.min(
     pageBlockStart.value + pageBlockSize - 1,
@@ -36,22 +112,29 @@ const visiblePages = computed(() => {
   );
 });
 
-// 이전 블록 이동
+// 페이지 블록 이동
 const prevPageBlock = () => {
   if (pageBlockStart.value > 1) {
     pageBlockStart.value = Math.max(1, pageBlockStart.value - pageBlockSize);
   }
 };
-
-// 다음 블록 이동
 const nextPageBlock = () => {
   if (pageBlockStart.value + pageBlockSize <= totalPages.value) {
-    pageBlockStart.value = pageBlockStart.value + pageBlockSize;
+    pageBlockStart.value += pageBlockSize;
   }
 };
 
+// 초기 실행
 onMounted(() => {
   reviewerAll(1);
+  setupObserver();
+  window.addEventListener("resize", handleResize);
+});
+
+// 클린업
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
+  window.removeEventListener("resize", handleResize);
 });
 </script>
 
@@ -105,19 +188,21 @@ onMounted(() => {
             </td>
             <td class="px-4 py-3 text-center">❤️ {{ data.follower_cnt }}</td>
             <td class="px-4 py-3 text-center">✏️ {{ data.review_count }}</td>
-            <td class="px-4 py-3 text-center">⭐ {{ data.review_avg }}</td>
+            <td class="px-4 py-3 text-center">
+              ⭐
+              {{ data.review_avg ? Number(data.review_avg).toFixed(1) : "0.0" }}
+            </td>
             <td class="px-4 py-3 text-center">
               <div class="flex justify-center gap-3">
                 <RouterLink
                   v-for="(movie, idx) in data.wishlist.slice(0, 3)"
                   :key="movie.movieId || idx"
                   :to="`/movie/${movie.movieId}`"
-                  class="rounded hover:opacity-80 transition"
                 >
                   <img
                     :src="movie.poster_path"
                     alt="wishlist_poster"
-                    class="w-12 h-18 rounded object-cover transition-transform duration-300 ease-in-out hover:scale-150"
+                    class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-150"
                   />
                 </RouterLink>
               </div>
@@ -130,8 +215,9 @@ onMounted(() => {
     <!-- 모바일용 카드 리스트 -->
     <div class="w-full sm:hidden space-y-4">
       <div
-        v-for="data in dataList"
+        v-for="(data, idx) in dataList"
         :key="'card-' + data.memberId"
+        :data-page-end="idx === dataList.length - 1 ? true : null"
         class="w-full p-4 rounded-lg border border-yellow-400 text-white bg-white/5 backdrop-blur-sm"
       >
         <div class="flex items-center gap-3 mb-2">
@@ -161,38 +247,30 @@ onMounted(() => {
         <div class="flex flex-col items-center">
           <div class="text-xs">
             ❤️ {{ data.follower_cnt }} &nbsp; | &nbsp; ✏️
-            {{ data.review_count }} &nbsp; | &nbsp; ⭐ {{ data.review_avg }}
+            {{ data.review_count }} &nbsp; | &nbsp; ⭐
+            {{ data.review_avg ? Number(data.review_avg).toFixed(1) : "0.0" }}
           </div>
-          <!-- <div class="flex mt-2 gap-2">
-            <img
-              v-for="movie in data.wishlist.slice(0, 3)"
-              :key="movie.movieId"
-              :src="movie.poster_path"
-              class="w-12 h-18 rounded object-cover"
-              alt="wishlist_poster"
-            />
-          </div> -->
           <div class="flex mt-2 gap-2">
             <RouterLink
               v-for="(movie, idx) in data.wishlist.slice(0, 3)"
               :key="movie.movieId || idx"
               :to="`/movie/${movie.movieId}`"
-              class="rounded hover:opacity-80 transition"
             >
               <img
                 :src="movie.poster_path"
                 alt="wishlist_poster"
-                class="w-12 h-18 rounded object-cover transition-transform duration-300 ease-in-out hover:scale-150"
+                class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-150"
               />
             </RouterLink>
           </div>
         </div>
       </div>
+      <!-- 무한스크롤 감지 타겟 -->
+      <div v-if="isMobile" ref="observerEl" class="h-4"></div>
     </div>
 
     <!-- 페이지네이션 -->
-    <div class="flex flex-wrap gap-2 justify-center mt-6">
-      <!-- 이전 버튼 -->
+    <div v-if="!isMobile" class="flex flex-wrap gap-2 justify-center mt-6">
       <button
         @click="prevPageBlock"
         :disabled="pageBlockStart === 1"
@@ -201,7 +279,6 @@ onMounted(() => {
         Prev
       </button>
 
-      <!-- 페이지 버튼 -->
       <button
         v-for="n in visiblePages"
         :key="n"
@@ -216,7 +293,6 @@ onMounted(() => {
         {{ n }}
       </button>
 
-      <!-- 다음 버튼 -->
       <button
         @click="nextPageBlock"
         :disabled="pageBlockStart + pageBlockSize > totalPages"
