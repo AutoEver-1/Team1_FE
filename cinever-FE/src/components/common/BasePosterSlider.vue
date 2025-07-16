@@ -31,6 +31,7 @@ const translateX = computed(() => `-${currentPage.value * slideWidth.value}px`);
 
 const handleNext = () => {
   if (currentPage.value < totalPages.value - 1) currentPage.value++;
+  console.log("test");
 };
 
 const handlePrev = () => {
