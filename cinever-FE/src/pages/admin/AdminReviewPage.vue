@@ -92,7 +92,7 @@
 
             <td class="px-4 py-4">
               <p class="text-sm whitespace-pre-wrap break-words max-w-100">
-                {{ entry.review.contents || "내용 없음" }}
+                {{ entry.review.content || "내용 없음" }}
               </p>
             </td>
 
@@ -154,7 +154,7 @@ onMounted(getReview);
 
 const filteredReviews = computed(() => {
   return reviewList.value.filter((entry) =>
-    entry.review.nickname
+    entry.review.content
       ?.toLowerCase()
       .includes(searchKeyword.value.toLowerCase())
   );
