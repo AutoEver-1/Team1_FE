@@ -1,10 +1,22 @@
 <script setup>
-import { ref } from "vue";
 import BaseButton from "../common/BaseButton.vue";
+import { getReviewerAll } from "../../../src/api/reviewerApi";
+import { ref, onMounted } from "vue";
+import BaseBadge from "../common/BaseBadge.vue";
 
+onMounted(() => {
+  reviewerAll();
+});
+
+const dataList = ref();
 defineProps({
   dataList: Object,
 });
+
+const reviewerAll = async () => {
+  const res = await getReviewerAll();
+  dataList.value = res.data.reviewerList.content;
+};
 
 const sliderX = ref(0);
 const cardWidth = 224;
@@ -20,6 +32,8 @@ const scrollRight = () => {
 </script>
 
 <template>
+  <p class="text-left mb-5 text-[28px]">Best Reviewer</p>
+
   <div class="relative overflow-hidden group w-full mx-auto">
     <!-- 슬라이더 리스트 -->
     <div
@@ -27,23 +41,53 @@ const scrollRight = () => {
       :style="{ transform: `translateX(${sliderX}px)` }"
     >
       <div
-        v-for="i in 10"
-        :key="'slider-card-' + i"
+        v-for="(data, i) in dataList"
+        :key="'slider-card-' + i + 1"
         class="relative w-[210px] shrink-0 flex flex-col items-center p-3 rounded-[10px] border border-white/20 bg-white/10 backdrop-blur-md shadow-md hover:bg-white/15 hover:backdrop-blur-lg transition duration-300"
       >
         <img
-          src="/src/assets/Avatar.png"
-          alt="프로필"
-          class="rounded w-full h-auto mb-2"
+          :src="`${data.profile_img_url}`"
+          alt="profile_img"
+          class="rounded w-[80%] h-auto mb-2"
         />
-        <p class="text-white text-sm font-semibold">user name</p>
-        <p class="text-xs text-gray-300 mt-1">❤️ 3.4k, ✏️ 200, 🎥 1.9k</p>
-
+        <div class="flex">
+          <RouterLink :to="`/user/${data.memberId}`">
+            <p class="text-white text-sm font-semibold">
+              {{ data.nickname }}
+            </p>
+          </RouterLink>
+          <p
+            class="w-fit text-xs text-black font-bold px-1 mt-1 ml-1 rounded bg-yellow-400"
+          >
+            {{ data.role }}
+          </p>
+        </div>
+        <div class="flex py-2 gap-1">
+          <BaseBadge :dataList="data.genre_preference" index="#" />
+        </div>
+        <p class="text-xs text-gray-300 mt-1">
+          ❤️ {{ data.follower_cnt }} ✏️ {{ data.review_count }} ⭐
+          {{ data.review_avg }}
+        </p>
+        <div class="flex mt-3 gap-3">
+          <RouterLink
+            v-for="(movie, idx) in data.wishlist.slice(0, 3)"
+            :key="movie.movieId || idx"
+            :to="`/movie/${movie.movieId}`"
+            class="rounded hover:opacity-80 transition"
+          >
+            <img
+              :src="movie.poster_path"
+              alt="wishlist_poster"
+              class="w-12 h-18 rounded object-cover transition-transform duration-300 ease-in-out hover:scale-150"
+            />
+          </RouterLink>
+        </div>
         <!-- 랭킹 넘버 -->
         <div
           class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full font-bold"
         >
-          {{ i }}
+          {{ i + 1 }}
         </div>
       </div>
     </div>
