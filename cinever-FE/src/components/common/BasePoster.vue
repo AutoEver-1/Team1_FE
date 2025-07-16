@@ -1,14 +1,14 @@
 <script setup>
-import BaseRating from "../common/BaseRating.vue";
-import BaseBadge from "./BaseBadge.vue";
 import { ref } from "vue";
+import BaseRating from "./BaseRating.vue";
+import BaseBadge from "./BaseBadge.vue";
 
 const isHover = ref(false);
 
 defineProps({
   averageScore: Number,
-  director: Object,
-  genre: Object,
+  director: Array,
+  genre: Array,
   isAdult: Boolean,
   movieId: Number,
   posterPath: String,
@@ -21,12 +21,13 @@ defineProps({
 
 <template>
   <div
-    class="relative w-[160px] h-[240px] hover:w-[400px] cursor-pointer transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
+    class="relative h-[240px] group/poster"
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
     <div
-      class="absolute inset-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex overflow-hidden"
+      class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out overflow-hidden flex"
+      :class="isHover ? 'w-[350px] z-50' : 'w-[160px]'"
     >
       <img
         :src="posterPath"
@@ -87,62 +88,23 @@ defineProps({
               </span>
             </div>
           </div>
-        </h2>
 
-        <div class="p-1 space-y-2">
-          <div
-            class="flex flex-wrap gap-1 transition-all duration-500 ease-in-out"
-            :class="
-              isHover
-                ? 'opacity-100 translate-y-0 delay-200'
-                : 'opacity-0 translate-y-2 delay-0'
-            "
-          >
-            <BaseBadge v-show="isHover" :dataList="genre" index="#" />
-          </div>
-          <div>
-            <p
-              class="text-xs transition-all duration-500 ease-in-out"
-              :class="
-                isHover
-                  ? 'opacity-100 translate-y-0 delay-200'
-                  : 'opacity-0 translate-y-2 delay-0'
-              "
-            >
-              {{ isHover ? "개봉: " + releaseDate.split("-")[0] : "" }}
-            </p>
+          <p class="text-xs">개봉: {{ releaseDate.split("-")[0] }}</p>
+          <p class="text-xs">
+            감독: {{ director.map((d) => d.name).join(", ") }}
+          </p>
 
-            <p
-              class="text-xs transition-all duration-500 ease-in-out"
-              :class="
-                isHover
-                  ? 'opacity-100 translate-y-0 delay-200'
-                  : 'opacity-0 translate-y-2 delay-0'
-              "
-            >
-              {{
-                isHover ? "감독: " + director.map((d) => d.name).join(", ") : ""
-              }}
-            </p>
+          <div class="flex flex-wrap gap-1">
+            <BaseBadge v-for="(g, i) in genre" :key="i" :label="g" />
           </div>
         </div>
 
-        <div
-          class="flex justify-end gap-2 transition-all duration-500 ease-in-out pt-4"
-          :class="
-            isHover
-              ? 'opacity-100 translate-y-0 delay-300'
-              : 'opacity-0 translate-y-2 delay-0'
-          "
+        <RouterLink
+          :to="`/movie/${movieId}`"
+          class="mt-3 self-end border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black transition"
         >
-          <RouterLink
-            class="border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black"
-            v-if="isHover"
-            :to="`/movie/${movieId}`"
-          >
-            ＋ 자세히
-          </RouterLink>
-        </div>
+          ＋ 자세히
+        </RouterLink>
       </div>
     </div>
   </div>
