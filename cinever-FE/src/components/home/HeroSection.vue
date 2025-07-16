@@ -27,22 +27,25 @@ onMounted(() => {
   </video>
 
   <div
-    class="relative z-10 flex flex-col items-center justify-center min-h-[100vh] text-white"
+    class="relative z-10 flex flex-col items-center justify-center min-h-[100vh] text-white px-4"
   >
-    <div class="w-[70%]">
-      <h1 class="text-[96px] font-extrabold leading-tight drop-shadow-md">
+    <div class="w-full max-w-5xl">
+      <h1
+        class="text-4xl sm:text-4xl md:text-5xl lg:text-[72px] font-extrabold leading-tight drop-shadow-md text-center md:text-left"
+      >
         보고싶은 영화를<br />검색해보세요
       </h1>
-      <div class="flex mt-12 w-full gap-3 items-center">
-        <BaseSelectbox :option="searchOption" class="w-[15%]" />
+
+      <div class="flex flex-col md:flex-row mt-6 md:mt-12 gap-3 w-full">
+        <BaseSelectbox :option="searchOption" class="w-full md:w-[20%]" />
         <BaseInput
           v-model="keyword"
-          placeholder="보고싶은 영화의 제목이나 배우를 검색해보세요"
-          inputClass="w-[90%] border-amber-400 bg-[#12100E] py-2 px-4 bg-opacity-70"
+          placeholder="제목이나 배우를 검색하세요"
+          inputClass="w-full border-amber-400 bg-[#12100E] py-3 px-4 bg-opacity-70 text-sm md:text-base"
         />
         <BaseButton
           label="검색"
-          class="w-[10%] bg-amber-400 hover:bg-amber-500 text-black"
+          class="w-full md:w-[12%] h-[42px] md:h-auto bg-amber-400 hover:bg-amber-500 text-black"
           @click="console.log(keyword)"
         />
       </div>

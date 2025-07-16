@@ -30,7 +30,7 @@ onUnmounted(() => {
     <!-- section 1 -->
     <div
       id="section-1"
-      class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
+      class="relative snap-start w-full min-h-[100dvh] overflow-hidden"
     >
       <HeroSection />
     </div>
@@ -39,23 +39,17 @@ onUnmounted(() => {
       class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center"
     >
       <!-- section 2 -->
-      <div
-        class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
-      >
+      <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
         <QuoteSection />
       </div>
 
       <!-- section 3 -->
-      <div
-        class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
-      >
+      <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
         <OTTExpectSection />
       </div>
 
       <!-- section 4 -->
-      <div
-        class="relative snap-start w-full h-full min-h-[100vh] overflow-hidden"
-      >
+      <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
         <OTTRecentlySection />
       </div>
     </div>
