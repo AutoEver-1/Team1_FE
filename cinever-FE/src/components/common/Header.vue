@@ -3,36 +3,13 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../../stores/userStore";
 import userDefaultImg from "../../assets/images/userDefaultProfile.png";
+import UserProfile from "../user-profile/UserProfileBtn.vue";
+import LogoutBtn from "../user-profile/LogoutBtn.vue";
 
 defineProps({ isLarge: Boolean });
 
 const isMenuOpen = ref(false);
 const userStore = useUserStore();
-// const isDropdownOpen = ref(false);
-
-// // 외부 클릭 시 드롭다운 닫기
-// const handleClickOutside = (e) => {
-//   if (!e.target.closest(".user-dropdown")) {
-//     isDropdownOpen.value = false;
-//   }
-// };
-
-// onMounted(() => {
-//   window.addEventListener("click", handleClickOutside);
-// });
-
-// onBeforeUnmount(() => {
-//   window.removeEventListener("click", handleClickOutside);
-// });
-
-// const toggleDropdown = () => {
-//   isDropdownOpen.value = !isDropdownOpen.value;
-// };
-
-// const logout = () => {
-//   userStore.logout();
-//   router.push("/");
-// };
 </script>
 
 <template>
@@ -107,32 +84,17 @@ const userStore = useUserStore();
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex items-center gap-3">
+      <div class="hidden md:flex items-center">
         <template v-if="userStore.user">
-          <RouterLink to="/mypage" class="flex items-center gap-3">
-            <div
-              class="w-9 h-9 border rounded-full overflow-hidden flex items-center justify-center"
-            >
-              <img
-                :src="
-                  userStore.user.profilePath === '1'
-                    ? userDefaultImg
-                    : userStore.user.profilePath
-                "
-                alt="User avatar"
-                class="w-6 h-6 object-cover"
-              />
-            </div>
-
-            <span class="text-sm text-white">{{
-              userStore.user.nickName
-            }}</span>
-          </RouterLink>
+          <LogoutBtn />
+          <UserProfile />
         </template>
 
         <template v-else>
           <RouterLink to="/login">
-            <button class="text-sm text-amber-400 hover:underline transition">
+            <button
+              class="text-sm text-amber-400 hover:underline transition mr-3"
+            >
               로그인
             </button>
           </RouterLink>
@@ -230,14 +192,3 @@ const userStore = useUserStore();
     </nav>
   </transition>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
