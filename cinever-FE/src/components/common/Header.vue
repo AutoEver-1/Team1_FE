@@ -1,21 +1,37 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "../../stores/userStore";
+import userDefaultImg from "../../assets/images/userDefaultProfile.png";
 
 defineProps({ isLarge: Boolean });
 
 const isMenuOpen = ref(false);
-const router = useRouter();
+const userStore = useUserStore();
+const isDropdownOpen = ref(false);
 
-const user = ref({
-  name: "김세민",
-  avatarUrl:
-    "https://postfiles.pstatic.net/20140606_111/sjinwon2_1402052862659ofnU1_PNG/130917_224626.png?type=w3840",
+// 외부 클릭 시 드롭다운 닫기
+const handleClickOutside = (e) => {
+  if (!e.target.closest(".user-dropdown")) {
+    isDropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("click", handleClickOutside);
 });
-// const user = ref(null);
 
-const goToLogin = () => {
-  router.push("/login");
+onBeforeUnmount(() => {
+  window.removeEventListener("click", handleClickOutside);
+});
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const logout = () => {
+  userStore.logout();
+  router.push("/");
 };
 </script>
 
@@ -92,14 +108,25 @@ const goToLogin = () => {
 
     <div class="flex items-center gap-4">
       <div class="hidden md:flex items-center gap-3">
-        <template v-if="user">
+        <template v-if="userStore.user">
           <RouterLink to="/mypage" class="flex items-center gap-3">
-            <img
-              :src="user.avatarUrl"
-              alt="User avatar"
-              class="w-8 h-8 rounded-full object-cover"
-            />
-            <span class="text-sm text-white">{{ user.name }}</span>
+            <div
+              class="w-9 h-9 border rounded-full overflow-hidden flex items-center justify-center"
+            >
+              <img
+                :src="
+                  userStore.user.profilePath === '1'
+                    ? userDefaultImg
+                    : userStore.user.profilePath
+                "
+                alt="User avatar"
+                class="w-6 h-6 object-cover"
+              />
+            </div>
+
+            <span class="text-sm text-white">{{
+              userStore.user.nickName
+            }}</span>
           </RouterLink>
         </template>
 

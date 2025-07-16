@@ -4,7 +4,7 @@ import { ref } from "vue";
 
 <template>
   <div
-    class="min-h-screen flex justify-center items-center bg-amber-900 text-white"
+    class="min-h-screen flex justify-center items-center bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top"
   >
     <router-view />
   </div>

@@ -22,7 +22,7 @@ defineProps({
           <!-- 순위 동그라미 -->
           <div
             v-if="data.rank !== undefined"
-            class="absolute z-20 top-2 left-2 w-8 h-8 rounded-full bg-amber-500 text-amber-800 border border-amber-600 text-xl font-bold flex items-center justify-center"
+            class="absolute z-20 top-2 left-2 w-7 h-7 rounded-full bg-amber-500 text-amber-800 text-md font-bold flex items-center justify-center"
           >
             {{ data.rank }}
           </div>

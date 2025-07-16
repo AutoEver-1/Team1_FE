@@ -43,7 +43,7 @@ const getMovieById = async () => {
 
 <template>
   <div
-    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center mt-16"
+    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top mt-16"
   >
     <div class="relative w-full h-full">
       <div
