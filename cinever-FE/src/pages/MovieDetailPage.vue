@@ -30,13 +30,11 @@ onMounted(() => {
 const getReviewById = async () => {
   const res = await getReview(movieId);
   reviewData.value = res.data.reviewList;
-  console.log(reviewData);
 };
 
 const getMovieById = async () => {
   const res = await getMovieDetail(movieId);
   movieData.value = res.data;
-  console.log(movieData);
 
   const videoPath = movieData.value.video_path;
   youtubeId.value = new URL(videoPath).searchParams.get("v");
@@ -52,7 +50,11 @@ const getMovieById = async () => {
         class="relative z-10 flex flex-col items-center justify-center text-white"
         v-if="movieData"
       >
-        <YoutubeVideo :videoId="youtubeId" class="hidden md:block" />
+        <YoutubeVideo
+          :videoId="youtubeId"
+          :thumbnailUrl="movieData.backdropPath"
+          class="hidden md:block"
+        />
         <div class="w-full px-4 md:px-8 lg:w-[70%]">
           <div class="text-white min-h-screen py-10">
             <div
