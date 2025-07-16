@@ -71,11 +71,13 @@ const userStore = useUserStore();
         <RouterLink
           to="/movie"
           class="hover:text-amber-400 relative"
-          :class="{ 'text-amber-400': $route.path === '/movie' }"
+          :class="{
+            'text-amber-400': $route.path.startsWith('/movie'),
+          }"
         >
           Movie
           <span
-            v-if="$route.path === '/movie'"
+            v-if="$route.path.startsWith('/movie')"
             class="absolute -bottom-1 left-0 w-full h-[2px] bg-amber-400"
           ></span>
         </RouterLink>

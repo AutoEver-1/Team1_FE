@@ -37,7 +37,6 @@ onMounted(() => {
 const getExpectList = async (ottId) => {
   const res = await getOttExpect(ottId);
   dataList.value = res.data.expectedReleaseMovieList;
-  console.log(dataList);
 };
 
 const handleOttSelect = (ottId) => {
