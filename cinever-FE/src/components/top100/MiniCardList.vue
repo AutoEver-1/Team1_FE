@@ -10,7 +10,7 @@ const props = defineProps({
 
 // 각 영화가 wish에 들어있는지 여부를 저장
 const wishList = ref([]);
-wishList.value = [1, 2, 3];
+wishList.value = [5, 12, 17, 18];
 
 const toggleWish = (movieId) => {
   const index = wishList.value.indexOf(movieId);

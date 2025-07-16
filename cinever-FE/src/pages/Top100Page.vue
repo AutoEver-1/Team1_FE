@@ -35,6 +35,7 @@ import MiniCardList from "../components/top100/MiniCardList.vue";
 
 const movies = ref();
 const genres = [
+  "전체",
   "액션",
   "드라마",
   "코미디",
@@ -44,7 +45,7 @@ const genres = [
   "공포",
   "애니메이션",
 ];
-const selectedGenre = ref("액션");
+const selectedGenre = ref("전체");
 
 onMounted(() => {
   getTop100MovieList();
