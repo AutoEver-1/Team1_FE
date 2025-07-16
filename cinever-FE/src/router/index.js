@@ -9,6 +9,10 @@ import MovieDetailPage from "../pages/MovieDetailPage.vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
 import MoviePage from "../pages/MoviePage.vue";
 import Top100Page from "../pages/Top100Page.vue";
+import AdminLayout from "../layouts/AdminLayout.vue";
+import AdminReviewerPage from "../pages/admin/AdminReviewerPage.vue";
+import AdminReviewPage from "../pages/admin/AdminReviewPage.vue";
+import AdminStatisticsPage from "../pages/admin/AdminStatisticsPage.vue";
 
 const routes = [
   {
@@ -38,6 +42,15 @@ const routes = [
     path: "/signup",
     component: AuthLayout,
     children: [{ path: "", component: SignupPage }],
+  },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      { path: "reviewer", component: AdminReviewerPage },
+      { path: "review", component: AdminReviewPage },
+      { path: "statistics", component: AdminStatisticsPage },
+    ],
   },
 ];
 
