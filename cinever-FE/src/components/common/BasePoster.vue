@@ -1,14 +1,14 @@
 <script setup>
-import BaseRating from "../common/BaseRating.vue";
-import BaseBadge from "./BaseBadge.vue";
 import { ref } from "vue";
+import BaseRating from "./BaseRating.vue";
+import BaseBadge from "./BaseBadge.vue";
 
 const isHover = ref(false);
 
 defineProps({
   averageScore: Number,
-  director: Object,
-  genre: Object,
+  director: Array,
+  genre: Array,
   isAdult: Boolean,
   movieId: Number,
   posterPath: String,
@@ -20,12 +20,13 @@ defineProps({
 
 <template>
   <div
-    class="relative w-[160px] h-[240px] hover:w-[335px] transition-all duration-300 ease-in-out rounded-lg overflow-visible z-10 group/poster"
+    class="relative h-[240px] group/poster"
     @mouseenter="isHover = true"
     @mouseleave="isHover = false"
   >
     <div
-      class="absolute inset-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex overflow-hidden"
+      class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out overflow-hidden flex"
+      :class="isHover ? 'w-[350px] z-50' : 'w-[160px]'"
     >
       <img
         :src="posterPath"
@@ -33,99 +34,47 @@ defineProps({
         class="w-[160px] h-full object-cover rounded-l-xl"
       />
 
-      <div class="p-4 w-[240px] flex flex-col justify-center space-y-1">
-        <h2
-          class="text-xl font-bold transition-all duration-500 ease-in-out"
-          :class="
-            isHover
-              ? 'opacity-100 translate-y-0 delay-100'
-              : 'opacity-0 translate-y-2 delay-0'
-          "
-        >
-          {{ isHover ? title : "" }}
-
-          <div class="font-light pt-1 pl-1 text-sm" v-show="isHover">
-            <div class="flex items-center text-amber-400">
-              <BaseRating :score="averageScore" size="14" />
-
-              <span class="ml-2 text-sm font-medium text-amber-400">
-                {{ isHover ? averageScore : "-" }}
-              </span>
-              <span class="text-xs font-medium text-gray-200 opacity-50">
-                {{ isHover ? "\u00A0/ 5.0" : "" }}
-              </span>
-            </div>
-
-            <div class="flex items-center space-x-2">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
-                alt="IMDb"
-                class="w-6 h-auto"
-              />
-              <span class="text-sm text-white">
-                {{ isHover ? tmdbScore : "-" }}
-              </span>
-              <span class="text-xs text-gray-200 opacity-50">
-                {{ isHover ? "/ 10.0" : "" }}
-              </span>
-            </div>
-          </div>
+      <div
+        class="p-4 w-[240px] hidden lg:flex flex-col justify-center space-y-1"
+        v-show="isHover"
+      >
+        <h2 class="text-xl font-bold truncate">
+          {{ title }}
         </h2>
 
-        <div class="p-1 space-y-2">
-          <div
-            class="flex flex-wrap gap-1 transition-all duration-500 ease-in-out"
-            :class="
-              isHover
-                ? 'opacity-100 translate-y-0 delay-200'
-                : 'opacity-0 translate-y-2 delay-0'
-            "
-          >
-            <BaseBadge v-show="isHover" :dataList="genre" index="#" />
+        <div class="text-sm space-y-1">
+          <div class="flex items-center text-amber-400">
+            <BaseRating :score="averageScore" size="14" />
+            <span class="ml-2 font-medium">{{ averageScore }}</span>
+            <span class="text-xs text-white/50">&nbsp;/ 5.0</span>
           </div>
-          <div>
-            <p
-              class="text-xs transition-all duration-500 ease-in-out"
-              :class="
-                isHover
-                  ? 'opacity-100 translate-y-0 delay-200'
-                  : 'opacity-0 translate-y-2 delay-0'
-              "
-            >
-              {{ isHover ? "개봉: " + releaseDate.split("-")[0] : "" }}
-            </p>
 
-            <p
-              class="text-xs transition-all duration-500 ease-in-out"
-              :class="
-                isHover
-                  ? 'opacity-100 translate-y-0 delay-200'
-                  : 'opacity-0 translate-y-2 delay-0'
-              "
-            >
-              {{
-                isHover ? "감독: " + director.map((d) => d.name).join(", ") : ""
-              }}
-            </p>
+          <div class="flex items-center space-x-2">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
+              alt="IMDb"
+              class="w-6 h-auto"
+            />
+            <span class="text-sm">{{ tmdbScore }}</span>
+            <span class="text-xs text-white/50">/ 10.0</span>
+          </div>
+
+          <p class="text-xs">개봉: {{ releaseDate.split("-")[0] }}</p>
+          <p class="text-xs">
+            감독: {{ director.map((d) => d.name).join(", ") }}
+          </p>
+
+          <div class="flex flex-wrap gap-1">
+            <BaseBadge v-for="(g, i) in genre" :key="i" :label="g" />
           </div>
         </div>
 
-        <div
-          class="flex justify-end gap-2 transition-all duration-500 ease-in-out pt-4"
-          :class="
-            isHover
-              ? 'opacity-100 translate-y-0 delay-300'
-              : 'opacity-0 translate-y-2 delay-0'
-          "
+        <RouterLink
+          :to="`/movie/${movieId}`"
+          class="mt-3 self-end border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black transition"
         >
-          <RouterLink
-            class="border border-amber-400 text-amber-400 px-3 py-1 rounded text-sm hover:bg-amber-400 hover:text-black"
-            v-if="isHover"
-            :to="`/movie/${movieId}`"
-          >
-            ＋ 자세히
-          </RouterLink>
-        </div>
+          ＋ 자세히
+        </RouterLink>
       </div>
     </div>
   </div>
