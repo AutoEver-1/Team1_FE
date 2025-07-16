@@ -1,23 +1,44 @@
 <template>
   <div>
     <h2 class="text-xl font-semibold mb-6">리뷰 관리</h2>
-
-    <div class="mb-6 flex gap-4 items-center justify-between">
+    <span class="text-sm text-gray-500">총 {{ filteredReviews.length }}건</span>
+    <div class="mb-6 mt-2 flex flex-wrap gap-4 items-center">
       <input
         type="text"
         placeholder="리뷰 검색"
         class="flex-1 max-w-sm border px-3 py-2 rounded shadow-sm focus:ring-amber-400 focus:outline-none"
         v-model="searchKeyword"
       />
-      <span class="text-sm text-gray-500"
-        >총 {{ filteredReviews.length }}건</span
-      >
+      <div class="flex gap-2">
+        <button
+          class="px-4 py-2 text-sm border border-red-300 text-red-600 rounded hover:bg-red-50"
+          @click="blockSelected(true)"
+          :disabled="selectedIds.length === 0"
+        >
+          선택 비활성화
+        </button>
+        <button
+          class="px-4 py-2 text-sm border border-emerald-300 text-emerald-600 rounded hover:bg-emerald-50"
+          @click="blockSelected(false)"
+          :disabled="selectedIds.length === 0"
+        >
+          선택 활성화
+        </button>
+      </div>
     </div>
 
+    <!-- 리뷰 테이블 -->
     <div class="overflow-auto rounded-lg border border-gray-200">
       <table class="min-w-full text-sm bg-white table-fixed">
         <thead class="bg-amber-100 text-gray-700 font-semibold">
           <tr class="h-14">
+            <th class="w-[40px] px-2 text-center">
+              <input
+                type="checkbox"
+                @change="toggleAll"
+                :checked="allSelected"
+              />
+            </th>
             <th class="px-4 text-center w-[100px]">포스터</th>
             <th class="px-4 text-left w-[180px]">영화 제목</th>
             <th class="px-4 text-left w-[160px]">리뷰어</th>
@@ -33,6 +54,14 @@
             :key="index"
             class="border-t hover:bg-amber-50 transition h-[96px]"
           >
+            <td class="px-2 text-center">
+              <input
+                type="checkbox"
+                :value="entry.review.reviewId"
+                v-model="selectedIds"
+              />
+            </td>
+
             <td class="px-4 text-center">
               <img
                 :src="entry.movie.posterPath"
@@ -63,11 +92,7 @@
 
             <td class="px-4 py-4">
               <p class="text-sm whitespace-pre-wrap break-words max-w-100">
-                {{
-                  entry.review.contents
-                    ? entry.review.contents
-                    : ` entry.review.contents`
-                }}
+                {{ entry.review.contents || "내용 없음" }}
               </p>
             </td>
 
@@ -92,6 +117,9 @@
                     ? 'text-emerald-600 border-emerald-300 hover:bg-emerald-50'
                     : 'text-red-500 border-red-300 hover:bg-red-50'
                 "
+                @click="
+                  toggleBan(entry.review.reviewId, !entry.review.isBanned)
+                "
               >
                 {{ entry.review.isBanned ? "활성화" : "비활성화" }}
               </button>
@@ -105,26 +133,80 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { getAdminReview } from "../../api/adminApi";
+import {
+  getAdminReviewList,
+  blockReview,
+  unblockReview,
+  blockMultiReviews,
+  unblockMultiReviews,
+} from "../../api/adminApi";
 
 const reviewList = ref([]);
 const searchKeyword = ref("");
-
-onMounted(() => {
-  getReview();
-});
+const selectedIds = ref([]);
 
 const getReview = async () => {
-  const res = await getAdminReview();
+  const res = await getAdminReviewList();
   reviewList.value = res.data.reviewList;
-  console.log(reviewList);
 };
+
+onMounted(getReview);
 
 const filteredReviews = computed(() => {
   return reviewList.value.filter((entry) =>
     entry.review.nickname
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchKeyword.value.toLowerCase())
   );
 });
+
+const toggleBan = async (reviewId, isBanned) => {
+  try {
+    if (isBanned) {
+      await blockReview(reviewId, true);
+    } else {
+      await unblockReview(reviewId, false);
+    }
+    alert("상태가 변경되었습니다.");
+    getReview();
+  } catch (err) {
+    alert("상태 변경 실패: " + err.message);
+  }
+};
+
+const toggleAll = (e) => {
+  if (e.target.checked) {
+    selectedIds.value = filteredReviews.value.map(
+      (entry) => entry.review.reviewId
+    );
+  } else {
+    selectedIds.value = [];
+  }
+};
+
+const allSelected = computed(() => {
+  return (
+    selectedIds.value.length > 0 &&
+    selectedIds.value.length === filteredReviews.value.length
+  );
+});
+
+const blockSelected = async (isBlock) => {
+  const payload = selectedIds.value.map((id) => ({
+    reviewId: id,
+    isBanned: isBlock,
+  }));
+  try {
+    if (isBlock) {
+      await blockMultiReviews(payload);
+    } else {
+      await unblockMultiReviews(payload);
+    }
+    alert("다중 상태가 변경되었습니다.");
+    selectedIds.value = [];
+    getReview();
+  } catch (err) {
+    alert("다중 상태 변경 실패: " + err.message);
+  }
+};
 </script>
