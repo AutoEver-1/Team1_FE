@@ -3,6 +3,7 @@ import ReviewCard from "../common/BaseReview.vue";
 import BaseInput from "../common/BaseInput.vue";
 import BaseButton from "../common/BaseButton.vue";
 import BaseStarRating from "../common/BaseStarRating.vue";
+import BaseTextArea from "../common/BaseTextArea.vue";
 import { ref, computed } from "vue";
 
 const keyword = ref("");
@@ -31,11 +32,14 @@ const handleSubmit = () => {
     </div>
 
     <div class="flex gap-2 justify-center items-center">
-      <BaseInput
+      <BaseTextArea
         v-model="keyword"
         placeholder="리뷰를 작성해주세요"
-        inputClass="w-[85%] border-amber-400 bg-[#12100E] py-2 px-4 bg-opacity-70"
+        minRows="4"
+        maxRows="4"
       />
+    </div>
+    <div class="flex gap-2 justify-end mt-3">
       <BaseButton
         label="등록"
         class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
