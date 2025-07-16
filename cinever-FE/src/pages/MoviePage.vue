@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center"
+    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top"
   >
     <div class="w-full flex justify-center">
       <div class="w-[70%] my-36">

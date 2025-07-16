@@ -32,8 +32,10 @@ import Divider from "../components/signup/Divider.vue";
 import GoogleLoginBtn from "../components/auth/GoogleLoginBtn.vue";
 import LoginRedirect from "../components/signup/LoginRedirect.vue";
 import { signup } from "../api/auth";
+import { useRouter } from "vue-router";
 
 const step = ref(1);
+const router = useRouter();
 
 const form = reactive({
   email: "",
@@ -70,9 +72,16 @@ const handleSubmit = async () => {
       alert("모든 정보를 입력해주세요.");
       return;
     }
+    console.log(form);
+
     const response = await signup(form);
-    alert(`가입 완료: ${form.name} (${form.email})`);
-    console.log("서버 응답:", response);
+    if (response.status >= 200 && response.status < 300) {
+      alert(`회원가입 완료: ${form.email}`);
+
+      router.push("/login"); // 회원가입 성공 후 로그인 페이지로 리다이렉트
+    } else {
+      alert("회원가입에 실패했습니다. 다시 확인해주세요.");
+    }
   } catch (error) {
     console.error("회원가입 실패:", error);
     alert("회원가입에 실패했습니다. 다시 시도해주세요.");
