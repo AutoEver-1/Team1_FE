@@ -16,7 +16,7 @@ const gap = 16;
 
 const updateVisibleCount = () => {
   const width = window.innerWidth;
-  if (width >= 1280) visibleCount.value = 5;
+  if (width >= 1280) visibleCount.value = 6;
   else if (width >= 768) visibleCount.value = 4;
   else visibleCount.value = 2;
 };
@@ -68,7 +68,7 @@ onUnmounted(() => {
           :key="item.movieId"
           class="relative shrink-0 w-[160px] overflow-visible"
         >
-          <BasePoster v-bind="item" />
+          <BasePoster v-bind="item" :genre="item.genre" />
         </div>
       </div>
     </div>
