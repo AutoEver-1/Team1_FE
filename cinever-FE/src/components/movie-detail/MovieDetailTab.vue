@@ -16,7 +16,6 @@ const isPersonModalOpen = ref(false);
 const selectedPerson = ref(null);
 
 const openPersonModal = (person) => {
-  console.log(person);
   selectedPerson.value = person;
   isPersonModalOpen.value = true;
 };

@@ -36,7 +36,9 @@ onMounted(() => {
         보고싶은 영화를<br />검색해보세요
       </h1>
 
-      <div class="flex flex-col md:flex-row mt-6 md:mt-12 gap-3 w-full">
+      <div
+        class="flex flex-col md:flex-row mt-6 md:mt-12 gap-3 w-full justify-center items-center"
+      >
         <BaseSelectbox :option="searchOption" class="w-full md:w-[20%]" />
         <BaseInput
           v-model="keyword"
