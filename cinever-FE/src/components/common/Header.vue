@@ -8,31 +8,31 @@ defineProps({ isLarge: Boolean });
 
 const isMenuOpen = ref(false);
 const userStore = useUserStore();
-const isDropdownOpen = ref(false);
+// const isDropdownOpen = ref(false);
 
-// 외부 클릭 시 드롭다운 닫기
-const handleClickOutside = (e) => {
-  if (!e.target.closest(".user-dropdown")) {
-    isDropdownOpen.value = false;
-  }
-};
+// // 외부 클릭 시 드롭다운 닫기
+// const handleClickOutside = (e) => {
+//   if (!e.target.closest(".user-dropdown")) {
+//     isDropdownOpen.value = false;
+//   }
+// };
 
-onMounted(() => {
-  window.addEventListener("click", handleClickOutside);
-});
+// onMounted(() => {
+//   window.addEventListener("click", handleClickOutside);
+// });
 
-onBeforeUnmount(() => {
-  window.removeEventListener("click", handleClickOutside);
-});
+// onBeforeUnmount(() => {
+//   window.removeEventListener("click", handleClickOutside);
+// });
 
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
+// const toggleDropdown = () => {
+//   isDropdownOpen.value = !isDropdownOpen.value;
+// };
 
-const logout = () => {
-  userStore.logout();
-  router.push("/");
-};
+// const logout = () => {
+//   userStore.logout();
+//   router.push("/");
+// };
 </script>
 
 <template>
