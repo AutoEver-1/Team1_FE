@@ -7,12 +7,12 @@ defineProps({ isLarge: Boolean });
 const isMenuOpen = ref(false);
 const router = useRouter();
 
-// const user = ref({
-//   name: "김세민",
-//   avatarUrl:
-//     "https://postfiles.pstatic.net/20140606_111/sjinwon2_1402052862659ofnU1_PNG/130917_224626.png?type=w3840",
-// });
-const user = ref(null);
+const user = ref({
+  name: "김세민",
+  avatarUrl:
+    "https://postfiles.pstatic.net/20140606_111/sjinwon2_1402052862659ofnU1_PNG/130917_224626.png?type=w3840",
+});
+// const user = ref(null);
 
 const goToLogin = () => {
   router.push("/login");
