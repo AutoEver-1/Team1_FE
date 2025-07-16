@@ -31,6 +31,7 @@ import SignupStep2 from "../components/signup/SignupStep2.vue";
 import Divider from "../components/signup/Divider.vue";
 import GoogleLoginBtn from "../components/auth/GoogleLoginBtn.vue";
 import LoginRedirect from "../components/signup/LoginRedirect.vue";
+import { signup } from "../api/auth";
 
 const step = ref(1);
 
@@ -56,19 +57,25 @@ const handleNextStep = () => {
   step.value = 2;
 };
 
-const handleSubmit = () => {
-  if (
-    !form.email ||
-    !form.password ||
-    !form.confirmPassword ||
-    !form.name ||
-    !form.gender ||
-    !form.birthday
-  ) {
-    alert("모든 정보를 입력해주세요.");
-    return;
+const handleSubmit = async () => {
+  try {
+    if (
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.name ||
+      !form.gender ||
+      !form.birthday
+    ) {
+      alert("모든 정보를 입력해주세요.");
+      return;
+    }
+    const response = await signup(form);
+    alert(`가입 완료: ${form.name} (${form.email})`);
+    console.log("서버 응답:", response);
+  } catch (error) {
+    console.error("회원가입 실패:", error);
+    alert("회원가입에 실패했습니다. 다시 시도해주세요.");
   }
-  alert(`가입 완료: ${form.name} (${form.email})`);
-  console.log(toRaw(form));
 };
 </script>
