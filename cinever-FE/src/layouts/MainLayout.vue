@@ -1,5 +1,6 @@
 <script setup>
 import Header from "../components/common/Header.vue";
+import Footer from "../components/common/Footer.vue";
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
@@ -23,5 +24,6 @@ watch(
     <main>
       <router-view @hero-visible="isLargeHeader = $event" />
     </main>
+    <Footer />
   </div>
 </template>
