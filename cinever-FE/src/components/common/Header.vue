@@ -111,7 +111,6 @@ const logout = () => {
             :icon="MagnifyingGlassIcon"
             color="amber-500"
             hoverBg="hover:bg-amber-500/20"
-            borderColor="border border-amber-500"
           />
           <!-- 피드 바로가기 -->
           <BaseSlideButton

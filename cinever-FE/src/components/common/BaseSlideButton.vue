@@ -14,17 +14,14 @@ const props = defineProps({
 const colorMap = {
   red: {
     text: "text-red-500",
-    border: "border border-red-500",
     hover: "hover:bg-red-500/20",
   },
   blue: {
     text: "text-blue-500",
-    border: "border border-blue-500",
     hover: "hover:bg-blue-100",
   },
   white: {
     text: "text-white",
-    border: "border border-white",
     hover: "hover:bg-gray-800",
   },
 };
@@ -54,13 +51,12 @@ const textColor = computed(() => colorMap[props.color]?.text || "text-white");
     @click="handleClick"
   >
     <div
-      class="flex justify-center items-center px-1 hover:px-2 hover:pr-3 py-1 rounded-full transition cursor-pointer"
+      class="flex justify-center items-center px-1 hover:px-2 hover:pr-4 py-1 rounded-full transition cursor-pointer"
       :class="hoverBg"
     >
       <!-- 아이콘 영역 -->
       <div
         class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
-        :class="borderColor"
       >
         <!-- 1) 유저 이미지  -->
         <img
@@ -76,7 +72,7 @@ const textColor = computed(() => colorMap[props.color]?.text || "text-white");
       <!-- 라벨 -->
       <span
         :class="[
-          ' text-sm font-medium whitespace-nowrap transition-all duration-300 overflow-hidden',
+          ' text-sm font-medium whitespace-nowrap transition-all duration-500 overflow-hidden',
           isSliderOpen
             ? 'ml-2 max-w-[200px] opacity-100 text-white'
             : 'ml-0 max-w-0 opacity-0',
