@@ -40,7 +40,7 @@
                     <img
                       :src="r.profile_img_url"
                       alt="profile_img"
-                      class="rounded w-10 h-14 object-cover"
+                      class="rounded-full w-12 h-12 object-cover"
                     />
                     <div class="flex-1">
                       <div class="flex items-center">
