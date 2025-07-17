@@ -5,9 +5,11 @@ import BaseButton from "../common/BaseButton.vue";
 import BaseStarRating from "../common/BaseStarRating.vue";
 import BaseTextArea from "../common/BaseTextArea.vue";
 import { ref, computed } from "vue";
+import { fetchKeywords } from "../../api/flask";
 
 const keyword = ref("");
 const rating = ref(0);
+const extractedKeywords = ref([]);
 
 const props = defineProps({
   dataList: Object,
@@ -19,9 +21,12 @@ const filteredReviews = computed(() =>
 
 const myReviews = computed(() => props.dataList?.filter((r) => r.isMine));
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   console.log("별점:", rating.value);
   console.log("리뷰:", keyword.value);
+
+  extractedKeywords.value = await fetchKeywords(keyword.value);
+  console.log("키워드:", extractedKeywords.value);
 };
 </script>
 
