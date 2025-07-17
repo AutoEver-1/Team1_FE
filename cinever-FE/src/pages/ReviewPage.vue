@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center mt-16 bg-[url('/src/assets/images/backgroundImg.png')] bg-cover bg-center"
+    class="flex flex-col items-center mt-16 bg-[url('/src/assets/images/backgroundImg.png')] bg-cover bg-top"
   >
     <div class="w-[90%] max-w-4xl flex mt-16 gap-3 items-center justify-center">
       <ReviewerSearchSection />

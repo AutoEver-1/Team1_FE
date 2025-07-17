@@ -6,7 +6,7 @@ const famous = ref("");
 
 onMounted(async () => {
   const res = await getFamous();
-  famous.value = res.data.content;
+  famous.value = res.data;
 });
 </script>
 
@@ -25,12 +25,12 @@ onMounted(async () => {
         <blockquote
           class="text-amber-400 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-snug mb-12 text-center md:text-left"
         >
-          {{ famous }}
+          {{ famous.content }}
         </blockquote>
 
         <div class="text-center md:text-right">
           <RouterLink
-            to="/movie"
+            :to="`/movie/${famous.movieId}`"
             class="inline-block bg-amber-400 hover:bg-amber-500 text-black text-base sm:text-lg md:text-xl font-bold px-6 py-3 rounded transition"
           >
             영화보러가기 →
