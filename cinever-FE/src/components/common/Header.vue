@@ -1,22 +1,15 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from "../../stores/userStore";
+import userDefaultImg from "../../assets/images/userDefaultProfile.png";
+import UserProfile from "../user-profile/UserProfileBtn.vue";
+import LogoutBtn from "../user-profile/LogoutBtn.vue";
 
 defineProps({ isLarge: Boolean });
 
 const isMenuOpen = ref(false);
-const router = useRouter();
-
-const user = ref({
-  name: "김세민",
-  avatarUrl:
-    "https://postfiles.pstatic.net/20140606_111/sjinwon2_1402052862659ofnU1_PNG/130917_224626.png?type=w3840",
-});
-// const user = ref(null);
-
-const goToLogin = () => {
-  router.push("/login");
-};
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -91,21 +84,17 @@ const goToLogin = () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex items-center gap-3">
-        <template v-if="user">
-          <RouterLink to="/mypage" class="flex items-center gap-3">
-            <img
-              :src="user.avatarUrl"
-              alt="User avatar"
-              class="w-8 h-8 rounded-full object-cover"
-            />
-            <span class="text-sm text-white">{{ user.name }}</span>
-          </RouterLink>
+      <div class="hidden md:flex items-center">
+        <template v-if="userStore.user">
+          <LogoutBtn />
+          <UserProfile />
         </template>
 
         <template v-else>
           <RouterLink to="/login">
-            <button class="text-sm text-amber-400 hover:underline transition">
+            <button
+              class="text-sm text-amber-400 hover:underline transition mr-3"
+            >
               로그인
             </button>
           </RouterLink>
@@ -203,14 +192,3 @@ const goToLogin = () => {
     </nav>
   </transition>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

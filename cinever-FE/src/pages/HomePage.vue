@@ -36,7 +36,7 @@ onUnmounted(() => {
     </div>
 
     <div
-      class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-center"
+      class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top"
     >
       <!-- section 2 -->
       <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
