@@ -65,10 +65,14 @@ const scrollRight = () => {
         <div class="flex py-2 ml-1">
           <BaseBadge :dataList="data.genre_preference" index="#" />
         </div>
-        <p class="text-xs text-gray-300 mt-1">
-          ❤️ {{ data.follower_cnt }} ✏️ {{ data.review_count }} ⭐
-          {{ data.review_avg }}
-        </p>
+        <div class="flex w-full text-sm justify-around">
+          <p>❤️ {{ data.follower_cnt }}</p>
+          <p>✏️ {{ data.review_count }}</p>
+          <p>
+            ⭐
+            {{ data.review_avg ? Number(data.review_avg).toFixed(1) : "0.0" }}
+          </p>
+        </div>
         <div class="flex mt-3 gap-3">
           <RouterLink
             v-for="(movie, idx) in data.wishlist.slice(0, 3)"
@@ -79,7 +83,7 @@ const scrollRight = () => {
             <img
               :src="movie.poster_path"
               alt="wishlist_poster"
-              class="w-12 h-18 rounded object-cover transition-transform duration-300 ease-in-out hover:scale-150"
+              class="w-12 h-18 rounded object-cover transition-transform duration-300 ease-in-out hover:scale-110"
             />
           </RouterLink>
         </div>

@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
                   <img
                     :src="movie.poster_path"
                     alt="wishlist_poster"
-                    class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-150"
+                    class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-110"
                   />
                 </RouterLink>
               </div>
@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
               <img
                 :src="movie.poster_path"
                 alt="wishlist_poster"
-                class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-150"
+                class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-110"
               />
             </RouterLink>
           </div>
