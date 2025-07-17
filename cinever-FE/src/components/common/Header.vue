@@ -2,14 +2,28 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../../stores/userStore";
-import userDefaultImg from "../../assets/images/userDefaultProfile.png";
-import UserProfile from "../user-profile/UserProfileBtn.vue";
-import LogoutBtn from "../user-profile/LogoutBtn.vue";
+import BaseSlideButton from "./BaseSlideButton.vue";
+import {
+  ArrowRightStartOnRectangleIcon,
+  MagnifyingGlassIcon,
+  UserIcon,
+} from "@heroicons/vue/24/outline";
+import MovieSearch from "../search/MovieSearch.vue";
 
 defineProps({ isLarge: Boolean });
 
 const isMenuOpen = ref(false);
 const userStore = useUserStore();
+const router = useRouter();
+
+const navigateToProfile = () => {
+  router.push("/mypage");
+};
+const logout = () => {
+  userStore.clearUser();
+  alert("로그아웃 되었습니다.");
+  router.push("/");
+};
 </script>
 
 <template>
@@ -84,10 +98,43 @@ const userStore = useUserStore();
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex items-center">
+      <div class="hidden md:flex md:gap-2 items-center">
         <template v-if="userStore.user">
-          <LogoutBtn />
-          <UserProfile />
+          <MovieSearch
+            v-model="userStore.searchText"
+            placeholder="영화 검색"
+            :icon="MagnifyingGlassIcon"
+            color="amber-500"
+            hoverBg="hover:bg-amber-500/20"
+            borderColor="border border-amber-500"
+          />
+          <!-- <BaseSlideButton
+            :icon="MagnifyingGlassIcon"
+            color="amber-500"
+            hoverBg="hover:bg-amber-500/20"
+            borderColor="border border-amber-500"
+            :isSearch="true"
+            v-model="searchText"
+          /> -->
+          <BaseSlideButton
+            :label="userStore.user.nickName"
+            :icon="
+              userStore.user.profilePath === '1'
+                ? UserIcon
+                : userStore.user.profilePath
+            "
+            color="white"
+            hoverBg="hover:bg-gray-800"
+            :onClick="navigateToProfile"
+          />
+          <BaseSlideButton
+            :label="'로그아웃'"
+            :icon="ArrowRightStartOnRectangleIcon"
+            color="red-500"
+            hoverBg="hover:bg-red-500/20"
+            borderColor="border border-red-500"
+            :onClick="logout"
+          />
         </template>
 
         <template v-else>
