@@ -53,18 +53,23 @@ watch(isOpen, (newVal) => {
   <div
     class="slide-search-input relative flex items-center select-none transition-all duration-300 overflow-hidden rounded-full cursor-pointer"
     :class="[
-      isOpen
-        ? `w-80 px-2 py-0.5 border-2 border-amber-600`
-        : 'w-10 p-1 bg-transparent',
+      isOpen ? `w-72 px-2 border-2 border-amber-600` : 'w-9 bg-transparent',
     ]"
   >
-    <!-- 버튼은 절대 위치로 고정 -->
+    <!-- 돋보기 버튼 -->
     <div
-      class="w-8 h-8 rounded-full flex items-center justify-center"
+      class="w-9 h-9 rounded-full flex items-center justify-center"
       :class="[hoverBg]"
       @click="toggleOpen"
     >
       <component :is="icon" class="w-5 h-5" :class="`text-${color}`" />
+    </div>
+
+    <!-- 돋보기와 입력창 사이 작은 구분선 -->
+    <div v-if="isOpen" class="relative pl-4">
+      <div
+        class="absolute left-1 top-1/2 -translate-y-1/2 h-3 border-l border-amber-500"
+      ></div>
     </div>
 
     <!-- 검색 input -->
@@ -75,7 +80,7 @@ watch(isOpen, (newVal) => {
       :value="modelValue"
       @input="updateValue"
       :placeholder="placeholder"
-      class="ml-2 w-5/6 bg-transparent text-sm font-medium text-white placeholder-white/50 outline-none"
+      class="ml-1 w-5/6 bg-transparent text-sm font-light text-white placeholder-white/40 outline-none"
     />
   </div>
 </template>

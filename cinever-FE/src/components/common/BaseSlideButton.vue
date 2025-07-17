@@ -14,15 +14,18 @@ const props = defineProps({
 const colorMap = {
   red: {
     text: "text-red-500",
+    bg: "bg-red-500/20",
     hover: "hover:bg-red-500/20",
   },
   blue: {
     text: "text-blue-500",
+    bg: "bg-blue-500/20",
     hover: "hover:bg-blue-100",
   },
   white: {
     text: "text-white",
-    hover: "hover:bg-gray-800",
+    bg: "bg-amber-800",
+    hover: "hover:bg-white/10",
   },
 };
 
@@ -34,9 +37,7 @@ const handleClick = () => {
 
 const isImage = computed(() => typeof props.icon === "string");
 
-const borderColor = computed(
-  () => colorMap[props.color]?.border || "border-white"
-);
+const bgColor = computed(() => colorMap[props.color]?.bg || "bg-white/10");
 const hoverBg = computed(
   () => colorMap[props.color]?.hover || "hover:bg-gray-800"
 );
@@ -51,7 +52,7 @@ const textColor = computed(() => colorMap[props.color]?.text || "text-white");
     @click="handleClick"
   >
     <div
-      class="flex justify-center items-center px-1 hover:px-2 hover:pr-4 py-1 rounded-full transition cursor-pointer"
+      class="flex justify-center items-center px-1 pr-3 hover:px-2 hover:pr-4 py-1 rounded-full transition cursor-pointer"
       :class="hoverBg"
     >
       <!-- 아이콘 영역 -->
@@ -72,10 +73,10 @@ const textColor = computed(() => colorMap[props.color]?.text || "text-white");
       <!-- 라벨 -->
       <span
         :class="[
-          ' text-sm font-medium whitespace-nowrap transition-all duration-500 overflow-hidden',
+          ' text-xs font-medium whitespace-nowrap transition-all duration-500 overflow-hidden',
           isSliderOpen
-            ? 'ml-2 max-w-[200px] opacity-100 text-white'
-            : 'ml-0 max-w-0 opacity-0',
+            ? 'max-w-[200px] opacity-100 text-white'
+            : 'max-w-0 opacity-0',
         ]"
       >
         {{ isSliderOpen ? label : "" }}

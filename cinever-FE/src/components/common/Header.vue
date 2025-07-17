@@ -10,6 +10,7 @@ import {
   UserIcon,
 } from "@heroicons/vue/24/outline";
 import MovieSearch from "../search/MovieSearch.vue";
+import UserDropdown from "../user-profile/UserDropdown.vue";
 
 defineProps({ isLarge: Boolean });
 
@@ -17,16 +18,8 @@ const isMenuOpen = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
 
-const navigateToProfile = () => {
-  router.push("/mypage");
-};
 const navigateToFeed = () => {
   router.push("/feed");
-};
-const logout = () => {
-  userStore.clearUser();
-  alert("로그아웃 되었습니다.");
-  router.push("/");
 };
 </script>
 
@@ -102,7 +95,7 @@ const logout = () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex md:gap-2 items-center">
+      <div class="hidden md:flex md:gap-1.5 items-center">
         <template v-if="userStore.user">
           <!-- 영화 검색 -->
           <MovieSearch
@@ -110,7 +103,7 @@ const logout = () => {
             placeholder="영화 검색"
             :icon="MagnifyingGlassIcon"
             color="amber-500"
-            hoverBg="hover:bg-amber-500/20"
+            hoverBg="hover:bg-white/10"
           />
           <!-- 피드 바로가기 -->
           <BaseSlideButton
@@ -120,7 +113,7 @@ const logout = () => {
             :onClick="navigateToFeed"
           />
           <!-- 마이 페이지 -->
-          <BaseSlideButton
+          <!-- <BaseSlideButton
             :label="userStore.user.nickName"
             :icon="
               userStore.user.profilePath === '1'
@@ -129,14 +122,15 @@ const logout = () => {
             "
             color="white"
             :onClick="navigateToProfile"
-          />
+          /> -->
+          <UserDropdown />
           <!-- 로그아웃 -->
-          <BaseSlideButton
+          <!-- <BaseSlideButton
             :label="'로그아웃'"
             :icon="ArrowRightStartOnRectangleIcon"
             color="red"
             :onClick="logout"
-          />
+          /> -->
         </template>
 
         <template v-else>
