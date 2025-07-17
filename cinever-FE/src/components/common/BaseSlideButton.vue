@@ -5,9 +5,7 @@ import { computed, ref } from "vue";
 const props = defineProps({
   label: String, // 나타날 라벨
   icon: [Object, String], // 컴포넌트 또는 이미지 URL
-  color: { type: String, default: "white" }, // 아이콘 색상
-  hoverBg: { type: String, default: "bg-gray-800" }, // hover 배경색
-  borderColor: { type: String, default: "border border-white" }, // 아이콘 테두리 색상
+  color: { type: String, default: "white" }, // ex: "blue-500", "red-500", "white"
   onClick: Function, // 클릭 핸들러
   isSearch: { type: Boolean, default: false }, // 검색 모드 여부
   modelValue: String, // 검색 input의 값
@@ -23,9 +21,19 @@ const isImage = computed(() => {
   typeof props.icon === "string";
 });
 
-const updateInput = (e) => {
-  emit("update:modelValue", e.target.value);
-};
+const hoverBg = computed(() =>
+  props.color === "white" ? "hover:bg-gray-800" : `hover:bg-${props.color}/20`
+);
+
+const borderColor = computed(() =>
+  props.color === "white"
+    ? "border border-white"
+    : `border border-${props.color}`
+);
+
+const iconColor = computed(() =>
+  props.color === "white" ? "text-white" : `text-${props.color}`
+);
 </script>
 
 <template>
@@ -36,7 +44,7 @@ const updateInput = (e) => {
     @click="handleClick"
   >
     <div
-      class="flex justify-center items-center px-1 hover:pr-3 py-1 rounded-full transition cursor-pointer"
+      class="flex justify-center items-center px-1 hover:px-2 hover:pr-3 py-1 rounded-full transition cursor-pointer"
       :class="hoverBg"
     >
       <!-- 아이콘 영역 -->
@@ -52,7 +60,7 @@ const updateInput = (e) => {
           alt="profile"
         />
         <!-- 2) 아이콘  -->
-        <component v-else :is="icon" class="w-5 h-5" :class="`text-${color}`" />
+        <component v-else :is="icon" class="w-5 h-5" :class="iconColor" " />
       </div>
 
       <!-- 라벨 -->

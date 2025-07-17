@@ -5,6 +5,7 @@ import { useUserStore } from "../../stores/userStore";
 import BaseSlideButton from "./BaseSlideButton.vue";
 import {
   ArrowRightStartOnRectangleIcon,
+  DocumentTextIcon,
   MagnifyingGlassIcon,
   UserIcon,
 } from "@heroicons/vue/24/outline";
@@ -18,6 +19,9 @@ const router = useRouter();
 
 const navigateToProfile = () => {
   router.push("/mypage");
+};
+const navigateToFeed = () => {
+  router.push("/feed");
 };
 const logout = () => {
   userStore.clearUser();
@@ -100,6 +104,7 @@ const logout = () => {
     <div class="flex items-center gap-4">
       <div class="hidden md:flex md:gap-2 items-center">
         <template v-if="userStore.user">
+          <!-- 영화 검색 -->
           <MovieSearch
             v-model="userStore.searchText"
             placeholder="영화 검색"
@@ -108,14 +113,14 @@ const logout = () => {
             hoverBg="hover:bg-amber-500/20"
             borderColor="border border-amber-500"
           />
-          <!-- <BaseSlideButton
-            :icon="MagnifyingGlassIcon"
-            color="amber-500"
-            hoverBg="hover:bg-amber-500/20"
-            borderColor="border border-amber-500"
-            :isSearch="true"
-            v-model="searchText"
-          /> -->
+          <!-- 피드 바로가기 -->
+          <BaseSlideButton
+            label="피드 바로가기"
+            :icon="DocumentTextIcon"
+            color="white"
+            :onClick="navigateToFeed"
+          />
+          <!-- 마이 페이지 -->
           <BaseSlideButton
             :label="userStore.user.nickName"
             :icon="
@@ -124,15 +129,13 @@ const logout = () => {
                 : userStore.user.profilePath
             "
             color="white"
-            hoverBg="hover:bg-gray-800"
             :onClick="navigateToProfile"
           />
+          <!-- 로그아웃 -->
           <BaseSlideButton
             :label="'로그아웃'"
             :icon="ArrowRightStartOnRectangleIcon"
             color="red-500"
-            hoverBg="hover:bg-red-500/20"
-            borderColor="border border-red-500"
             :onClick="logout"
           />
         </template>
