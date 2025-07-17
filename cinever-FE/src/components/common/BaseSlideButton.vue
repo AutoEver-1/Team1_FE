@@ -11,29 +11,39 @@ const props = defineProps({
   modelValue: String, // 검색 input의 값
 });
 
+const colorMap = {
+  red: {
+    text: "text-red-500",
+    border: "border border-red-500",
+    hover: "hover:bg-red-500/20",
+  },
+  blue: {
+    text: "text-blue-500",
+    border: "border border-blue-500",
+    hover: "hover:bg-blue-100",
+  },
+  white: {
+    text: "text-white",
+    border: "border border-white",
+    hover: "hover:bg-gray-800",
+  },
+};
+
 const isSliderOpen = ref(false);
 
 const handleClick = () => {
   if (props.onClick) props.onClick();
 };
 
-const isImage = computed(() => {
-  typeof props.icon === "string";
-});
+const isImage = computed(() => typeof props.icon === "string");
 
-const hoverBg = computed(() =>
-  props.color === "white" ? "hover:bg-gray-800" : `hover:bg-${props.color}/20`
+const borderColor = computed(
+  () => colorMap[props.color]?.border || "border-white"
 );
-
-const borderColor = computed(() =>
-  props.color === "white"
-    ? "border border-white"
-    : `border border-${props.color}`
+const hoverBg = computed(
+  () => colorMap[props.color]?.hover || "hover:bg-gray-800"
 );
-
-const iconColor = computed(() =>
-  props.color === "white" ? "text-white" : `text-${props.color}`
-);
+const textColor = computed(() => colorMap[props.color]?.text || "text-white");
 </script>
 
 <template>
@@ -60,7 +70,7 @@ const iconColor = computed(() =>
           alt="profile"
         />
         <!-- 2) 아이콘  -->
-        <component v-else :is="icon" class="w-5 h-5" :class="iconColor" " />
+        <component v-else :is="icon" class="w-5 h-5" :class="textColor" />
       </div>
 
       <!-- 라벨 -->

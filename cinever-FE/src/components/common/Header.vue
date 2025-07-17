@@ -135,7 +135,7 @@ const logout = () => {
           <BaseSlideButton
             :label="'로그아웃'"
             :icon="ArrowRightStartOnRectangleIcon"
-            color="red-500"
+            color="red"
             :onClick="logout"
           />
         </template>
