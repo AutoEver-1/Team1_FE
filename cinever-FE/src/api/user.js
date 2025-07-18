@@ -51,3 +51,13 @@ export const getUserDislikeInfo = async (id) => {
     throw error;
   }
 };
+
+export const getUserReviewsInfo = async (id) => {
+  try {
+    const response = await api.get(`${userApi}/${id}/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패:", error);
+    throw error;
+  }
+};
