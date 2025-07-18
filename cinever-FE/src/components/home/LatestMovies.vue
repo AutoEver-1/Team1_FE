@@ -21,10 +21,18 @@ const getLatestMovieList = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <p class="text-white text-xl font-bold mb-2">최신 개봉작은 ??</p>
-    <div class="grid gap-4">
-      <BasePosterSlider :dataList="latestMovieList" />
+  <div
+    class="relative z-10 flex flex-col items-center justify-center text-white w-full"
+  >
+    <div class="w-full max-w-7xl px-4">
+      <p
+        class="text-white text-md sm:text-2xl font-semibold md:font-bold mb-3 md:mb-6 text-left"
+      >
+        최신 개봉작은 ??
+      </p>
+      <div class="flex gap-6 flex-col">
+        <BasePosterSlider :dataList="latestMovieList" />
+      </div>
     </div>
   </div>
 </template>

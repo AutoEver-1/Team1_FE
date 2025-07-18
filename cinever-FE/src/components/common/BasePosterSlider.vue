@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const currentPage = ref(0);
-const visibleCount = ref(6);
+const visibleCount = ref(7);
 const cardWidth = 160;
 const gap = 16;
 
@@ -39,7 +39,7 @@ const handlePrev = () => {
     <button
       @click="handlePrev"
       :disabled="currentPage === 0"
-      class="hidden lg:block absolute lg:left-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition group-hover:disabled:opacity-30 opacity-0 group-hover:opacity-100"
+      class="hidden lg:block absolute left-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition group-hover:disabled:opacity-30 opacity-0 group-hover:opacity-100"
     >
       ◀
     </button>
@@ -55,6 +55,7 @@ const handlePrev = () => {
         </div>
       </div>
     </div>
+
     <div
       class="hidden lg:block overflow-hidden"
       :style="{ width: slideWidth + 'px' }"
