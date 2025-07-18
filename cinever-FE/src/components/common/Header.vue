@@ -5,10 +5,12 @@ import { useUserStore } from "../../stores/userStore";
 import BaseSlideButton from "./BaseSlideButton.vue";
 import {
   ArrowRightStartOnRectangleIcon,
+  DocumentTextIcon,
   MagnifyingGlassIcon,
   UserIcon,
 } from "@heroicons/vue/24/outline";
 import MovieSearch from "../search/MovieSearch.vue";
+import UserDropdown from "../user-profile/UserDropdown.vue";
 
 defineProps({ isLarge: Boolean });
 
@@ -16,13 +18,8 @@ const isMenuOpen = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
 
-const navigateToProfile = () => {
-  router.push("/mypage");
-};
-const logout = () => {
-  userStore.clearUser();
-  alert("로그아웃 되었습니다.");
-  router.push("/");
+const navigateToFeed = () => {
+  router.push("/feed");
 };
 </script>
 
@@ -98,25 +95,25 @@ const logout = () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="flex gap-2 items-center">
-        <MovieSearch
-          v-model="userStore.searchText"
-          placeholder="영화 검색"
-          :icon="MagnifyingGlassIcon"
-          color="amber-500"
-          hoverBg="hover:bg-amber-500/20"
-          borderColor="border border-amber-500"
-        />
+      <div class="hidden md:flex md:gap-1.5 items-center">
         <template v-if="userStore.user">
-          <!-- <BaseSlideButton
+          <!-- 영화 검색 -->
+          <MovieSearch
+            v-model="userStore.searchText"
+            placeholder="영화 검색"
             :icon="MagnifyingGlassIcon"
             color="amber-500"
-            hoverBg="hover:bg-amber-500/20"
-            borderColor="border border-amber-500"
-            :isSearch="true"
-            v-model="searchText"
-          /> -->
+            hoverBg="hover:bg-white/10"
+          />
+          <!-- 피드 바로가기 -->
           <BaseSlideButton
+            label="피드 바로가기"
+            :icon="DocumentTextIcon"
+            color="white"
+            :onClick="navigateToFeed"
+          />
+          <!-- 마이 페이지 -->
+          <!-- <BaseSlideButton
             :label="userStore.user.nickName"
             :icon="
               userStore.user.profilePath === '1'
@@ -124,19 +121,16 @@ const logout = () => {
                 : userStore.user.profilePath
             "
             color="white"
-            hoverBg="hover:bg-gray-800"
             :onClick="navigateToProfile"
-            class="hidden md:block"
-          />
-          <BaseSlideButton
+          /> -->
+          <UserDropdown />
+          <!-- 로그아웃 -->
+          <!-- <BaseSlideButton
             :label="'로그아웃'"
             :icon="ArrowRightStartOnRectangleIcon"
-            color="red-500"
-            hoverBg="hover:bg-red-500/20"
-            borderColor="border border-red-500"
+            color="red"
             :onClick="logout"
-            class="hidden md:block"
-          />
+          /> -->
         </template>
 
         <template v-else>

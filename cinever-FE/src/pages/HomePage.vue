@@ -4,6 +4,7 @@ import QuoteSection from "../components/home/QuoteSection.vue";
 import OTTExpectSection from "../components/home/OTTExpectSection.vue";
 import OTTRecentlySection from "../components/home/OTTRecentlySection.vue";
 import { onMounted, onUnmounted, defineEmits } from "vue";
+import BaseBackground from "../components/common/BaseBackground.vue";
 
 const emit = defineEmits(["hero-visible"]);
 let observer;
@@ -37,9 +38,7 @@ onUnmounted(() => {
       <HeroSection />
     </div>
 
-    <div
-      class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top"
-    >
+    <BaseBackground>
       <!-- section 2 -->
       <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
         <QuoteSection />
@@ -54,7 +53,7 @@ onUnmounted(() => {
       <div class="relative snap-start w-full min-h-[100dvh] overflow-hidden">
         <OTTRecentlySection />
       </div>
-    </div>
+    </BaseBackground>
   </div>
   <div class="block md:hidden pb-[100px]">
     <div
