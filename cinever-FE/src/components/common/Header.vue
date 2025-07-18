@@ -95,20 +95,21 @@ const navigateToFeed = () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex md:gap-1.5 items-center">
+      <div class="flex md:gap-1.5 items-center">
+        <!-- 영화 검색 -->
+        <MovieSearch
+          v-model="userStore.searchText"
+          placeholder="영화 검색"
+          :icon="MagnifyingGlassIcon"
+          color="amber-500"
+          hoverBg="hover:bg-white/10"
+        />
         <template v-if="userStore.user">
-          <!-- 영화 검색 -->
-          <MovieSearch
-            v-model="userStore.searchText"
-            placeholder="영화 검색"
-            :icon="MagnifyingGlassIcon"
-            color="amber-500"
-            hoverBg="hover:bg-white/10"
-          />
           <!-- 피드 바로가기 -->
           <BaseSlideButton
             label="피드 바로가기"
             :icon="DocumentTextIcon"
+            class="hidden md:block"
             color="white"
             :onClick="navigateToFeed"
           />
@@ -123,7 +124,7 @@ const navigateToFeed = () => {
             color="white"
             :onClick="navigateToProfile"
           /> -->
-          <UserDropdown />
+          <UserDropdown class="hidden md:block" />
           <!-- 로그아웃 -->
           <!-- <BaseSlideButton
             :label="'로그아웃'"
