@@ -47,17 +47,17 @@ const handleOttSelect = (ottId) => {
 
 <template>
   <div
-    class="relative z-10 flex flex-col items-center justify-center min-h-[100vh] text-white pt-16"
+    class="relative z-10 flex flex-col items-center justify-center md:min-h-[100vh] text-white md:pt-16"
   >
     <div class="w-full max-w-6xl px-4">
       <p
-        class="text-white text-xl sm:text-2xl font-bold mb-6 text-center sm:text-left"
+        class="text-white text-md sm:text-2xl font-semibold md:font-bold mb-3 md:mb-6 text-left"
       >
         OTT별 최근 개봉작
       </p>
 
       <div
-        class="flex gap-3 overflow-x-auto flex-nowrap whitespace-nowrap no-scrollbar mb-10 w-full"
+        class="flex gap-3 text-xs overflow-x-auto flex-nowrap whitespace-nowrap no-scrollbar mb-5 md:mb-10 w-full"
       >
         <BaseButton
           v-for="ott in ottList"
@@ -66,10 +66,10 @@ const handleOttSelect = (ottId) => {
           :icon="ott.logo"
           :btnClass="
             [
-              'px-4 py-2 text-sm rounded-full transition-all duration-200 inline-flex items-center gap-2',
+              'px-4 py-2 text-xs md:text-sm rounded-full transition-all duration-200 inline-flex items-center gap-2',
               ott.id === selectedOtt
-                ? 'bg-amber-400 text-black font-semibold shadow w-36'
-                : 'bg-transparent text-amber-200 border w-28 border-amber-400 hover:bg-amber-400 hover:text-black',
+                ? 'bg-amber-400 text-black font-semibold shadow w-28 md:w-36'
+                : 'bg-transparent text-amber-200 border border-amber-400 hover:bg-amber-400 hover:text-black w-24 md:w-28',
             ].join(' ')
           "
           @click="handleOttSelect(ott.id)"
@@ -77,7 +77,6 @@ const handleOttSelect = (ottId) => {
       </div>
 
       <div class="flex gap-6 flex-col">
-        <BasePosterSlider :dataList="dataList" />
         <BasePosterSlider :dataList="dataList" />
       </div>
     </div>

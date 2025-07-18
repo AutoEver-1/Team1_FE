@@ -53,7 +53,9 @@ watch(isOpen, (newVal) => {
   <div
     class="slide-search-input relative flex items-center select-none transition-all duration-300 overflow-hidden rounded-full cursor-pointer"
     :class="[
-      isOpen ? `w-80 px-2 py-1 bg-amber-500/20` : 'w-10 p-1 bg-transparent',
+      isOpen
+        ? `w-52 md:w-80 px-2 py-1 bg-amber-500/20`
+        : 'w-10 p-1 bg-transparent',
     ]"
   >
     <!-- 버튼은 절대 위치로 고정 -->
