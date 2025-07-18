@@ -20,6 +20,7 @@ const routes = [
     component: MainLayout,
     children: [
       { path: "", name: "Home", component: HomePage },
+      { path: "/home", name: "", component: HomePage },
       { path: "/review", name: "Review", component: ReviewPage },
       { path: "/user/:id", name: "User", component: UserPage },
       { path: "/movie", name: "MovieList", component: MoviePage },

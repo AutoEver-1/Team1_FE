@@ -41,7 +41,7 @@ const logout = () => {
     <div class="flex items-center gap-8">
       <div class="w-auto p-4 sm:p-6">
         <RouterLink to="/">
-          <img src="../../assets/images/logo.png" class="h-6 sm:h-7" />
+          <img src="../../assets/images/logo.png" class="h-5 sm:h-7" />
         </RouterLink>
       </div>
 
@@ -98,16 +98,16 @@ const logout = () => {
     </div>
 
     <div class="flex items-center gap-4">
-      <div class="hidden md:flex md:gap-2 items-center">
+      <div class="flex gap-2 items-center">
+        <MovieSearch
+          v-model="userStore.searchText"
+          placeholder="영화 검색"
+          :icon="MagnifyingGlassIcon"
+          color="amber-500"
+          hoverBg="hover:bg-amber-500/20"
+          borderColor="border border-amber-500"
+        />
         <template v-if="userStore.user">
-          <MovieSearch
-            v-model="userStore.searchText"
-            placeholder="영화 검색"
-            :icon="MagnifyingGlassIcon"
-            color="amber-500"
-            hoverBg="hover:bg-amber-500/20"
-            borderColor="border border-amber-500"
-          />
           <!-- <BaseSlideButton
             :icon="MagnifyingGlassIcon"
             color="amber-500"
@@ -126,6 +126,7 @@ const logout = () => {
             color="white"
             hoverBg="hover:bg-gray-800"
             :onClick="navigateToProfile"
+            class="hidden md:block"
           />
           <BaseSlideButton
             :label="'로그아웃'"
@@ -134,6 +135,7 @@ const logout = () => {
             hoverBg="hover:bg-red-500/20"
             borderColor="border border-red-500"
             :onClick="logout"
+            class="hidden md:block"
           />
         </template>
 
@@ -152,90 +154,6 @@ const logout = () => {
           </RouterLink>
         </template>
       </div>
-
-      <button
-        @click="isMenuOpen = !isMenuOpen"
-        class="block md:hidden p-2 text-gray-200 focus:outline-none"
-      >
-        <svg
-          v-if="!isMenuOpen"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-        <svg
-          v-else
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
     </div>
   </header>
-
-  <transition name="fade">
-    <nav
-      v-if="isMenuOpen"
-      class="md:hidden fixed top-16 w-full bg-[#12100E] z-40 flex flex-col items-start gap-4 px-6 py-4 text-gray-300 text-sm font-bold"
-    >
-      <RouterLink
-        to="/"
-        @click="isMenuOpen = false"
-        class="w-full hover:text-amber-400"
-        :class="{ 'text-amber-400': $route.path === '/' }"
-      >
-        Home
-      </RouterLink>
-      <RouterLink
-        to="/movie"
-        @click="isMenuOpen = false"
-        class="w-full hover:text-amber-400"
-        :class="{ 'text-amber-400': $route.path === '/movie' }"
-      >
-        Movie
-      </RouterLink>
-      <RouterLink
-        to="/top100"
-        @click="isMenuOpen = false"
-        class="w-full hover:text-amber-400"
-        :class="{ 'text-amber-400': $route.path === '/top100' }"
-      >
-        Top 100
-      </RouterLink>
-      <RouterLink
-        to="/review"
-        @click="isMenuOpen = false"
-        class="w-full hover:text-amber-400"
-        :class="{ 'text-amber-400': $route.path === '/review' }"
-      >
-        Review
-      </RouterLink>
-      <RouterLink
-        to="/mypage"
-        @click="isMenuOpen = false"
-        class="w-full hover:text-amber-400"
-        :class="{ 'text-amber-400': $route.path === '/mypage' }"
-      >
-        MyPage
-      </RouterLink>
-    </nav>
-  </transition>
 </template>
