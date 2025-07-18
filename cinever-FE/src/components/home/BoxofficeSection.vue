@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import BaseYoutubeVideo from "../common/BaseYoutubeVideo.vue";
 import BaseBadge from "../common/BaseBadge.vue";
+import BaseRankingBadge from "../common/BaseRankingBadge.vue";
 import { getBoxOfficeRanking } from "../../api/movieApi";
 import { useRouter } from "vue-router";
 
@@ -20,14 +21,10 @@ onMounted(() => {
 });
 
 const getBoxOfficeMovieList = async () => {
-  try {
-    const res = await getBoxOfficeRanking();
-    boxOfficeMovieList.value = res.data.movieList;
-    selectedMovie.value = boxOfficeMovieList.value[0];
-    console.log(boxOfficeMovieList);
-  } catch (error) {
-    console.error("박스오피스 영화 목록 가져오기 실패:", error);
-  }
+  const res = await getBoxOfficeRanking();
+  boxOfficeMovieList.value = res.data.movieList;
+  selectedMovie.value = boxOfficeMovieList.value[0];
+  console.log(boxOfficeMovieList);
 };
 
 const handleMovieClick = (movie) => {
@@ -156,24 +153,7 @@ const handleMovieClick = (movie) => {
           >
             <div class="relative transition-transform duration-300 ease-in-out">
               <div class="absolute top-2 left-2 z-10 w-6 sm:w-8">
-                <svg
-                  viewBox="0 0 100 120"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-full h-full text-red-600 fill-current"
-                >
-                  <path d="M0,0 H100 V100 L50,120 L0,100 Z" />
-                  <text
-                    x="50%"
-                    y="60%"
-                    dominant-baseline="middle"
-                    text-anchor="middle"
-                    font-size="30"
-                    fill="white"
-                    font-weight="bold"
-                  >
-                    {{ movie.rank }}
-                  </text>
-                </svg>
+                <BaseRankingBadge :rank="movie.rank" />
               </div>
 
               <img
