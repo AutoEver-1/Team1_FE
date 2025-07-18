@@ -53,7 +53,9 @@ watch(isOpen, (newVal) => {
   <div
     class="slide-search-input relative flex items-center select-none transition-all duration-300 overflow-hidden rounded-full cursor-pointer"
     :class="[
-      isOpen ? `w-72 px-2 border-2 border-amber-600` : 'w-9 bg-transparent',
+      isOpen
+        ? ` w-60 md:w-72 px-2 border-2 border-amber-600`
+        : 'w-9 bg-transparent',
     ]"
   >
     <!-- 돋보기 버튼 -->
