@@ -25,14 +25,14 @@ const navigateToFeed = () => {
 
 <template>
   <div
-    class="hidden md:flex fixed left-0 w-full h-32 z-40 bg-gradient-to-b from-[#12100E] to-transparent pointer-events-none transition-all duration-300"
-    :class="[isLarge ? 'top-28 opacity-100' : 'top-16 opacity-0']"
+    class="hidden md:flex fixed left-0 w-full h-10 z-40 bg-gradient-to-b from-[#12100E] to-transparent pointer-events-none transition-all duration-300"
+    :class="[isLarge ? ' top-24 opacity-100' : 'top-16 opacity-0']"
   />
 
   <header
     :class="[
       'flex fixed top-0 left-0 w-full z-50 items-center justify-between transition-all duration-300 px-4 sm:px-6 lg:px-10',
-      isLarge ? 'md:h-28 h-16 bg-[#12100E]' : 'h-16 bg-[#12100E]',
+      isLarge ? 'md:h-24 h-16 bg-[#12100E]' : 'h-16 bg-[#12100E]',
     ]"
   >
     <div class="flex items-center gap-8">
@@ -53,19 +53,6 @@ const navigateToFeed = () => {
           Home
           <span
             v-if="$route.path === '/'"
-            class="absolute -bottom-1 left-0 w-full h-[2px] bg-amber-400"
-          ></span>
-        </RouterLink>
-        <RouterLink
-          to="/movie"
-          class="hover:text-amber-400 relative"
-          :class="{
-            'text-amber-400': $route.path.startsWith('/movie'),
-          }"
-        >
-          Movie
-          <span
-            v-if="$route.path.startsWith('/movie')"
             class="absolute -bottom-1 left-0 w-full h-[2px] bg-amber-400"
           ></span>
         </RouterLink>

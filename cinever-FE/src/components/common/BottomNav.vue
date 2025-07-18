@@ -16,7 +16,7 @@
           }"
           @click="$emit('navigate', item.name)"
         >
-          <component :is="item.icon" class="w-6 h-6 mb-1" />
+          <component :is="item.icon" class="w-5 h-5 mb-1" />
           <span class="text-xs">{{ item.label }}</span>
         </button>
       </li>

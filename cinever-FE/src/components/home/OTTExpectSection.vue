@@ -46,10 +46,8 @@ const handleOttSelect = (ottId) => {
 </script>
 
 <template>
-  <div
-    class="relative z-10 flex flex-col items-center justify-center md:min-h-[100vh] text-white md:pt-16"
-  >
-    <div class="w-full max-w-6xl px-4">
+  <div class="relative z-10 flex flex-col items-center text-white w-full">
+    <div class="max-w-7xl w-full px-4">
       <p
         class="text-white text-md sm:text-2xl font-semibold md:font-bold mb-3 md:mb-6 text-left"
       >

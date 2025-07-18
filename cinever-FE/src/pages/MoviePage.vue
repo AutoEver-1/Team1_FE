@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import BoxOfficeRankingMovies from "../components/movie/BoxOfficeRankingMovies.vue";
-import LatestMovies from "../components/movie/LatestMovies.vue";
-import TrendingMovies from "../components/movie/TrendingMovies.vue";
-import TopRatedMovies from "../components/movie/TopRatedMovies.vue";
+import BoxOfficeRankingMovies from "../components/home/BoxOfficeRankingMovies.vue";
+import LatestMovies from "../components/home/LatestMovies.vue";
+import TrendingMovies from "../components/home/TrendingMovies.vue";
+import TopRatedMovies from "../components/home/TopRatedMovies.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 </script>
 

@@ -28,7 +28,7 @@ defineProps({
     >
       <div
         class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden flex"
-        :class="isHover ? 'w-[370px] z-50' : 'w-[120px] md:w-[160px]'"
+        :class="isHover ? 'w-[340px] z-50' : 'w-[120px] md:w-[160px]'"
       >
         <img
           :src="posterPath"

@@ -3,7 +3,7 @@ import { getMovieDetail } from "../api/movieApi";
 import { getReview } from "../api/reviewApi";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import YoutubeVideo from "../components/movie-detail/YoutubeVideo.vue";
+import BaseYoutubeVideo from "../components/common/BaseYoutubeVideo.vue";
 import MovieDetailLeft from "../components/movie-detail/MovieDetailLeft.vue";
 import MovieTitleBox from "../components/movie-detail/MovieTitleBox.vue";
 import BaseTab from "../components/common/BaseTab.vue";
@@ -49,9 +49,11 @@ const getMovieById = async () => {
         class="relative z-10 flex flex-col items-center justify-center text-white"
         v-if="movieData"
       >
-        <YoutubeVideo
+        <BaseYoutubeVideo
           :videoId="youtubeId"
-          :thumbnailUrl="movieData.backdropPath"
+          :thumbnailUrl="
+            'https://img.youtube.com/vi/' + youtubeId + '/maxresdefault.jpg'
+          "
           class="hidden md:block"
         />
         <div class="w-full px-4 md:px-8 lg:w-[70%]">
