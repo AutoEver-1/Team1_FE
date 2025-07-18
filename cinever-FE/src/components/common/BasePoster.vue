@@ -22,18 +22,18 @@ defineProps({
 <template>
   <RouterLink :to="`/movie/${movieId}`">
     <div
-      class="relative h-[240px] group/poster"
+      class="relative h-[180px] md:h-[240px] group/poster"
       @mouseenter="isHover = true"
       @mouseleave="isHover = false"
     >
       <div
         class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden flex"
-        :class="isHover ? 'w-[370px] z-50' : 'w-[160px]'"
+        :class="isHover ? 'w-[370px] z-50' : 'w-[120px] md:w-[160px]'"
       >
         <img
           :src="posterPath"
           alt="poster"
-          class="w-[160px] h-full object-cover rounded-l-xl"
+          class="h-[180px] md:w-[160px] md:h-full object-cover rounded-l-xl"
         />
 
         <div

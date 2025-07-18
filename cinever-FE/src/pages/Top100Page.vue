@@ -1,15 +1,17 @@
 <template>
   <BaseBackground>
     <div class="w-full flex justify-center">
-      <div class="w-[70%] my-36">
-        <!-- 장르 선택 그리드 -->
-        <div class="flex flex-wrap gap-4 mb-8">
+      <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-10 my-24 md:my-32">
+        <!-- 장르 선택 가로 스크롤 -->
+        <div
+          class="flex gap-3 overflow-x-auto whitespace-nowrap no-scrollbar mb-8"
+        >
           <button
             v-for="genre in genres"
             :key="genre"
             @click="selectedGenre = genre"
             :class="[
-              `px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap`,
+              'px-4 py-2 rounded-lg text-xs md:text-sm font-bold shrink-0',
               selectedGenre === genre
                 ? 'bg-amber-500 border border-amber-500 text-amber-900'
                 : 'bg-transparent border border-white/60 text-white/80',
@@ -19,8 +21,8 @@
           </button>
         </div>
 
-        <!-- top 100 영화 카드 그리드 -->
-        <MiniCardList :filteredMovies="movies" />
+        <!-- 영화 카드 그리드 -->
+        <MiniCardList :filteredMovies="filteredMovies" />
       </div>
     </div>
   </BaseBackground>
@@ -32,7 +34,7 @@ import { getTop100 } from "../api/movieApi";
 import MiniCardList from "../components/top100/MiniCardList.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 
-const movies = ref();
+const movies = ref([]);
 const genres = [
   "전체",
   "액션",
@@ -54,24 +56,25 @@ const getTop100MovieList = async () => {
   try {
     const res = await getTop100();
     movies.value = res.data.movieList;
-    console.log(movies.value);
   } catch (error) {
     console.error("역대 최고 평점 영화 목록 가져오기 실패:", error);
   }
 };
 
-const filteredMovies = computed(() =>
-  movies.value.filter((movie) => movie.genre === selectedGenre.value)
-);
+const filteredMovies = computed(() => {
+  if (selectedGenre.value === "전체") return movies.value;
+  return movies.value.filter((movie) =>
+    movie.genre?.includes(selectedGenre.value)
+  );
+});
 </script>
 
 <style scoped>
-/* 간단한 스크롤 스타일 */
 ::-webkit-scrollbar {
-  height: 6px;
+  height: 0px;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 3px;
+  border-radius: 0px;
 }
 </style>

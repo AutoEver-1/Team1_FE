@@ -44,12 +44,12 @@ const handlePrev = () => {
       ◀
     </button>
 
-    <div class="block lg:hidden overflow-x-auto w-[80vw]">
+    <div class="block lg:hidden overflow-x-auto w-full md:w-[80vw]">
       <div class="flex gap-4 w-max px-1">
         <div
           v-for="item in dataList"
           :key="item.movieId"
-          class="shrink-0 w-[160px]"
+          class="shrink-0 w-[115px] md:w-[160px]"
         >
           <BasePoster v-bind="item" :genre="item.genre" />
         </div>
