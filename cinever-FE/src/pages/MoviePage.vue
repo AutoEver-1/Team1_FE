@@ -21,7 +21,6 @@ import BoxOfficeRankingMovies from "../components/movie/BoxOfficeRankingMovies.v
 import LatestMovies from "../components/movie/LatestMovies.vue";
 import TrendingMovies from "../components/movie/TrendingMovies.vue";
 import TopRatedMovies from "../components/movie/TopRatedMovies.vue";
-import BoxOffice from "../components/movie/BoxOffice.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 </script>
 
