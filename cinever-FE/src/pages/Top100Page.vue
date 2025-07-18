@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top"
-  >
+  <BaseBackground>
     <div class="w-full flex justify-center">
       <div class="w-[70%] my-36">
         <!-- 장르 선택 그리드 -->
@@ -25,13 +23,14 @@
         <MiniCardList :filteredMovies="movies" />
       </div>
     </div>
-  </div>
+  </BaseBackground>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { getTop100 } from "../api/movieApi";
 import MiniCardList from "../components/top100/MiniCardList.vue";
+import BaseBackground from "../components/common/BaseBackground.vue";
 
 const movies = ref();
 const genres = [

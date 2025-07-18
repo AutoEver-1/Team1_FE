@@ -9,6 +9,7 @@ import MovieTitleBox from "../components/movie-detail/MovieTitleBox.vue";
 import BaseTab from "../components/common/BaseTab.vue";
 import MovieReviewTab from "../components/movie-detail/MovieReviewTab.vue";
 import MovieDetailTab from "../components/movie-detail/MovieDetailTab.vue";
+import BaseBackground from "../components/common/BaseBackground.vue";
 
 const detailTab = [
   { id: 1, name: "영화 상세" },
@@ -42,9 +43,7 @@ const getMovieById = async () => {
 </script>
 
 <template>
-  <div
-    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top mt-16"
-  >
+  <BaseBackground class="mt-16">
     <div class="relative w-full h-full">
       <div
         class="relative z-10 flex flex-col items-center justify-center text-white"
@@ -82,5 +81,5 @@ const getMovieById = async () => {
         </div>
       </div>
     </div>
-  </div>
+  </BaseBackground>
 </template>
