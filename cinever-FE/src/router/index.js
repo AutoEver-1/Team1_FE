@@ -12,6 +12,7 @@ import AdminLayout from "../layouts/AdminLayout.vue";
 import AdminReviewerPage from "../pages/admin/AdminReviewerPage.vue";
 import AdminReviewPage from "../pages/admin/AdminReviewPage.vue";
 import AdminStatisticsPage from "../pages/admin/AdminStatisticsPage.vue";
+import SearchPage from "../pages/SearchPage.vue";
 
 const routes = [
   {
@@ -29,6 +30,7 @@ const routes = [
         component: MovieDetailPage,
         props: true,
       },
+      { path: "/search", name: "Search", component: SearchPage },
     ],
   },
 

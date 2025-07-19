@@ -23,8 +23,11 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="relative group inline-block text-left">
-    <!-- 닉네임 버튼 -->
+  <div
+    v-if="!userStore.isLoggedIn"
+    class="relative group inline-block text-left"
+  >
+    <!-- 유저 프로필 버튼 -->
     <button
       class="flex items-center gap-2 px-2 py-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition"
     >
