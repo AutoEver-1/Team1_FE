@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
+import BaseRating from "../components/common/BaseRating.vue";
 
 // 리뷰 데이터
 const allReviews = [
@@ -245,7 +246,7 @@ onBeforeUnmount(() => {
 
 <template>
   <BaseBackground>
-    <div class="mx-auto max-w-5xl px-4 py-20 sm:py-20 sm:px-6 lg:px-8 lg:py-32">
+    <div class="mx-auto max-w-4xl pl-4 py-32">
       <!-- 날짜 -->
       <div class="flex flex-col gap-8 sm:gap-10 lg:gap-14">
         <div
@@ -279,7 +280,7 @@ onBeforeUnmount(() => {
             >
               <!-- 유저 정보, 별점 -->
               <div
-                class="flex flex-col gap-4 border-b border-white/15 pb-4 sm:flex-row sm:items-center sm:justify-between"
+                class="flex flex-col pb-2 sm:pb-4 border-b border-white/15 sm:flex-row sm:items-center sm:justify-between"
               >
                 <!-- 사진, 닉네임, 역할 -->
                 <div class="flex items-center gap-3">
@@ -305,50 +306,17 @@ onBeforeUnmount(() => {
                   </div>
                 </div>
 
-                <!-- 별점 -->
-                <div class="flex items-center gap-1 relative">
-                  {{ review.myScore }}
-                  <!-- half gradient 정의 -->
-                  <svg style="position: absolute; width: 0; height: 0">
-                    <defs>
-                      <linearGradient id="half-gradient">
-                        <stop
-                          offset="50%"
-                          stop-color="currentColor"
-                          stop-opacity="1"
-                        />
-                        <stop
-                          offset="50%"
-                          stop-color="currentColor"
-                          stop-opacity="0"
-                        />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <template v-for="i in 5" :key="i">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      :fill="
-                        i <= Math.floor(review.myScore)
-                          ? 'currentColor'
-                          : i === Math.ceil(review.myScore) &&
-                            review.myScore % 1 > 0
-                          ? 'url(#half-gradient)'
-                          : 'currentColor'
-                      "
-                      class="h-4 w-4 sm:h-5 sm:w-5"
-                      :class="
-                        i <= review.myScore
-                          ? 'text-yellow-400'
-                          : 'text-white/30'
-                      "
-                    >
-                      <path
-                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                      />
-                    </svg>
-                  </template>
+                <!-- 팔로워의 별점 -->
+                <div class="flex items-center text-amber-400">
+                  <BaseRating :score="review.myScore" size="20" />
+                  <span class="ml-2 text-[20px] font-medium text-amber-400">
+                    {{ review.myScore ? review.myScore : "-" }}
+                  </span>
+                  <span
+                    class="text-xs font-medium text-gray-200 opacity-50 mt-2"
+                  >
+                    {{ review.myScore ? "\u00A0/ 5.0" : "" }}
+                  </span>
                 </div>
               </div>
 
