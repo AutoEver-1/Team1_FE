@@ -12,15 +12,17 @@ const router = useRouter();
 const userStore = useUserStore();
 
 // 현재 로그인된 사용자 ID
-const currentUserId = computed(() => userStore.user.memberId);
+const currentUserId = computed(() => userStore.user?.memberId ?? null);
 
 // 프로필 페이지 대상 사용자 ID
 const profileUserId = computed(() => Number(route.params.id));
 
 // 본인 프로필 여부 계산
-const isOwnProfile = computed(
-  () => currentUserId.value === profileUserId.value
-);
+const isOwnProfile = computed(() => {
+  return (
+    currentUserId.value !== null && currentUserId.value === profileUserId.value
+  );
+});
 
 // 사용자 정보 저장
 const data = ref({});
