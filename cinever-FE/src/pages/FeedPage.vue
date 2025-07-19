@@ -208,7 +208,7 @@ const visibleReviews = ref([]);
 const endReached = ref(false);
 
 /** 다음 페이지를 visibleReviews에 push */
-function loadNextPage() {
+const loadNextPage = () => {
   if (endReached.value) return;
   const start = page.value * PAGE_SIZE;
   const next = allReviews.slice(start, start + PAGE_SIZE);
@@ -217,7 +217,7 @@ function loadNextPage() {
     page.value++;
   }
   if (visibleReviews.value.length >= allReviews.length) endReached.value = true;
-}
+};
 
 /* ──────────────────────────────────────────
   3) 날짜별 그룹화 (YYYY-MM-DD)
@@ -246,23 +246,23 @@ const groupEls = ref([]); // v-for 그룹 DOM 배열
 let dateObserver = null; // IntersectionObserver
 
 /** v-for 그룹의 ref 콜백 */
-function setGroupRef(el, idx) {
+const setGroupRef = (el, idx) => {
   if (!Array.isArray(groupEls.value)) groupEls.value = [];
 
   if (el) {
     groupEls.value[idx] = el;
-    // ★ 새로 생긴 DOM 즉시 관찰 ★
+    //  새로 생긴 DOM 즉시 관찰
     if (dateObserver) dateObserver.observe(el);
   } else {
-    // ★ 언마운트 시 unobserve ★
+    //  언마운트 시 unobserve
     if (groupEls.value[idx] && dateObserver)
       dateObserver.unobserve(groupEls.value[idx]);
     groupEls.value[idx] = null;
   }
-}
+};
 
 /** 날짜 스택 IntersectionObserver 초기화 */
-function initDateObserver() {
+const initDateObserver = () => {
   dateObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -275,14 +275,13 @@ function initDateObserver() {
       });
     },
     {
-      /* 화면 중앙 부근(위·아래 50%)을 지날 때 트리거 */
       rootMargin: "-30% 0px -100% 0px",
       threshold: 0,
     }
   );
   // 이미 렌더된 첫 페이지 그룹 관찰
   groupEls.value.forEach((el) => el && dateObserver.observe(el));
-}
+};
 
 /* ──────────────────────────────────────────
   6) 무한스크롤 IntersectionObserver
@@ -290,13 +289,13 @@ function initDateObserver() {
 const sentinel = ref(null);
 let scrollObserver = null;
 
-function initScrollObserver() {
+const initScrollObserver = () => {
   scrollObserver = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && loadNextPage()),
     { threshold: 1 }
   );
   if (sentinel.value) scrollObserver.observe(sentinel.value);
-}
+};
 
 /* ──────────────────────────────────────────
   7) 생명주기
