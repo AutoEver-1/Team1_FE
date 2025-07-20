@@ -114,6 +114,7 @@ const handleSubmit = async () => {
       :content="review.context"
       :nickname="review.nickname"
       starColor="text-amber-500"
+      :userId="review.memberId"
     />
   </div>
 </template>

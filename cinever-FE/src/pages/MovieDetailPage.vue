@@ -54,6 +54,8 @@ const getMovieById = async () => {
   const res = await getMovieDetail(movieId);
   movieData.value = res.data;
 
+  console.log("getMovieById", movieData.value);
+
   const videoPath = movieData.value.video_path;
   youtubeId.value = new URL(videoPath).searchParams.get("v");
 };
