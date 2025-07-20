@@ -61,3 +61,11 @@ export const getUserReviewInfo = async (id) => {
     throw error;
   }
 };
+
+export const followUser = async (memberId) => {
+  return await api.post(`${userApi}/${memberId}/follow`);
+};
+
+export const unfollowUser = async (memberId) => {
+  return await api.delete(`${userApi}/${memberId}/follow`);
+};

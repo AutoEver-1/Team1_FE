@@ -13,6 +13,7 @@ import {
   getUserReviewInfo,
 } from "../api/user";
 import { useRouter, useRoute } from "vue-router";
+import { getUserInfo } from "../api/user";
 
 const detailTab = [
   { id: "profile", name: "프로필" },
@@ -21,6 +22,8 @@ const detailTab = [
   { id: "wishlist", name: "위시리스트" },
 ];
 
+const userInfo = ref(null);
+const isFollowing = ref(false);
 const router = useRouter();
 const route = useRoute();
 const selectedTab = ref(route.query.tab || "profile");
@@ -32,12 +35,26 @@ const reivewList = ref([]);
 
 onMounted(() => {
   const id = route.params.id;
+  fetchUserInfo(id);
   userWishlistInfo(id);
   userRecentInfo(id);
   userFavoriteInfo(id);
   userDislikeInfo(id);
   userReviewInfo(id);
 });
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    fetchUserInfo(newId);
+    userWishlistInfo(newId);
+    userRecentInfo(newId);
+    userFavoriteInfo(newId);
+    userDislikeInfo(newId);
+    userReviewInfo(newId);
+    selectedTab.value = "profile";
+  }
+);
 
 watch(selectedTab, (newTab) => {
   router.replace({ query: { ...route.query, tab: newTab } });
@@ -72,6 +89,12 @@ const userReviewInfo = async (id) => {
   reivewList.value = res.data;
   console.log("reivewList", reivewList.value);
 };
+
+const fetchUserInfo = async (id) => {
+  const res = await getUserInfo(id);
+  userInfo.value = res.data;
+  isFollowing.value = res.data.isFollowing;
+};
 </script>
 
 <template>
@@ -79,7 +102,12 @@ const userReviewInfo = async (id) => {
     class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top pb-20"
   >
     <div class="pt-24 flex-1">
-      <UserInfo :reviewCount="reivewList.totalReviewCount" />
+      <UserInfo
+        :userInfo="userInfo"
+        :reviewCount="reivewList.totalReviewCount"
+        :isFollowing="isFollowing"
+        @toggle-follow="toggleFollow"
+      />
       <div class="min-h-screen flex justify-center mt-12 max-w-4xl mx-auto">
         <div class="w-[90%] md:w-full space-y-6">
           <BaseTab
