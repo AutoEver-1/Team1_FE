@@ -15,20 +15,17 @@ const emit = defineEmits(["toggle-follow"]);
 
 const imgSrc = ref(props.userInfo?.profilePath);
 
-// 성별 라벨
 const genderLabel = computed(() => {
   if (!props.userInfo?.gender) return "-";
   return props.userInfo.gender === "female" ? "여성" : "남성";
 });
 
-// 생일 포맷
 const birthLabel = computed(() => {
   if (!props.userInfo?.birth) return "-";
   const date = new Date(props.userInfo.birth);
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 });
 
-// 모달 상태
 const isFollowingModalOpen = ref(false);
 const isFollowersModalOpen = ref(false);
 

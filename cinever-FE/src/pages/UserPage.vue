@@ -94,6 +94,7 @@ const fetchUserInfo = async (id) => {
   const res = await getUserInfo(id);
   userInfo.value = res.data;
   isFollowing.value = res.data.isFollowing;
+  console.log("fetchUserInfo", res);
 };
 </script>
 
