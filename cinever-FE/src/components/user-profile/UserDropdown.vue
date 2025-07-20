@@ -1,18 +1,21 @@
 <!-- components/common/UserDropdown.vue -->
 <script setup>
-import { ref } from "vue";
+import { computed } from "vue";
 import { useUserStore } from "../../stores/userStore";
 import { useRouter } from "vue-router";
 import {
   ArrowRightStartOnRectangleIcon,
   UserIcon,
 } from "@heroicons/vue/24/outline";
+import { storeToRefs } from "pinia";
 
-const userStore = useUserStore();
 const router = useRouter();
+const userStore = useUserStore();
+
+const { user } = storeToRefs(userStore);
 
 const goToProfile = () => {
-  router.push("/mypage");
+  router.push(`/user/${user.value.memberId}`);
 };
 
 const logout = () => {
@@ -23,20 +26,18 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="relative group inline-block text-left">
-    <!-- 닉네임 버튼 -->
+  <div
+    v-if="userStore.isLoggedIn"
+    class="relative group inline-block text-left"
+  >
+    <!-- 유저 프로필 버튼 -->
     <button
-      class="flex items-center gap-2 px-2 py-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition"
+      class="flex items-center gap-2 p-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition"
     >
       <component
-        :is="userStore.user.profilePath === '1' ? UserIcon : 'img'"
-        :src="
-          userStore.user.profilePath !== '1'
-            ? userStore.user.profilePath
-            : undefined
-        "
+        :is="user.profilePath === '1' ? UserIcon : 'img'"
+        :src="user.profilePath !== '1' ? user.profilePath : undefined"
         class="w-5 h-5 rounded-full"
-        @click="goToProfile"
       />
     </button>
 
@@ -48,14 +49,14 @@ const logout = () => {
         <ul class="text-xs">
           <li
             @click="goToProfile"
-            class="flex items-center gap-2 p-3 px-4 hover:bg-white/10 cursor-pointer rounded"
+            class="flex items-center gap-2 p-3 px-4 hover:bg-white/20 cursor-pointer rounded"
           >
             <UserIcon class="w-4 h-4" />
             마이페이지
           </li>
           <li
             @click="logout"
-            class="flex items-center gap-2 p-3 px-4 hover:bg-white/10 cursor-pointer font-bold text-red-500 rounded"
+            class="flex items-center gap-2 p-3 px-4 hover:bg-white/20 cursor-pointer font-bold text-red-500 rounded"
           >
             <ArrowRightStartOnRectangleIcon class="w-4 h-4" />
             로그아웃

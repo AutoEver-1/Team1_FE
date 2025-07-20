@@ -15,7 +15,9 @@ const userStore = useUserStore();
 const imgSrc = ref();
 
 // 현재 로그인된 사용자 ID
-const currentUserId = computed(() => userStore.user.memberId);
+const currentUserId = computed(() =>
+  userStore.isLoggedIn ? userStore.user.memberId : null
+);
 
 // 프로필 페이지 대상 사용자 ID
 const profileUserId = computed(() => Number(route.params.id));

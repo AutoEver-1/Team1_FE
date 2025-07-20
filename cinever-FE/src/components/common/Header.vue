@@ -91,7 +91,7 @@ const navigateToFeed = () => {
           color="amber-500"
           hoverBg="hover:bg-white/10"
         />
-        <template v-if="userStore.user">
+        <template v-if="userStore.isLoggedIn">
           <!-- 피드 바로가기 -->
           <BaseSlideButton
             label="피드 바로가기"
@@ -100,37 +100,21 @@ const navigateToFeed = () => {
             color="white"
             :onClick="navigateToFeed"
           />
-          <!-- 마이 페이지 -->
-          <!-- <BaseSlideButton
-            :label="userStore.user.nickName"
-            :icon="
-              userStore.user.profilePath === '1'
-                ? UserIcon
-                : userStore.user.profilePath
-            "
-            color="white"
-            :onClick="navigateToProfile"
-          /> -->
           <UserDropdown class="hidden md:block" />
-          <!-- 로그아웃 -->
-          <!-- <BaseSlideButton
-            :label="'로그아웃'"
-            :icon="ArrowRightStartOnRectangleIcon"
-            color="red"
-            :onClick="logout"
-          /> -->
         </template>
 
         <template v-else>
           <RouterLink to="/login">
             <button
-              class="text-sm text-amber-400 hover:underline transition mr-3"
+              class="text-sm items-center text-amber-400 hover:underline transition mx-2"
             >
               로그인
             </button>
           </RouterLink>
           <RouterLink to="/signup">
-            <button class="text-sm text-amber-400 hover:underline transition">
+            <button
+              class="text-sm text-amber-400 hover:underline transition mx-2"
+            >
               회원가입
             </button>
           </RouterLink>

@@ -6,6 +6,9 @@ export const useUserStore = defineStore("user", {
     user: null,
     token: null,
   }),
+  getters: {
+    isLoggedIn: (state) => !!state.user,
+  },
   actions: {
     setUser(userInfo) {
       this.user = userInfo;
