@@ -32,6 +32,9 @@ import {
   SparklesIcon,
   UserIcon,
 } from "@heroicons/vue/24/solid";
+import { useUserStore } from "../../stores/userStore";
+
+const userStore = useUserStore();
 
 defineProps({
   current: String,
@@ -42,6 +45,6 @@ const navItems = [
   { name: "top100", label: "랭킹", icon: TrophyIcon },
   { name: "feed", label: "피드", icon: ChatBubbleBottomCenterTextIcon },
   { name: "review", label: "리뷰어", icon: SparklesIcon },
-  { name: "profile", label: "프로필", icon: UserIcon },
+  { name: "user/" + userStore.user.memberId, label: "프로필", icon: UserIcon },
 ];
 </script>

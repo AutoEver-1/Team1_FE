@@ -10,7 +10,10 @@ defineProps({
 </script>
 
 <template>
-  <div class="rounded-xl p-4 space-y-2" :class="'bg-' + backgroundColor">
+  <div
+    class="rounded-xl px-0 md:px-4 pt-5 pb-4 space-y-2 overflow-visible"
+    :class="'bg-' + backgroundColor"
+  >
     <div
       v-if="title"
       class="flex items-center gap-1 text-gray-400 text-lg font-medium"
