@@ -5,6 +5,10 @@ defineProps({
     type: String,
     default: "text-red-600",
   },
+  size: {
+    type: Number,
+    default: "30",
+  },
 });
 </script>
 <template>
@@ -20,7 +24,7 @@ defineProps({
       y="60%"
       dominant-baseline="middle"
       text-anchor="middle"
-      font-size="30"
+      :font-size="size"
       fill="white"
       font-weight="bold"
     >

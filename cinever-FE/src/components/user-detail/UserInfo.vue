@@ -5,11 +5,14 @@ import { getUserInfo } from "../../api/user";
 import BaseBadge from "../../components/common/BaseBadge.vue";
 import BaseModal from "../../components/common/BaseModal.vue";
 import { useUserStore } from "../../stores/userStore";
+import Profile from "../../assets/images/default_profile.png";
+import BaseProfileImage from "../../components/common/BaseProfileImage.vue";
 
 // 라우터 및 사용자 스토어 준비
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
+const imgSrc = ref();
 
 // 현재 로그인된 사용자 ID
 const currentUserId = computed(() => userStore.user.memberId);
@@ -33,6 +36,8 @@ const isFollowersModalOpen = ref(false);
 async function fetchUserInfo(id) {
   const res = await getUserInfo(id);
   data.value = res.data;
+  imgSrc.value = data.value.profilePath;
+  console.log(data);
 }
 
 // URL 파라미터(id) 변경 감지 → 데이터 다시 로드
@@ -48,6 +53,10 @@ onMounted(() => {
   fetchUserInfo(route.params.id);
 });
 
+function onImgError() {
+  imgSrc.value = Profile;
+}
+
 // 팔로잉/팔로워 모달 열기 함수
 const openFollowingModal = () => {
   isFollowingModalOpen.value = true;
@@ -60,75 +69,91 @@ const openFollowersModal = () => {
 const goToUserPage = (userId) => {
   router.push({ name: "User", params: { id: userId } });
 };
+
+// 성별 변환
+const genderLabel = computed(() => {
+  if (!data.value.gender) return "-";
+  return data.value.gender === "female" ? "여성" : "남성";
+});
+
+// 생일 포맷
+const birthLabel = computed(() => {
+  if (!data.value.birth) return "-";
+  const date = new Date(data.value.birth);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+});
 </script>
 
 <template>
-  <!-- 사용자 프로필 컨테이너 -->
-  <div
-    class="max-w-4xl mx-auto bg-white/20 backdrop-blur-lg rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6"
-  >
-    <!-- 프로필 사진 -->
-    <div class="flex-shrink-0">
-      <img
-        v-if="data.profilePath"
-        :src="data.profilePath"
-        alt="profile_img"
-        class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white/50 shadow-lg"
-      />
-    </div>
+  <div class="w-full max-w-4xl mx-auto px-6 pt-12 text-white">
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-10">
+      <BaseProfileImage :src="imgSrc" size="160px" />
+      <div class="flex-1 w-full">
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <h2 class="text-2xl font-bold">
+              {{ data.nickname }}
+              <span
+                class="ml-2 inline-block text-sm font-bold bg-amber-500 text-black px-2 py-0.5 rounded group-hover:text-[10px] group-hover:h-5 group-hover:py-0"
+              >
+                {{ data.roleName }}
+              </span>
+            </h2>
+            <p class="mt-1 text-sm font-semibold text-gray-500">
+              {{ genderLabel }} · {{ birthLabel }}
+            </p>
+            <div class="flex flex-wrap gap-2 mt-3 justify-center">
+              <span
+                v-for="genre in data.preferenceGenre"
+                :key="genre"
+                class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
+              >
+                #{{ genre }}
+              </span>
+            </div>
+          </div>
 
-    <!-- 사용자 기본 정보 및 버튼 -->
-    <div class="flex-1 text-white">
-      <!-- 닉네임과 역할 -->
-      <div class="flex items-center justify-center sm:justify-start">
-        <p class="text-xl font-bold">{{ data.nickname }}</p>
-        <p
-          class="w-fit text-xs text-black font-bold px-1 mt-1 ml-1 rounded bg-yellow-400"
+          <button
+            v-if="!isOwnProfile"
+            class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+          >
+            + 팔로우 하기
+          </button>
+        </div>
+
+        <div
+          class="grid grid-cols-4 gap-4 mt-10 text-center text-sm text-gray-400 mx-12"
         >
-          {{ data.roleName }}
-        </p>
-      </div>
+          <div>
+            <p class="text-xl font-bold text-white">0</p>
+            <p>Reviews</p>
+          </div>
+          <!-- Following -->
+          <div class="cursor-pointer" @click="openFollowingModal">
+            <p class="text-xl font-bold text-white">
+              {{ data.followingCount ? data.followingCount : "-" }}
+            </p>
+            <p>Following</p>
+          </div>
 
-      <!-- 선호 장르 배지 -->
-      <div class="mt-2">
-        <BaseBadge :dataList="data.preferenceGenre" index="#" />
-      </div>
+          <!-- Followers -->
+          <div class="cursor-pointer" @click="openFollowersModal">
+            <p class="text-xl font-bold text-white">
+              {{ data.followerCount ? data.followerCount : "-" }}
+            </p>
+            <p>Followers</p>
+          </div>
 
-      <!-- 본인 프로필이면 '수정하기', 아니면 '팔로우 하기' -->
-      <button
-        v-if="isOwnProfile"
-        class="w-full mt-4 inline-block border border-white rounded-md hover:backdrop-blur-lg text-white font-semibold py-2 px-4"
-      >
-        수정하기
-      </button>
-      <button
-        v-else
-        class="w-full mt-4 inline-block border border-white rounded-md hover:backdrop-blur-lg text-white font-semibold py-2 px-4"
-      >
-        팔로우 하기
-      </button>
-    </div>
-
-    <!-- 리뷰/팔로잉/팔로워 카운트 -->
-    <div class="flex gap-6 text-center text-white text-xs sm:text-sm h-auto">
-      <!-- 리뷰 수 -->
-      <div>
-        <p class="text-xl font-bold">{{ data.reviewCount || 0 }}</p>
-        <p>Reviews</p>
-      </div>
-      <!-- 팔로잉 (클릭 시 모달) -->
-      <div class="cursor-pointer" @click="openFollowingModal">
-        <p class="text-xl font-bold">{{ data.followingCount || 0 }}</p>
-        <p>Following</p>
-      </div>
-      <!-- 팔로워 (클릭 시 모달) -->
-      <div class="cursor-pointer" @click="openFollowersModal">
-        <p class="text-xl font-bold">{{ data.followerCount || 0 }}</p>
-        <p>Followers</p>
+          <div>
+            <p class="text-xl font-bold text-white">
+              {{ data.wishList?.length }}
+            </p>
+            <p>Wishlist</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
   <!-- 팔로잉 목록 모달 -->
   <BaseModal
     v-model:isOpen="isFollowingModalOpen"
@@ -141,19 +166,15 @@ const goToUserPage = (userId) => {
       <div v-if="data.followingList && data.followingList.length">
         <div
           v-for="following in data.followingList"
-          :key="following.id"
+          :key="following.memberId"
           class="py-3 cursor-pointer"
           @click="goToUserPage(following.memberId)"
         >
           <div class="flex items-center">
-            <img
-              :src="following.profilePath"
-              alt="팔로잉 사진"
-              class="w-12 h-12 rounded-full object-cover"
-            />
-            <p class="pl-5">{{ following.nickname }}</p>
+            <BaseProfileImage :src="following.profilePath" size="40px" />
+            <p class="pl-4 text-white font-medium">{{ following.nickname }}</p>
           </div>
-          <hr class="border-gray-600 my-2" />
+          <hr class="border-gray-700 my-2" />
         </div>
       </div>
       <p v-else class="text-center text-gray-400">팔로잉 사용자가 없습니다.</p>
@@ -172,19 +193,15 @@ const goToUserPage = (userId) => {
       <div v-if="data.followerList && data.followerList.length">
         <div
           v-for="follower in data.followerList"
-          :key="follower.id"
+          :key="follower.memberId"
           class="py-3 cursor-pointer"
           @click="goToUserPage(follower.memberId)"
         >
           <div class="flex items-center">
-            <img
-              :src="follower.profilePath"
-              alt="팔로워 사진"
-              class="w-12 h-12 rounded-full object-cover"
-            />
-            <p class="pl-5">{{ follower.nickname }}</p>
+            <BaseProfileImage :src="follower.profilePath" size="40px" />
+            <p class="pl-4 text-white font-medium">{{ follower.nickname }}</p>
           </div>
-          <hr class="border-gray-600 my-2" />
+          <hr class="border-gray-700 my-2" />
         </div>
       </div>
       <p v-else class="text-center text-gray-400">팔로워 사용자가 없습니다.</p>
