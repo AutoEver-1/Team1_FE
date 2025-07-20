@@ -1,142 +1,165 @@
 <script setup>
-import { ref, onMounted, computed, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { getReviewerAll } from "../../../src/api/reviewerApi";
-import BaseBadge from "../common/BaseBadge.vue";
+import BaseRankingBadge from "../common/BaseRankingBadge.vue";
+import {
+  HeartIcon,
+  StarIcon,
+  ChatBubbleLeftEllipsisIcon,
+} from "@heroicons/vue/24/solid";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation, Mousewheel } from "swiper/modules";
 
-// 리뷰어 목록 데이터 로드
 const dataList = ref([]);
+const swiperInstance = ref(null);
+const handlePrev = () => {
+  swiperInstance.value?.slidePrev();
+};
+const handleNext = () => {
+  swiperInstance.value?.slideNext();
+};
+
 onMounted(async () => {
   const res = await getReviewerAll();
   dataList.value = res.data.reviewerList.content;
 });
-
-// 슬라이더 상태 및 계산
-const sliderX = ref(0);
-const cardWidth = 224; // 카드 전체 너비 (px)
-const visibleCount = 4; // 데스크탑에서 보일 카드 개수
-const maxOffset = computed(() => {
-  return dataList.value.length <= visibleCount
-    ? 0
-    : -((dataList.value.length - visibleCount) * cardWidth);
-});
-
-// 데스크탑 여부 감지
-const isDesktop = ref(window.innerWidth >= 1024);
-const updateSize = () => {
-  isDesktop.value = window.innerWidth >= 1024;
-};
-
-onMounted(() => {
-  window.addEventListener("resize", updateSize);
-});
-onUnmounted(() => {
-  window.removeEventListener("resize", updateSize);
-});
-
-// 이동 함수
-const scrollLeft = () => {
-  sliderX.value = Math.min(sliderX.value + cardWidth, 0);
-};
-const scrollRight = () => {
-  sliderX.value = Math.max(sliderX.value - cardWidth, maxOffset.value);
-};
 </script>
 
 <template>
-  <!-- 섹션 제목 -->
-  <p class="text-left mb-5 text-[28px]">Best Reviewer</p>
+  <div class="relative w-full px-2">
+    <Swiper
+      @swiper="(swiper) => (swiperInstance = swiper)"
+      :modules="[Navigation, Mousewheel]"
+      :space-between="16"
+      :slides-per-view="1.2"
+      :breakpoints="{
+        1024: { slidesPerView: 3.2 },
+        1280: { slidesPerView: 5 },
+      }"
+      class="w-full"
+    >
+      <SwiperSlide
+        v-for="(data, i) in dataList"
+        :key="data.memberId"
+        class="group"
+      >
+        <RouterLink :to="'/user/' + data.memberId">
+          <div
+            class="relative backdrop-blur-md bg-white/5 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-[320px] w-[220px]"
+          >
+            <div class="absolute top-0 left-2 px-1 py-0.5 z-10 w-10">
+              <BaseRankingBadge :rank="i + 1" size="40" />
+            </div>
 
-  <!-- 공통 컨테이너: 모바일은 가로 스크롤, 데스크탑은 버튼+슬라이더 -->
-  <div class="relative w-full group flex items-center">
-    <!-- 이전 버튼(데스크탑) -->
+            <div
+              class="flex flex-col items-center justify-center transition-all duration-300 h-[320px] group-hover:h-[120px]"
+            >
+              <img
+                :src="data.profile_img_url"
+                alt="profile"
+                class="transition-all duration-300 w-28 h-28 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-10"
+              />
+
+              <div
+                class="mt-2 flex flex-col items-center justify-center gap-1 group-hover:flex-row group-hover:gap-2"
+              >
+                <p
+                  class="text-lg font-semibold text-center group-hover:text-sm"
+                >
+                  {{ data.nickname }}
+                </p>
+                <span
+                  class="inline-block text-sm font-bold bg-amber-500 text-black px-2 py-0.5 rounded group-hover:text-[10px] group-hover:h-5 group-hover:py-0"
+                >
+                  {{ data.role }}
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="transition-all duration-300 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-[500px] overflow-hidden px-2"
+            >
+              <div class="flex flex-wrap gap-2 mt-3 justify-center">
+                <span
+                  v-for="genre in data.genre_preference"
+                  :key="genre"
+                  class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
+                >
+                  #{{ genre }}
+                </span>
+              </div>
+
+              <div
+                class="flex justify-around text-sm text-gray-300 mt-4 mb-2 px-5"
+              >
+                <div class="flex flex-col items-center">
+                  <HeartIcon class="w-4 h-4 text-red-400 mb-1" />
+                  <span>{{ data.follower_cnt }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <ChatBubbleLeftEllipsisIcon
+                    class="w-4 h-4 text-slate-200 mb-1"
+                  />
+                  <span>{{ data.review_count }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <StarIcon class="w-4 h-4 text-amber-400 mb-1" />
+                  <span>{{ data.review_avg?.toFixed(1) || "0.0" }}</span>
+                </div>
+              </div>
+
+              <div class="flex gap-2 justify-center mt-2">
+                <RouterLink
+                  v-for="(movie, idx) in data.wishlist?.slice(0, 3) || []"
+                  :key="movie.movieId || idx"
+                  :to="`/movie/${movie.movieId}`"
+                  class="relative"
+                >
+                  <img
+                    :src="movie.poster_path"
+                    alt="wish"
+                    class="w-14 h-20 rounded object-cover hover:opacity-90 transition"
+                  />
+                </RouterLink>
+              </div>
+            </div>
+          </div>
+        </RouterLink>
+      </SwiperSlide>
+    </Swiper>
+
     <button
-      @click="scrollLeft"
-      :disabled="sliderX === 0"
-      class="hidden lg:block absolute left-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition group-hover:disabled:opacity-30 opacity-0 group-hover:opacity-100"
+      @click="handlePrev"
+      class="custom-swiper-prev hidden lg:block absolute left-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition"
     >
       ◀
     </button>
 
-    <!-- 카드 리스트: 모바일은 overflow-x-auto, 데스크탑은 overflow-hidden -->
-    <div class="overflow-x-auto lg:overflow-hidden w-full px-2 lg:px-0">
-      <div
-        class="flex gap-4 transition-transform duration-500 ease-in-out"
-        :style="isDesktop ? { transform: `translateX(${sliderX}px)` } : {}"
-      >
-        <div
-          v-for="(data, i) in dataList"
-          :key="data.memberId"
-          class="relative w-[210px] flex-shrink-0 flex flex-col items-center p-3 rounded-[10px] border border-white/20 bg-white/10 backdrop-blur-md shadow-md hover:bg-white/15 hover:backdrop-blur-lg transition duration-300"
-        >
-          <!-- 프로필 이미지 -->
-          <img
-            :src="data.profile_img_url"
-            alt="profile"
-            class="w-24 h-24 rounded-full object-cover my-4"
-          />
-
-          <!-- 닉네임, 역할 -->
-          <div class="flex items-center">
-            <RouterLink :to="`/user/${data.memberId}`">
-              <p class="text-white text-sm font-semibold">
-                {{ data.nickname }}
-              </p>
-            </RouterLink>
-            <p
-              class="w-fit text-xs text-black font-bold px-1 ml-1 rounded bg-yellow-400"
-            >
-              {{ data.role }}
-            </p>
-          </div>
-
-          <!-- 장르 배지 -->
-          <div class="flex py-2">
-            <BaseBadge :dataList="data.genre_preference" index="#" />
-          </div>
-
-          <!-- 통계(팔로워, 리뷰, 평점) -->
-          <div class="flex w-full text-sm justify-around">
-            <p>❤️ {{ data.follower_cnt }}</p>
-            <p>✏️ {{ data.review_count }}</p>
-            <p>
-              ⭐
-              {{ data.review_avg ? Number(data.review_avg).toFixed(1) : "0.0" }}
-            </p>
-          </div>
-
-          <!-- 위시리스트 영화 포스터 -->
-          <div class="flex mt-3 gap-2">
-            <RouterLink
-              v-for="(movie, idx) in data.wishlist.slice(0, 3)"
-              :key="movie.movieId || idx"
-              :to="`/movie/${movie.movieId}`"
-              class="rounded hover:opacity-80 transition"
-            >
-              <img
-                :src="movie.poster_path"
-                alt="wish"
-                class="w-12 h-18 rounded object-cover"
-              />
-            </RouterLink>
-          </div>
-
-          <!-- 카드 번호 -->
-          <div
-            class="absolute top-2 left-2 bg-red-600 text-white text-xs w-5 h-5 rounded-full text-center"
-          >
-            {{ i + 1 }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 다음 버튼(데스크탑) -->
     <button
-      @click="scrollRight"
-      :disabled="sliderX <= maxOffset"
-      class="hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black opacity-0 group-hover:opacity-100 transition-opacity duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+      @click="handleNext"
+      class="custom-swiper-next hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition"
     >
       ▶
     </button>
   </div>
 </template>
+
+<style scoped>
+.swiper-slide {
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.swiper-slide-active > div {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.group:hover > div {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+</style>
