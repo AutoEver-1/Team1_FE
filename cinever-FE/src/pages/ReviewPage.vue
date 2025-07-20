@@ -1,16 +1,18 @@
 <template>
   <BaseBackground>
-    <!-- <div class="w-[90%] max-w-4xl flex mt-16 gap-3 items-center justify-center">
+    <div class="w-full flex flex-col items-center mt-16">
+      <!-- <div class="w-[90%] max-w-4xl flex mt-16 gap-3 items-center justify-center">
       <ReviewerSearchSection />
     </div> -->
-    <div class="max-w-6xl w-[80%] mt-14 mb-20 relative hidden lg:block">
-      <BestReviewerSection />
-    </div>
-    <div class="w-[90%] max-w-4xl mb-20 overflow-x-auto hidden lg:block">
-      <ReviewerTableSection />
-    </div>
-    <div class="w-[90%] mb-20 overflow-x-auto block lg:hidden">
-      <MobileReviewerSection />
+      <div class="max-w-6xl w-[80%] mt-14 mb-20 relative hidden lg:block">
+        <BestReviewerSection />
+      </div>
+      <div class="w-[90%] max-w-4xl mb-20 overflow-x-auto hidden lg:block">
+        <ReviewerTableSection />
+      </div>
+      <div class="w-[90%] mb-20 overflow-x-auto block lg:hidden">
+        <MobileReviewerSection />
+      </div>
     </div>
   </BaseBackground>
 </template>
