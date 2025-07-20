@@ -84,7 +84,7 @@ const goToUserPage = (userId) => {
           <!-- 데스크탑 팔로우 버튼 -->
           <button
             v-if="!isOwnProfile"
-            class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+            class="hidden md:block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
             :class="
               isFollowing
                 ? 'border border-gray-400 text-gray-400'
@@ -104,7 +104,9 @@ const goToUserPage = (userId) => {
           <button
             class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10 w-1/2"
             :class="
-              isFollowing ? 'border border-white' : 'bg-yellow-400 text-black'
+              isFollowing
+                ? 'border border-gray-400 text-gray-400'
+                : 'border-yellow-400 text-yellow-400'
             "
             @click="$emit('toggle-follow')"
           >
