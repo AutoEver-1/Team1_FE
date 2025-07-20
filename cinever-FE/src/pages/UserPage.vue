@@ -13,7 +13,7 @@ import {
   getUserReviewInfo,
 } from "../api/user";
 import { useRouter, useRoute } from "vue-router";
-import { getUserInfo } from "../api/user";
+import { followUser, unfollowUser, getUserInfo } from "../api/user";
 
 const detailTab = [
   { id: "profile", name: "프로필" },
@@ -96,6 +96,19 @@ const fetchUserInfo = async (id) => {
   isFollowing.value = res.data.isFollowing;
   console.log("fetchUserInfo", res);
 };
+
+const handleToggleFollow = async () => {
+  try {
+    if (isFollowing.value) {
+      await unfollowUser(userInfo.value.memberId);
+    } else {
+      await followUser(userInfo.value.memberId);
+    }
+    await fetchUserInfo(userInfo.value.memberId);
+  } catch (e) {
+    console.error("팔로우 처리 실패", e);
+  }
+};
 </script>
 
 <template>
@@ -107,8 +120,9 @@ const fetchUserInfo = async (id) => {
         :userInfo="userInfo"
         :reviewCount="reivewList.totalReviewCount"
         :isFollowing="isFollowing"
-        @toggle-follow="toggleFollow"
+        @toggle-follow="handleToggleFollow"
       />
+
       <div class="min-h-screen flex justify-center mt-12 max-w-4xl mx-auto">
         <div class="w-[90%] md:w-full space-y-6">
           <BaseTab

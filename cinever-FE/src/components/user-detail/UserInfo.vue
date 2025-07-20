@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import BaseProfileImage from "../../components/common/BaseProfileImage.vue";
 import BaseModal from "../../components/common/BaseModal.vue";
+import { useUserStore } from "../../stores/userStore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -10,24 +11,30 @@ const props = defineProps({
   reviewCount: Number,
   isFollowing: Boolean,
 });
-
 const emit = defineEmits(["toggle-follow"]);
 
-const imgSrc = ref(props.userInfo?.profilePath);
-
-const genderLabel = computed(() => {
-  if (!props.userInfo?.gender) return "-";
-  return props.userInfo.gender === "female" ? "여성" : "남성";
+const userStore = useUserStore();
+const isOwnProfile = computed(() => {
+  return props.userInfo?.memberId === userStore.user.memberId;
 });
+
+watch(
+  () => props.userInfo?.memberId,
+  () => {
+    isFollowersModalOpen.value = false;
+    isFollowingModalOpen.value = false;
+  }
+);
+
+const imgSrc = ref(props.userInfo?.profilePath);
+const isFollowingModalOpen = ref(false);
+const isFollowersModalOpen = ref(false);
 
 const birthLabel = computed(() => {
   if (!props.userInfo?.birth) return "-";
   const date = new Date(props.userInfo.birth);
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 });
-
-const isFollowingModalOpen = ref(false);
-const isFollowersModalOpen = ref(false);
 
 const openFollowingModal = () => {
   isFollowingModalOpen.value = true;
@@ -43,14 +50,6 @@ const goToUserPage = (userId) => {
     query: { tab: "profile" },
   });
 };
-
-watch(
-  () => props.userInfo?.memberId,
-  () => {
-    isFollowingModalOpen.value = false;
-    isFollowersModalOpen.value = false;
-  }
-);
 </script>
 
 <template>
@@ -84,18 +83,32 @@ watch(
 
           <!-- 데스크탑 팔로우 버튼 -->
           <button
-            class="hidden md:inline-block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
-            @click="emit('toggle-follow')"
+            v-if="!isOwnProfile"
+            class="hidden md:block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+            :class="
+              isFollowing
+                ? 'border border-gray-400 text-gray-400'
+                : 'border-yellow-400 text-yellow-400'
+            "
+            @click="$emit('toggle-follow')"
           >
             {{ isFollowing ? "팔로우 취소" : "+ 팔로우 하기" }}
           </button>
         </div>
 
         <!-- 모바일 팔로우 버튼 -->
-        <div class="mt-4 md:hidden w-full flex justify-center">
+        <div
+          v-if="!isOwnProfile"
+          class="mt-4 md:hidden w-full flex justify-center"
+        >
           <button
             class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10 w-1/2"
-            @click="emit('toggle-follow')"
+            :class="
+              isFollowing
+                ? 'border border-gray-400 text-gray-400'
+                : 'border-yellow-400 text-yellow-400'
+            "
+            @click="$emit('toggle-follow')"
           >
             {{ isFollowing ? "팔로우 취소" : "+ 팔로우 하기" }}
           </button>
