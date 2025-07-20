@@ -1,5 +1,9 @@
 <script setup>
 import BaseRating from "./BaseRating.vue";
+import BaseProfileImage from "./BaseProfileImage.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 defineProps({
   starColor: {
@@ -10,18 +14,25 @@ defineProps({
   avatar: String,
   content: String,
   nickname: String,
+  userId: Number,
 });
+
+const goToUserPage = (userId) => {
+  router.push({ name: "User", params: { id: userId } });
+};
 </script>
 
 <template>
   <div class="flex gap-4 bg-[#1e1c1a] p-4 rounded-xl text-white">
-    <img
-      class="w-12 h-12 rounded-full object-cover"
+    <BaseProfileImage
       :src="avatar"
-      alt="user avatar"
+      @click="goToUserPage(userId)"
+      class="cursor-pointer"
     />
     <div class="flex-1 space-y-2">
-      <p class="text-gray-400">{{ nickname }}</p>
+      <p class="text-gray-400 cursor-pointer" @click="goToUserPage(userId)">
+        {{ nickname }}
+      </p>
       <div class="bg-black rounded-lg p-4">
         <div class="flex items-center gap-2 mb-2">
           <div class="flex">

@@ -8,6 +8,7 @@ import { useUserStore } from "../../stores/userStore";
 import Profile from "../../assets/images/default_profile.png";
 import BaseProfileImage from "../../components/common/BaseProfileImage.vue";
 
+defineProps({ reviewCount: Number });
 // 라우터 및 사용자 스토어 준비
 const route = useRoute();
 const router = useRouter();
@@ -87,7 +88,7 @@ const birthLabel = computed(() => {
 </script>
 
 <template>
-  <div class="w-full max-w-4xl mx-auto px-6 pt-12 text-white">
+  <div class="w-[full] max-w-4xl mx-auto px-6 pt-12 text-white">
     <div class="flex flex-col md:flex-row items-center md:items-start gap-10">
       <BaseProfileImage :src="imgSrc" size="160px" />
       <div class="flex-1 w-full">
@@ -124,10 +125,12 @@ const birthLabel = computed(() => {
         </div>
 
         <div
-          class="grid grid-cols-4 gap-4 mt-10 text-center text-sm text-gray-400 mx-12"
+          class="grid grid-cols-4 gap-4 mt-10 text-center text-sm text-gray-400 md:mx-12"
         >
           <div>
-            <p class="text-xl font-bold text-white">0</p>
+            <p class="text-xl font-bold text-white">
+              {{ reviewCount ? reviewCount : "-" }}
+            </p>
             <p>Reviews</p>
           </div>
           <!-- Following -->
@@ -148,7 +151,7 @@ const birthLabel = computed(() => {
 
           <div>
             <p class="text-xl font-bold text-white">
-              {{ data.wishList?.length }}
+              {{ data.wishList?.length ? data.wishList?.length : "-" }}
             </p>
             <p>Wishlist</p>
           </div>
