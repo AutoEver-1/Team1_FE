@@ -49,10 +49,11 @@ const handleSubmit = async () => {
     console.log("서버 응답:", response);
     if (response.status >= 200 && response.status < 300) {
       const userData = await response.data;
+      console.log(userData);
       userStore.setUser(userData);
       alert(`로그인 완료: ${form.email}`);
 
-      router.push("/"); // 로그인 성공 후 홈으로 리다이렉트
+      router.push("/");
     } else {
       alert("로그인에 실패했습니다. 다시 확인해주세요.");
     }

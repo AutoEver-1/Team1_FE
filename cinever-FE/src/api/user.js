@@ -52,7 +52,7 @@ export const getUserDislikeInfo = async (id) => {
   }
 };
 
-export const getUserReviewsInfo = async (id) => {
+export const getUserReviewInfo = async (id) => {
   try {
     const response = await api.get(`${userApi}/${id}/reviews`);
     return response.data;

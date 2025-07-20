@@ -12,6 +12,7 @@ import AdminLayout from "../layouts/AdminLayout.vue";
 import AdminReviewerPage from "../pages/admin/AdminReviewerPage.vue";
 import AdminReviewPage from "../pages/admin/AdminReviewPage.vue";
 import AdminStatisticsPage from "../pages/admin/AdminStatisticsPage.vue";
+import FeedPage from "../pages/FeedPage.vue";
 
 const routes = [
   {
@@ -23,6 +24,8 @@ const routes = [
       { path: "/review", name: "Review", component: ReviewPage },
       { path: "/user/:id", name: "User", component: UserPage },
       { path: "/top100", name: "Top100", component: Top100Page },
+      { path: "/feed", name: "Feed", component: FeedPage },
+
       {
         path: "/movie/:id",
         name: "MovieDetail",
