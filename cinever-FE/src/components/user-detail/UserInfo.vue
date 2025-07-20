@@ -69,7 +69,7 @@ watch(
               </span>
             </h2>
             <p class="mt-1 text-sm font-semibold text-gray-500">
-              {{ data.gender }} · {{ birthLabel }}
+              {{ userInfo.gender }} · {{ birthLabel }}
             </p>
             <div class="flex flex-wrap gap-2 mt-3 justify-center">
               <span
