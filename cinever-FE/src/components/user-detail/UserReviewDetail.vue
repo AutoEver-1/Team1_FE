@@ -1,34 +1,86 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { getUserReviewInfo } from "../../api/user";
+import BaseRating from "../common/BaseRating.vue";
+import { useRouter } from "vue-router";
 
-const totalReviewCount = ref(0);
-const reviewList = ref([]);
+defineProps({ reivewList: Object });
 
-const userReviewInfo = async (id) => {
-  const res = await getUserReviewInfo(id);
-  const serverData = res.data;
-  totalReviewCount.value = serverData.totalReviewCount;
-  reviewList.value = serverData.reviewList;
-  console.log("유저 리뷰 개수:", totalReviewCount.value);
-  console.log("리뷰 목록:", reviewList.value);
+const router = useRouter();
+
+const goToMoviePage = (movieId) => {
+  router.push({ name: "MovieDetail", params: { id: movieId } });
 };
-
-onMounted(() => {
-  userReviewInfo(1);
-});
 </script>
 
 <template>
-  <div v-for="review in reviewList" class="mb-10">
-    <p>영화 id: {{ review.movieId }}</p>
-    <p>영화 제목: {{ review.title }}</p>
-    <p>영화 포스터 url: {{ review.posterPath }}</p>
-    <p>영화 개봉일: {{ review.releaseDate }}</p>
-    <p>평점: {{ review.rating }}</p>
-    <p>리뷰 작성일: {{ review.reviewDate }}</p>
-    <p>리뷰 내용: {{ review.context }}</p>
-    <p>좋아요: {{ review.likeCount }}</p>
-    <p>성인여부: {{ review.adult }}</p>
+  <div class="min-h-screen space-y-4 md:px-10">
+    <p class="text-white">
+      <span class="text-amber-500 text-xl font-semibold">
+        {{ reivewList.totalReviewCount }}
+      </span>
+      건의 리뷰
+    </p>
+    <div class="flex w-full flex-col gap-6">
+      <div
+        v-for="review in reivewList.reviewList"
+        :key="review.id"
+        class="cursor-pointer relative w-full overflow-hidden rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10 sm:p-6"
+        @click="goToMoviePage(review.movieId)"
+      >
+        <!-- 유저 + 별점 -->
+        <div
+          class="flex flex-col pb-2 sm:pb-4 border-b border-white/15 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex items-center gap-3"></div>
+          <div class="flex items-center text-amber-400">
+            <BaseRating :score="review.rating" size="20" />
+            <span class="ml-2 text-[20px] font-medium">
+              {{ review.rating ?? "-" }}
+            </span>
+            <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
+              {{ review.rating ? "\u00A0/ 5.0" : "" }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 영화 정보 -->
+        <div class="mt-4 flex gap-4">
+          <img
+            :src="review.posterPath"
+            alt="poster"
+            class="h-20 w-14 rounded object-cover shadow-sm sm:h-24 sm:w-16"
+          />
+          <div>
+            <p class="truncate text-sm font-medium text-white sm:text-base">
+              {{ review.title }}
+            </p>
+            <p
+              class="mt-4 pb-4 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
+            >
+              {{ review.context }}
+            </p>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button
+            class="flex items-center gap-1 text-xs text-white/60 transition hover:text-amber-400 sm:text-sm"
+            @click="toggleLike(review)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="h-4 w-4 sm:h-5 sm:w-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12 21C12 21 3 15 3 8.25C3 5.765 5.015 3.75 7.5 3.75C9.344 3.75 10.9 4.84 11.641 6.38C12.383 4.84 13.939 3.75 15.783 3.75C18.268 3.75 20.283 5.765 20.283 8.25C20.283 15 12.283 21 12.283 21L12 21Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            {{ review.likeCount }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

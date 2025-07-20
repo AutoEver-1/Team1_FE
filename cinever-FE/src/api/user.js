@@ -62,12 +62,10 @@ export const getUserReviewInfo = async (id) => {
   }
 };
 
-export const followUser = async (id) => {
-  try {
-    const response = await api.post(`${userApi}/${id}/follow`);
-    return response.data;
-  } catch (error) {
-    console.error("API 호출 실패:", error);
-    throw error;
-  }
+export const followUser = async (memberId) => {
+  return await api.post(`${userApi}/${memberId}/follow`);
+};
+
+export const unfollowUser = async (memberId) => {
+  return await api.delete(`${userApi}/${memberId}/follow`);
 };

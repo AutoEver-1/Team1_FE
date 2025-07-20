@@ -1,54 +1,93 @@
 <script setup>
+import { ref } from "vue";
+import RatingInput from "../common/BaseStarRating.vue";
 import BaseCard from "../common/BaseCard.vue";
+import { createReview } from "../../api/reviewApi";
+import { useUserStore } from "../../stores/userStore";
+import { EyeIcon, HeartIcon } from "@heroicons/vue/24/solid";
 
-defineProps({
+const props = defineProps({
   dataList: Object,
 });
 
+const userStore = useUserStore();
+const showRatingInput = ref(false);
+const tempRating = ref(0);
+
 const handelReviewed = () => {
-  console.log("handelReviewed");
-  // [TODO] BaseStarRating 연결 -> 별점 등록 -> isReviewed 업데이트
+  showRatingInput.value = true;
 };
 
-const handelWishlisted = () => {
-  console.log("handelWishlisted");
+const submitReview = async () => {
+  try {
+    const payload = {
+      memberId: userStore.user.memberId,
+      movieId: props.dataList.movieId,
+      context: "",
+      rating: tempRating.value,
+    };
+
+    await createReview(props.dataList.movieId, payload);
+    props.dataList.isReviewed = true;
+    props.dataList.reviewCount++;
+    showRatingInput.value = false;
+    tempRating.value = 0;
+    alert("리뷰가 등록되었습니다.");
+    window.location.reload();
+  } catch (error) {
+    console.error("리뷰 등록 실패", error);
+  }
 };
 </script>
+
 <template>
   <img :src="dataList.posterPath" class="rounded-lg shadow-lg" />
   <div class="flex flex-col gap-2">
     <BaseCard
       backgroundColor="neutral-800"
-      :title="dataList.reviewCount.toLocaleString() + '명'"
+      :title="
+        showRatingInput ? '점' : dataList.reviewCount.toLocaleString() + '명'
+      "
       titleClass="text-sm text-white"
-      divClass="flex items-center justify-between"
+      :divClass="
+        showRatingInput
+          ? 'flex items-center justify-end'
+          : 'flex items-center justify-between'
+      "
     >
       <template #icon>
         <button
           @click="handelReviewed"
-          class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/10 transition cursor-pointer"
-          type="button"
+          :disabled="props.dataList.isReviewed"
+          class="w-8 h-8 flex items-center justify-center rounded-md transition cursor-pointer hover:bg-white/10"
+          :class="
+            props.dataList.isReviewed ? 'pointer-events-none opacity-50' : ''
+          "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            :stroke="dataList.isReviewed ? '#FDC500' : 'gray'"
-            stroke-width="1.5"
-            class="w-5 h-5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
+          <EyeIcon
+            v-if="!showRatingInput"
+            :class="[
+              'w-5 h-5',
+              props.dataList.isReviewed ? 'text-yellow-400' : 'text-gray-400',
+            ]"
+          />
         </button>
+
+        <div v-if="showRatingInput">
+          <RatingInput v-model="tempRating" @update:modelValue="submitReview" />
+        </div>
+
+        <div v-if="showRating" class="mt-2">
+          <BaseStarRating
+            :score="rating"
+            @click="
+              (e) => {
+                rating = e;
+                submitReview(e);
+              }
+            "
+          />
+        </div>
       </template>
     </BaseCard>
 
@@ -64,18 +103,12 @@ const handelWishlisted = () => {
           class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/10 transition cursor-pointer"
           type="button"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            :fill="dataList.isWishlisted ? '#FDC500' : 'gray'"
-            class="w-5 h-5"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M12.001 4.529c2.349-2.332 6.142-2.295 8.444.074 2.27 2.337 2.324 6.123.158 8.516l-7.657 8.098a1.125 1.125 0 01-1.59 0l-7.658-8.098C1.234 10.726 1.29 6.94 3.56 4.603c2.302-2.37 6.095-2.406 8.441-.074z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <HeartIcon
+            :class="[
+              'w-5 h-5',
+              dataList.isWishlisted ? 'text-yellow-400' : 'text-gray-400',
+            ]"
+          />
         </button>
       </template>
     </BaseCard>

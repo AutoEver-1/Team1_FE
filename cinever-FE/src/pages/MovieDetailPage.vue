@@ -10,10 +10,12 @@ import BaseTab from "../components/common/BaseTab.vue";
 import MovieReviewTab from "../components/movie-detail/MovieReviewTab.vue";
 import MovieDetailTab from "../components/movie-detail/MovieDetailTab.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
+import { watch } from "vue";
+import { useRouter } from "vue-router";
 
 const detailTab = [
-  { id: 1, name: "영화 상세" },
-  { id: 2, name: "영화 리뷰" },
+  { id: "detail", name: "영화 상세" },
+  { id: "review", name: "영화 리뷰" },
 ];
 
 const route = useRoute();
@@ -21,11 +23,26 @@ const movieData = ref();
 const reviewData = ref();
 const movieId = route.params.id;
 const youtubeId = ref();
-const selectedTab = ref(detailTab[0].id);
+const selectedTab = ref("detail");
+const router = useRouter();
+
+onMounted(() => {
+  const tabParam = route.query.tab;
+  console.log(tabParam);
+  if (tabParam === "review" || tabParam === "detail") {
+    selectedTab.value = tabParam;
+  }
+  getMovieById();
+  getReviewById();
+});
 
 onMounted(() => {
   getMovieById();
   getReviewById();
+});
+
+watch(selectedTab, (newTab) => {
+  router.replace({ query: { ...route.query, tab: newTab } });
 });
 
 const getReviewById = async () => {
@@ -36,6 +53,8 @@ const getReviewById = async () => {
 const getMovieById = async () => {
   const res = await getMovieDetail(movieId);
   movieData.value = res.data;
+
+  console.log("getMovieById", movieData.value);
 
   const videoPath = movieData.value.video_path;
   youtubeId.value = new URL(videoPath).searchParams.get("v");
@@ -71,11 +90,11 @@ const getMovieById = async () => {
                   v-model:selectedId="selectedTab"
                   :tabList="detailTab"
                 />
-                <div v-if="selectedTab == 1">
+                <div v-if="selectedTab === 'detail'">
                   <MovieDetailTab :dataList="movieData" />
                 </div>
-                <div v-if="selectedTab == 2">
-                  <MovieReviewTab :dataList="reviewData" />
+                <div v-else-if="selectedTab === 'review'">
+                  <MovieReviewTab :dataList="reviewData" :movieId="movieId" />
                 </div>
               </div>
             </div>

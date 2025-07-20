@@ -7,18 +7,21 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  cardWidth: {
+    type: Number,
+    default: 160,
+  },
 });
 
 const currentPage = ref(0);
 const visibleCount = ref(7);
-const cardWidth = 160;
 const gap = 16;
 
 const totalPages = computed(() =>
   Math.ceil(props.dataList.length / visibleCount.value)
 );
 
-const slideWidth = computed(() => visibleCount.value * (cardWidth + gap));
+const slideWidth = computed(() => visibleCount.value * (props.cardWidth + gap));
 
 const translateX = computed(() => `-${currentPage.value * slideWidth.value}px`);
 
@@ -49,7 +52,7 @@ const handlePrev = () => {
         <div
           v-for="item in dataList"
           :key="item.movieId"
-          class="shrink-0 w-[115px] md:w-[160px]"
+          class="shrink-0 w-[115px]"
         >
           <BasePoster v-bind="item" :genre="item.genre" />
         </div>
@@ -67,9 +70,14 @@ const handlePrev = () => {
         <div
           v-for="item in dataList"
           :key="item.movieId"
-          class="relative shrink-0 w-[160px] overflow-visible"
+          class="relative shrink-0 overflow-visible"
+          :class="'w-[' + cardWidth + 'px]'"
         >
-          <BasePoster v-bind="item" :genre="item.genre" />
+          <BasePoster
+            v-bind="item"
+            :genre="item.genre"
+            :cardWidth="cardWidth"
+          />
         </div>
       </div>
     </div>

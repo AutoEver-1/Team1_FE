@@ -157,11 +157,7 @@ const handleMovieClick = (movie) => {
               </div>
 
               <img
-                :src="
-                  movie.movieId % 2 === 0
-                    ? 'https://image.tmdb.org/t/p/original//9E0C4FVsGfQzeuQA7wMxYKwhxVv.jpg'
-                    : 'https://image.tmdb.org/t/p/original//d2J5coWE1pRE0UQSPSxCWfMi60L.jpg'
-                "
+                :src="movie.posterPath"
                 alt=""
                 class="w-64 sm:w-72 md:w-80 h-40 sm:h-44 object-cover rounded-md shadow-md max-w-none"
               />
