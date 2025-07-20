@@ -6,6 +6,17 @@ import BaseAuthInput from "../common/BaseAuthInput.vue";
 import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Profile from "../../assets/images/default_profile.png";
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { storage } from "../../api/firebase";
+import { useUserStore } from "../../stores/userStore";
+
+const userStore = useUserStore();
+
+const user = userStore.user;
 
 // 부모로부터 모달 열림 상태를 받음
 const props = defineProps({
@@ -40,22 +51,77 @@ watch(localIsOpen, (newVal) => {
   emit("update:isUserModalOpen", newVal);
 });
 
+const file = ref(null);
+
 // 프로필 사진 변경
 const onProfileImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    form.value.profileImageFile = file;
+  file.value = e.target.files[0];
+  if (file.value) {
+    form.value.profileImageFile = file.value;
     const reader = new FileReader();
     reader.onload = (event) => {
       imgSrc.value = event.target.result;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 
-const saveProfile = () => {
-  console.log("프로필 저장", form.value);
-  localIsOpen.value = false; // 모달 닫기
+// const saveProfile = async () => {
+//   if (!file.value) {
+//     alert("파일을 선택하세요.");
+//     return;
+//   }
+
+//     try {
+//     // ✅ 모듈 방식으로 ref 경로 생성
+//     const fileRef = storageRef(storage, `profile/${file.value.name}`);
+
+//     await uploadBytes(fileRef, file.value); // 업로드
+//     const url = await getDownloadURL(fileRef); // URL 받아오기
+
+//     console.log("업로드 완료 URL:", url);
+//     console.log("프로필 저장:", form.value);
+
+//     localIsOpen.value = false; // 모달 닫기
+//   } catch (err) {
+//     alert("업로드 실패: " + err.message);
+//   }
+// };
+
+const saveProfile = async () => {
+  try {
+    if (file.value) {
+      const storageRef = storage.ref();
+      const fileRef = storageRef.child(`profile/${user.memberId}`);
+
+      await fileRef.put(file.value);
+      const url = await fileRef.getDownloadURL();
+      console.log(url);
+    }
+    // window.location.reload();
+  } catch (err) {
+    console.log("업로드 실패: " + err);
+  }
+};
+
+const uploadImage = async () => {
+  if (!file.value) {
+    alert("파일을 선택하세요.");
+    return;
+  }
+
+  try {
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(file.value.name);
+
+    await fileRef.put(file.value); // ✅ await로 업로드 완료까지 대기
+    const url = await fileRef.getDownloadURL(); // ✅ await로 URL 받아오기
+
+    imageUrl.value = url;
+    console.log(imageUrl.value);
+  } catch (err) {
+    alert("업로드 실패: " + err.message);
+  }
 };
 </script>
 
