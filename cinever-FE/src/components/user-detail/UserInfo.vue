@@ -7,6 +7,8 @@ import BaseModal from "../../components/common/BaseModal.vue";
 import { useUserStore } from "../../stores/userStore";
 import Profile from "../../assets/images/default_profile.png";
 import BaseProfileImage from "../../components/common/BaseProfileImage.vue";
+import UserEdit from "./UserEdit.vue";
+import { followUser } from "../../api/user";
 
 // 라우터 및 사용자 스토어 준비
 const route = useRoute();
@@ -43,6 +45,12 @@ async function fetchUserInfo(id) {
   imgSrc.value = data.value.profilePath;
   console.log(data);
 }
+
+const isUserModalOpen = ref(false);
+
+const openUserModal = () => {
+  isUserModalOpen.value = true;
+};
 
 // URL 파라미터(id) 변경 감지 → 데이터 다시 로드
 watch(
@@ -86,6 +94,19 @@ const birthLabel = computed(() => {
   const date = new Date(data.value.birth);
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 });
+
+const followUserClick = async (id) => {
+  console.log(`${id} 팔로우 시도`);
+  try {
+    await followUser(id);
+    console.log(`${id} 팔로우 성공`);
+    // 팔로우 후 새로고침 or 상태 갱신
+    fetchUserInfo(id);
+  } catch (e) {
+    console.error("팔로우 실패:", e);
+  }
+};
+
 </script>
 
 <template>
@@ -104,7 +125,7 @@ const birthLabel = computed(() => {
               </span>
             </h2>
             <p class="mt-1 text-sm font-semibold text-gray-500">
-              {{ genderLabel }} · {{ birthLabel }}
+              {{ data.gender }} · {{ birthLabel }}
             </p>
             <div class="flex flex-wrap gap-2 mt-3 justify-center">
               <span
@@ -120,8 +141,16 @@ const birthLabel = computed(() => {
           <button
             v-if="!isOwnProfile"
             class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+            @click="followUserClick(profileUserId)"
           >
             + 팔로우 하기
+          </button>
+          <button
+            v-else
+            class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+            @click="openUserModal"
+          >
+            프로필 수정
           </button>
         </div>
 
@@ -158,6 +187,11 @@ const birthLabel = computed(() => {
       </div>
     </div>
   </div>
+  
+  <!-- <프로필 수정 모달 -->
+
+  <UserEdit v-model:isUserModalOpen="isUserModalOpen" />
+
   <!-- 팔로잉 목록 모달 -->
   <BaseModal
     v-model:isOpen="isFollowingModalOpen"

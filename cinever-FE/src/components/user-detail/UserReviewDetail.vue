@@ -1,12 +1,12 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { getUserReviewsInfo } from "../../api/user";
+import { getUserReviewInfo } from "../../api/user";
 
 const totalReviewCount = ref(0);
 const reviewList = ref([]);
 
-const userReviewsInfo = async (id) => {
-  const res = await getUserReviewsInfo(id);
+const userReviewInfo = async (id) => {
+  const res = await getUserReviewInfo(id);
   const serverData = res.data;
   totalReviewCount.value = serverData.totalReviewCount;
   reviewList.value = serverData.reviewList;
@@ -15,7 +15,7 @@ const userReviewsInfo = async (id) => {
 };
 
 onMounted(() => {
-  userReviewsInfo(1);
+  userReviewInfo(1);
 });
 </script>
 
