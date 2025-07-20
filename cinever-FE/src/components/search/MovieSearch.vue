@@ -21,6 +21,7 @@ const router = useRouter(); // 페이지 이동
 
 // ======= 상태 변수 =======
 const isOpen = ref(false); // 검색창 열림 여부
+const isResultOpen = ref(false); // 추천 검색어 UI 열림 여부
 const inputRef = ref(null); // 검색 input 요소 참조
 const results = ref([]); // 자동완성 결과 리스트
 const topRatedMovieList = ref([]); // TMDB 같은 인기 영화 목록
@@ -35,8 +36,11 @@ const getTopRatedMovieList = async () => {
 
     // 초기 상태에 전체 영화 데이터를 results에 넣음
     results.value = topRatedMovieList.value.map((movie) => movie.title);
+
+    isResultOpen.value = results.value.length > 0; // 추천 목록 열기
   } catch (error) {
     console.error("인기 영화 불러오기 실패:", error);
+    isResultOpen.value = false;
   }
 };
 
@@ -102,6 +106,8 @@ const handleEnter = (event) => {
       query: { keyword: props.modelValue.trim() },
     });
   }
+
+  isResultOpen.value = false;
 };
 
 // ======= 생명주기 & watch =======
@@ -176,7 +182,7 @@ watch(isOpen, (newVal) => {
 
     <!-- 연관검색어 목록 -->
     <ul
-      v-if="isOpen && results.length > 0"
+      v-if="isOpen && results.length > 0 && isResultOpen"
       class="absolute top-full left-0 w-full mt-1.5 bg-black/80 border border-white/20 rounded-lg shadow-lg z-50"
     >
       <li
