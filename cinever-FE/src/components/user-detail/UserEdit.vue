@@ -17,8 +17,8 @@ const emit = defineEmits(["update:isUserModalOpen"]);
 
 const form = ref({
   nickname: "",
-  gender: "",
-  birth: "",
+  // gender: "",
+  // birth: "",
   profileImageFile: null,
 });
 
@@ -93,7 +93,7 @@ const saveProfile = () => {
           v-model="form.nickname"
         />
 
-        <div class="flex flex-col gap-1">
+        <!-- <div class="flex flex-col gap-1">
           <label class="text-xs text-white/90">성별</label>
           <div class="flex gap-2">
             <button
@@ -111,9 +111,9 @@ const saveProfile = () => {
               {{ option }}
             </button>
           </div>
-        </div>
+        </div> -->
 
-        <div class="flex flex-col gap-1">
+        <!-- <div class="flex flex-col gap-1">
           <label class="text-xs text-white/90">생일</label>
           <div class="datepicker-wrapper">
             <Datepicker
@@ -128,7 +128,7 @@ const saveProfile = () => {
               :week-start="0"
             />
           </div>
-        </div>
+        </div> -->
       </div>
     </template>
 
