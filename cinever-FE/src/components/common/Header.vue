@@ -100,25 +100,7 @@ const navigateToFeed = () => {
             color="white"
             :onClick="navigateToFeed"
           />
-          <!-- 마이 페이지 -->
-          <!-- <BaseSlideButton
-            :label="userStore.user.nickName"
-            :icon="
-              userStore.user.profilePath === '1'
-                ? UserIcon
-                : userStore.user.profilePath
-            "
-            color="white"
-            :onClick="navigateToProfile"
-          /> -->
           <UserDropdown class="hidden md:block" />
-          <!-- 로그아웃 -->
-          <!-- <BaseSlideButton
-            :label="'로그아웃'"
-            :icon="ArrowRightStartOnRectangleIcon"
-            color="red"
-            :onClick="logout"
-          /> -->
         </template>
 
         <template v-else>

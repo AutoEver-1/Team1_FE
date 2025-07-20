@@ -5,14 +5,20 @@ import { getUserInfo } from "../../api/user";
 import BaseBadge from "../../components/common/BaseBadge.vue";
 import BaseModal from "../../components/common/BaseModal.vue";
 import { useUserStore } from "../../stores/userStore";
+import { PencilIcon, UserIcon } from "@heroicons/vue/24/solid";
 
 // 라우터 및 사용자 스토어 준비
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
+// 유저 프로필 사진
+const fileInput = ref(null);
+
 // 현재 로그인된 사용자 ID
-const currentUserId = computed(() => userStore.user.memberId);
+const currentUserId = computed(() =>
+  userStore.isLoggedIn ? userStore.user.memberId : null
+);
 
 // 프로필 페이지 대상 사용자 ID
 const profileUserId = computed(() => Number(route.params.id));
@@ -60,6 +66,18 @@ const openFollowersModal = () => {
 const goToUserPage = (userId) => {
   router.push({ name: "User", params: { id: userId } });
 };
+
+const onIconClick = () => {
+  fileInput.value?.click();
+};
+
+const onFileChange = (event) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    console.log("선택된 파일:", file);
+    // TODO: 업로드 처리 로직 (서버 전송, 미리보기 등)
+  }
+};
 </script>
 
 <template>
@@ -68,12 +86,37 @@ const goToUserPage = (userId) => {
     class="max-w-4xl mx-auto bg-white/20 backdrop-blur-lg rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6"
   >
     <!-- 프로필 사진 -->
-    <div class="flex-shrink-0">
+    <div class="relative flex-shrink-0">
       <img
-        v-if="data.profilePath"
+        v-if="data.profilePath === '1'"
         :src="data.profilePath"
         alt="profile_img"
         class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white/50 shadow-lg"
+      />
+      <UserIcon
+        v-else
+        class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/50 shadow-lg text-gray-300 bg-white/10 p-4"
+      />
+
+      <!-- 연필 아이콘 버튼 -->
+      <button
+        v-if="isOwnProfile"
+        @click="onIconClick"
+        class="absolute bottom-2 right-2 bg-white/95 rounded-full p-1 shadow-md hover:bg-gray-300 transition"
+        type="button"
+        aria-label="프로필 사진 변경"
+      >
+        <PencilIcon class="w-6 h-6 p-1 text-gray-500" />
+      </button>
+
+      <!-- 숨겨진 파일 입력 -->
+      <input
+        v-if="isOwnProfile"
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="onFileChange"
       />
     </div>
 

@@ -1,7 +1,7 @@
 <template>
   <div
     @click="$emit('click', movie)"
-    class="flex items-center gap-5 px-3 py-2 rounded-lg cursor-pointer border border-transparent bg-white/10 backdrop-blur-lg hover:bg-white/20 transition-all duration-300 overflow-hidden"
+    class="flex items-center gap-5 px-3 py-2 rounded-lg cursor-pointer bg-white/5 backdrop-blur-lg hover:bg-white/15 border border-white/10 shadow-lg transition-all duration-300 overflow-hidden"
   >
     <img
       :src="movie.posterPath || fallbackImg"

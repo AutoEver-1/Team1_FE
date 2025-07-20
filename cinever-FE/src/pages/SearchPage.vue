@@ -8,9 +8,10 @@ import DirectorActorCard from "../components/search/DirectorActorCard.vue";
 import SkeletonUserCard from "../components/search/SkeletonUserCard.vue";
 import ReviewerCard from "../components/search/ReviewerCard.vue";
 import { useRoute, useRouter } from "vue-router";
+import { getReviewerAll } from "../api/reviewerApi";
 
 // 탭 메뉴
-const tabs = ["영화", "감독", "배우", "리뷰어"];
+const tabs = ["영화", "리뷰어", "감독", "배우"];
 const selectedTab = ref("영화");
 
 const route = useRoute();
@@ -18,6 +19,8 @@ const router = useRouter();
 const keyword = computed(() => route.query.keyword || "");
 
 const isLoading = ref(true);
+
+const searchedReviewers = ref();
 const topRatedMovieList = ref();
 
 // 검색된 키워드 변화 감지
@@ -43,9 +46,25 @@ const goToMovieDetail = (movieId) => {
   router.push(`movie/${movieId}`);
 };
 
+const goToReviewerDetail = (reviewerId) => {
+  router.push(`user/${reviewerId}`);
+};
+
 onMounted(() => {
   getTopRatedMovieList();
+  getSearchedReviewers();
 });
+
+const getSearchedReviewers = async () => {
+  isLoading.value = true;
+  try {
+    const res = await getReviewerAll(0);
+    searchedReviewers.value = res.data.reviewerList.content;
+    console.log(res.data.reviewerList.content);
+  } catch (error) {
+    console.error("불러오기 실패:", error);
+  }
+};
 
 const getTopRatedMovieList = async () => {
   isLoading.value = true;
@@ -116,19 +135,22 @@ const getTopRatedMovieList = async () => {
 
       <!-- 리뷰어 검색 결과 -->
       <template v-else-if="selectedTab === '리뷰어'">
-        <div class="grid grid-cols-6 gap-4 gap-y-10 mt-6">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-8 mt-6"
+        >
           <template v-if="isLoading">
             <SkeletonUserCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
             <ReviewerCard
-              v-for="movie in topRatedMovieList"
-              :key="movie.movieId"
-              :movie="movie"
-              @click="selectedItem = movie"
+              v-for="reviewer in searchedReviewers"
+              :key="reviewer.memberId"
+              :reviewer="reviewer"
+              @click="goToReviewerDetail(reviewer.memberId)"
             />
-          </template></div
-      ></template>
+          </template>
+        </div>
+      </template>
 
       <!-- 감독,배우 검색 결과 -->
       <template v-else>
