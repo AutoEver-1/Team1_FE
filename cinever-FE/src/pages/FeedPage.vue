@@ -228,6 +228,8 @@ const grouped = computed(() => {
     if (!map.has(r.date)) map.set(r.date, []);
     map.get(r.date).push(r);
   });
+
+  console.log([...map.entries()].sort((a, b) => b[0].localeCompare(a[0])));
   // 그룹도 최신순
   return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
 });
@@ -320,31 +322,31 @@ onBeforeUnmount(() => {
   <BaseBackground>
     <!-- ① 고정(스택) 날짜 표시 -->
     <div
-      class="fixed left-2 sm:left-[15%] top-32 z-30 flex flex-col items-end pointer-events-none"
+      class="hidden md:flex fixed left-[20%] top-32 z-30 flex-col items-end pointer-events-none"
     >
       <p class="text-base font-bold">{{ currentYear }}</p>
-      <p class="mt-2 text-sm font-semibold">{{ currentMonth }}</p>
-      <p class="mt-1 text-sm font-semibold">{{ currentDay }}</p>
+      <p class="mt-2 text-3xl font-semibold text-amber-500">
+        {{ currentMonth }}
+      </p>
+      <p class="mt-1 text-3xl font-semibold text-amber-500">{{ currentDay }}</p>
     </div>
 
     <!-- ② 리뷰 목록 -->
-    <div class="mx-auto max-w-4xl py-32 w-full sm:w-[75%]">
-      <div class="flex flex-col gap-8 sm:gap-10 lg:gap-14">
+    <div class="md:mx-auto max-w-4xl pt-20 pb-32 md:py-32 w-full md:w-full">
+      <div class="flex flex-col gap-8 sm:gap-10 lg:gap-14 w-full">
         <!-- 그룹 루프 -->
         <div
           v-for="(group, i) in grouped"
           :key="group[0]"
           :data-date="group[0]"
           :ref="(el) => setGroupRef(el, i)"
-          class="relative flex gap-4 sm:gap-6"
+          class="relative flex sm:gap-6 justify-center"
         >
           <!-- 타임라인 자리 확보(폭 10%) -->
-          <div class="w-[10%] shrink-0"></div>
+          <div class="md:w-[10%] shrink-0"></div>
 
           <!-- ── 리뷰 카드 컬럼 ── -->
-          <div
-            class="flex w-[80%] sm:w-[75%] flex-col gap-8 sm:gap-10 lg:gap-14"
-          >
+          <div class="flex w-[90%] flex-col gap-8 sm:gap-10 lg:gap-14">
             <div
               v-for="review in group[1]"
               :key="review.id"
@@ -376,6 +378,7 @@ onBeforeUnmount(() => {
                     </p>
                   </div>
                 </div>
+
                 <div class="flex items-center text-amber-400">
                   <BaseRating :score="review.myScore" size="20" />
                   <span class="ml-2 text-[20px] font-medium">
@@ -423,8 +426,11 @@ onBeforeUnmount(() => {
               </div>
 
               <!-- 리뷰 내용 -->
+              <p class="text-xs text-white/60 md:hidden mt-4">
+                {{ group[0] }}
+              </p>
               <p
-                class="mt-4 pb-4 border-b border-white/15 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
+                class="mt-1 pb-4 border-b border-white/15 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
               >
                 {{ review.content }}
               </p>

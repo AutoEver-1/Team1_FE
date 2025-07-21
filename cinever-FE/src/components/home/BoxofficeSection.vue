@@ -38,14 +38,17 @@ const handleMovieClick = (movie) => {
 
 <template>
   <div
+    v-if="selectedMovie"
     class="relative w-full md:min-h-[100vh] md:bg-black text-white overflow-hidden md:top-12"
   >
     <div class="absolute top-0 left-0 w-full h-[95%] z-0 hidden md:block">
       <BaseYoutubeVideo
-        :videoId="youtubeId"
+        :videoId="selectedMovie.teaserVideo"
         class="w-full h-full object-cover"
         :thumbnailUrl="
-          'https://img.youtube.com/vi/' + youtubeId + '/maxresdefault.jpg'
+          'https://img.youtube.com/vi/' +
+          selectedMovie.teaserVideo +
+          '/maxresdefault.jpg'
         "
       />
       <div
@@ -71,10 +74,7 @@ const handleMovieClick = (movie) => {
     <div
       class="relative z-20 flex flex-col items-center gap-12 px-4 pt-24 pb-4 md:py-24 lg:py-36"
     >
-      <div
-        v-if="selectedMovie"
-        class="w-full max-w-6xl text-white space-y-3 hidden md:block"
-      >
+      <div class="w-full max-w-6xl text-white space-y-3 hidden md:block">
         <div class="relative w-12 h-6 sm:w-14 sm:h-8">
           <div
             class="absolute top-0 left-0 w-full h-full bg-red-600 text-white text-xs sm:text-sm font-bold flex justify-center items-center rounded-t-md"
@@ -136,6 +136,7 @@ const handleMovieClick = (movie) => {
             depth: 100,
             modifier: 1.5,
             slideShadows: false,
+            slidesPerView: 5,
           }"
           :breakpoints="{
             1280: { slidesPerView: 5 },
@@ -146,7 +147,7 @@ const handleMovieClick = (movie) => {
           }"
         >
           <SwiperSlide
-            v-for="movie in boxOfficeMovieList"
+            v-for="movie in [...boxOfficeMovieList, ...boxOfficeMovieList]"
             :key="movie.movieId"
             class="flex justify-center items-center"
             @click="handleMovieClick(movie)"
@@ -157,7 +158,7 @@ const handleMovieClick = (movie) => {
               </div>
 
               <img
-                :src="movie.posterPath"
+                :src="'https://image.tmdb.org/t/p/original' + movie.posterPath"
                 alt=""
                 class="w-64 sm:w-72 md:w-80 h-40 sm:h-44 object-cover rounded-md shadow-md max-w-none"
               />

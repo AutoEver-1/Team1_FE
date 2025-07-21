@@ -22,9 +22,7 @@ const props = defineProps({
 
 <template>
   <div class="md:px-10 space-y-10">
-    <!-- 📌 위시 ~ 최악의 영화 : 2열 그리드 -->
     <div class="grid grid-cols-1 gap-6">
-      <!-- 각각의 BaseCard 컴포넌트 -->
       <BaseCard
         title="위시리스트 영화"
         v-if="wishlistList.movieList?.length != 0"
@@ -33,7 +31,7 @@ const props = defineProps({
           <HeartIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="wishlistList.movieList" />
+          <MovieCardList :list="wishlistList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -42,7 +40,7 @@ const props = defineProps({
           <ClockIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="recentList.movieList" />
+          <MovieCardList :list="recentList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -60,7 +58,7 @@ const props = defineProps({
           <TrophyIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="favoriteList.movieList" />
+          <MovieCardList :list="favoriteList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -69,7 +67,7 @@ const props = defineProps({
           <TrashIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="dislikeList.movieList" />
+          <MovieCardList :list="dislikeList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
     </div>
