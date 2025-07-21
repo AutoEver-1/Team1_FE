@@ -1,11 +1,9 @@
-// src/composables/useReviewerRole.ts
-
 export const roleClassMap = {
-  USER: "bg-gradient-to-br from-yellow-300/20 via-yellow-100/10 to-yellow-300/0 border-yellow-400/20 hover:border-yellow-300 hover:shadow-[0_0_10px_rgba(255,215,0,0.3)]",
+  USER: "bg-gradient-to-br from-yellow-300/30 via-yellow-700/20 to-black/50 border-yellow-400/20 hover:border-yellow-300 hover:shadow-[0_0_10px_rgba(255,215,0,0.3)]",
   CRITIC:
-    "bg-gradient-to-br from-cyan-300/60 via-cyan-500/20 to-cyan-400/0 border-cyan-400/20 shadow-[0_0_5px_rgba(0,255,255,0.3)] hover:border-cyan-300 hover:shadow-[0_0_10px_rgba(0,255,255,0.3)]",
+    "bg-gradient-to-br from-cyan-300/80 via-cyan-900/80 to-black/50 border-cyan-400/20 hover:border-cyan-300 hover:shadow-[0_0_10px_rgba(0,255,255)]",
   INFLUENCER:
-    "bg-gradient-to-br from-red-700/90 via-red-500/20 to-red-500/0 border-red-400/20 shadow-[0_0_10px_rgba(255,0,0,0.3)] hover:border-red-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.3)]",
+    "bg-gradient-to-br from-red-700/90 via-red/80 to-black/90 border-red-400/20 shadow-[0_0_10px_rgba(255,0,0)] hover:border-red-300 hover:shadow-[0_0_15px_rgba(255,0,0)]",
 };
 
 export const badgeClassMap = {

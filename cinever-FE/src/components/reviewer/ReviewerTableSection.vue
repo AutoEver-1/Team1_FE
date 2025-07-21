@@ -14,25 +14,23 @@ import { getPaginatedList, getTotalPages } from "../../services/paging";
 import DefaultProfile from "../../assets/images/default_profile.png";
 
 const dataList = ref([]);
+const totalPages = ref(1);
 const currentPage = ref(1);
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(10); // 단순 순번 계산용
 const imgSrcMap = ref({});
 const router = useRouter();
-const totalPages = getTotalPages(dataList, itemsPerPage);
+
+// const totalPages = getTotalPages(dataList, itemsPerPage);
 const paginatedList = getPaginatedList(dataList, currentPage, itemsPerPage);
 
 const reviewerAll = async (page = 1) => {
   const res = await getReviewerAll(page);
   dataList.value = res.data.reviewerList.content;
-  console.log(dataList);
-  dataList.value.forEach((reviewer) => {
-    imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
-  });
+  totalPages.value = res.data.reviewerList.totalPages - 1;
   currentPage.value = page;
 };
 
 const handlePageChange = (page) => {
-  currentPage.value = page;
   reviewerAll(page);
 };
 
@@ -41,7 +39,7 @@ const goToUserDetail = (memberId) => {
 };
 
 onMounted(() => {
-  reviewerAll();
+  reviewerAll(1);
 });
 
 const onError = (id) => {
@@ -64,7 +62,7 @@ const onError = (id) => {
       </thead>
       <tbody>
         <tr
-          v-for="(data, i) in paginatedList"
+          v-for="(data, i) in dataList"
           :key="data.memberId"
           class="backdrop-blur-2xl backdrop-saturate-150 shadow-sm hover:shadow-md brightness-90 hover:brightness-100"
           :class="getReviewerRoleMeta(data.role).roleClass"
