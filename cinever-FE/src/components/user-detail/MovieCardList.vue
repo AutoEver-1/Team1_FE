@@ -3,7 +3,7 @@
     <div
       v-for="movie in list"
       :key="movie.movieId"
-      class="min-w-[140px] bg-zinc-900 rounded-lg overflow-hidden shadow group relative"
+      class="max-w-[140px] bg-zinc-900 rounded-lg overflow-hidden shadow group relative"
     >
       <img
         :src="movie.posterPath"
