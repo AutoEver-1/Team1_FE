@@ -51,6 +51,7 @@ const routes = [
     path: "/admin",
     component: AdminLayout,
     children: [
+      { path: "", component: AdminReviewerPage },
       { path: "reviewer", component: AdminReviewerPage },
       { path: "review", component: AdminReviewPage },
       { path: "statistics", component: AdminStatisticsPage },

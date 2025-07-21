@@ -53,7 +53,11 @@ const handleSubmit = async () => {
       userStore.setUser(userData);
       alert(`로그인 완료: ${form.email}`);
 
-      router.push("/");
+      if (userData.roleName === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } else {
       alert("로그인에 실패했습니다. 다시 확인해주세요.");
     }
