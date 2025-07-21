@@ -141,7 +141,7 @@ const handleToggleFollow = async () => {
             />
           </div>
           <div v-else-if="selectedTab === 'review'">
-            <UserReviewDetail :reivewList="reivewList.slice().reverse()" />
+            <UserReviewDetail :reivewList="reivewList" />
           </div>
           <div v-else-if="selectedTab === 'movie'">
             <UserMovieDetail :dataList="recentList" movieType="영화" />

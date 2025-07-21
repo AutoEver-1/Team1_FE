@@ -21,7 +21,7 @@ const goToMoviePage = (movieId) => {
     </p>
     <div class="flex w-full flex-col gap-6">
       <div
-        v-for="review in reivewList.reviewList"
+        v-for="review in reivewList.reviewList.slice().reverse()"
         :key="review.id"
         class="cursor-pointer relative w-full overflow-hidden rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10 sm:p-6"
         @click="goToMoviePage(review.movieId)"
