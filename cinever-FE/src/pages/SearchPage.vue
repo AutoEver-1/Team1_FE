@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
-import { getTopRated } from "../api/movieApi";
+import { getMoviesBySearch, getTopRated } from "../api/movieApi";
 import SkeletonCard from "../components/search/SkeletonCard.vue";
 import MovieCard from "../components/search/MovieCard.vue";
 import DirectorActorCard from "../components/search/DirectorActorCard.vue";
@@ -9,41 +9,129 @@ import SkeletonUserCard from "../components/search/SkeletonUserCard.vue";
 import ReviewerCard from "../components/search/ReviewerCard.vue";
 import { useRoute, useRouter } from "vue-router";
 import { getReviewerAll } from "../api/reviewerApi";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid";
 import BasePagination from "../components/common/BasePagination.vue";
 import { getPaginatedList, getTotalPages } from "../services/paging";
 
-// 탭 메뉴
+// ----------- 상수 및 기본 데이터 -----------
 const tabs = ["영화", "리뷰어", "감독", "배우"];
-const selectedTab = ref("영화");
 
-const route = useRoute();
-const router = useRouter();
+const tabToSearchType = {
+  영화: "TITLE",
+  리뷰어: "REVIEWER",
+  감독: "DIRECTOR",
+  배우: "ACTOR",
+};
+
+// ----------- 반응형 상태 변수 -----------
+const selectedTab = ref("영화");
 const keyword = computed(() => route.query.keyword || "");
+
+const searchedMovies = ref([]);
+const searchedReviewers = ref([]);
+const searchedDirectors = ref([]);
+const searchedActors = ref([]);
+
+const moviePage = ref(1);
+const reviewerPage = ref(1);
+const directorPage = ref(1);
+const actorPage = ref(1);
+
+const totalMoviePages = ref(1);
+const totalReviewerPages = ref(1);
+const totalDirectorPages = ref(1);
+const totalActorPages = ref(1);
+
+const itemsPerPage = ref(12);
 
 const isLoading = ref(true);
 
-const searchedReviewers = ref();
-const topRatedMovieList = ref();
-
-// 검색된 키워드 변화 감지
-watch(
-  () => route.query.keyword,
-  (newKeyword, oldKeyword) => {
-    if (newKeyword && newKeyword != oldKeyword) {
-      keyword.value = newKeyword;
-      // getSearchList();
-    }
-  },
-  { immediate: true } // 첫 진입 시에도 실행됨(onMounted 생략)
+// ----------- computed -----------
+const paginatedMovieList = computed(() =>
+  getPaginatedList(searchedMovies, moviePage, itemsPerPage)
 );
 
-// onMounted(() => {
-//   // 데이터 fetch 예시
-//   setTimeout(() => {
-//     isLoading.value = false;
-//   }, 1500); // 1.5초 후 로딩 종료
-// });
+const paginatedReviewerList = computed(() =>
+  getPaginatedList(searchedReviewers, reviewerPage, itemsPerPage)
+);
+
+const paginatedDirectorList = computed(() =>
+  getPaginatedList(searchedDirectors, directorPage, itemsPerPage)
+);
+
+const paginatedActorList = computed(() =>
+  getPaginatedList(searchedActors, actorPage, itemsPerPage)
+);
+
+// ----------- 라우터 -----------
+const route = useRoute();
+const router = useRouter();
+
+// ----------- 함수 정의 -----------
+
+// 검색 API 호출 함수
+const fetchSearchResults = async (searchType, content, page = 0, size = 12) => {
+  isLoading.value = true;
+
+  try {
+    const res = await getMoviesBySearch({
+      searchType,
+      content,
+      page,
+      size,
+    });
+
+    switch (searchType) {
+      case "TITLE":
+        searchedMovies.value = res.movieList?.content || [];
+        totalMoviePages.value = Math.min(res.movieList?.totalPages || 1, 5);
+        break;
+      case "REVIEWER":
+        searchedReviewers.value = res.reviewerList?.content || [];
+        totalReviewerPages.value = Math.min(
+          res.reviewerList?.totalPages || 1,
+          5
+        );
+        break;
+      case "DIRECTOR":
+        searchedDirectors.value = res.directorList?.content || [];
+        totalDirectorPages.value = Math.min(
+          res.directorList?.totalPages || 1,
+          5
+        );
+        break;
+      case "ACTOR":
+        searchedActors.value = res.actorList?.content || [];
+        totalActorPages.value = Math.min(res.actorList?.totalPages || 1, 5);
+        break;
+    }
+  } catch (e) {
+    console.error("검색 실패:", e);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 페이지 변경 핸들러
+const handlePageChange = (page) => {
+  switch (selectedTab.value) {
+    case "영화":
+      moviePage.value = page;
+      fetchSearchResults("TITLE", keyword.value, page - 1);
+      break;
+    case "리뷰어":
+      reviewerPage.value = page;
+      fetchSearchResults("REVIEWER", keyword.value, page - 1);
+      break;
+    case "감독":
+      directorPage.value = page;
+      fetchSearchResults("DIRECTOR", keyword.value, page - 1);
+      break;
+    case "배우":
+      actorPage.value = page;
+      fetchSearchResults("ACTOR", keyword.value, page - 1);
+      break;
+  }
+};
 
 const goToMovieDetail = (movieId) => {
   router.push(`movie/${movieId}`);
@@ -53,34 +141,31 @@ const goToReviewerDetail = (reviewerId) => {
   router.push(`user/${reviewerId}`);
 };
 
-onMounted(() => {
-  getTopRatedMovieList();
-  getSearchedReviewers();
-});
-
 const getSearchedReviewers = async () => {
   isLoading.value = true;
   try {
     const res = await getReviewerAll(0);
     searchedReviewers.value = res.data.reviewerList.content;
-    console.log(res.data.reviewerList.content);
-  } catch (error) {
-    console.error("불러오기 실패:", error);
-  }
-};
-
-const getTopRatedMovieList = async () => {
-  isLoading.value = true;
-
-  const startTime = Date.now();
-
-  try {
-    const res = await getTopRated();
-    topRatedMovieList.value = res.data.movieList;
   } catch (error) {
     console.error("불러오기 실패:", error);
   } finally {
-    // 의도적으로 애니메이션 추가
+    isLoading.value = false;
+  }
+};
+
+const getSearchedMovieList = async () => {
+  isLoading.value = true;
+  const startTime = Date.now();
+
+  try {
+    const res = await getMoviesBySearch({
+      searchType: "TITLE",
+      content: keyword.value,
+    });
+    searchedMovies.value = res.movieList?.content || [];
+  } catch (error) {
+    console.error("불러오기 실패:", error);
+  } finally {
     const elapsed = Date.now() - startTime;
     const minimumDelay = 1500;
     const remainingDelay = Math.max(0, minimumDelay - elapsed);
@@ -88,50 +173,42 @@ const getTopRatedMovieList = async () => {
     setTimeout(() => {
       isLoading.value = false;
     }, remainingDelay);
-    // isLoading.value = false;
   }
 };
 
-const moviePage = ref(1);
-const reviewerPage = ref(1);
-const actorPage = ref(1); // 추가 필요 시
-const directorPage = ref(1); // 추가 필요 시
-const itemsPerPage = ref(12);
+// ----------- 라이프사이클 & 워치 -----------
 
-// 페이지 수 계산
-const totalMoviePages = getTotalPages(topRatedMovieList, itemsPerPage);
-const totalReviewerPages = getTotalPages(searchedReviewers, itemsPerPage);
-const totalActorPages = getTotalPages(topRatedMovieList, itemsPerPage); // 임시
-const totalDirectorPages = getTotalPages(topRatedMovieList, itemsPerPage); // 임시
+onMounted(() => {
+  getSearchedMovieList();
+});
 
-// 각 페이지에 보여줄 목록
-const paginatedMovieList = getPaginatedList(
-  topRatedMovieList,
-  moviePage,
-  itemsPerPage
+watch(
+  [keyword, selectedTab],
+  ([newKeyword, newTab], [oldKeyword, oldTab]) => {
+    if (newKeyword && (newKeyword !== oldKeyword || newTab !== oldTab)) {
+      const searchType = tabToSearchType[newTab];
+
+      // 페이지 초기화
+      switch (newTab) {
+        case "영화":
+          moviePage.value = 1;
+          break;
+        case "리뷰어":
+          reviewerPage.value = 1;
+          break;
+        case "감독":
+          directorPage.value = 1;
+          break;
+        case "배우":
+          actorPage.value = 1;
+          break;
+      }
+
+      fetchSearchResults(searchType, newKeyword, 0);
+    }
+  },
+  { immediate: true }
 );
-const paginatedReviewerList = getPaginatedList(
-  searchedReviewers,
-  reviewerPage,
-  itemsPerPage
-);
-const paginatedActorList = getPaginatedList(
-  topRatedMovieList,
-  actorPage,
-  itemsPerPage
-); // 임시
-const paginatedDirectorList = getPaginatedList(
-  topRatedMovieList,
-  directorPage,
-  itemsPerPage
-); // 임시
-
-// // 페이지 이동 함수
-// const goToPage = (page) => {
-//   if (page >= 1 && page <= totalPages.value) {
-//     currentPage.value = page;
-//   }
-// };
 </script>
 
 <template>
@@ -142,7 +219,7 @@ const paginatedDirectorList = getPaginatedList(
         <div class="w-[70%] p-2">"{{ keyword }}" 의 검색결과</div>
       </div>
     </div>
-    <div class="relative w-[70%] py-6 pb-20 mx-auto">
+    <div class="relative w-[70%] min-h-[90vh] py-6 pb-20 mx-auto">
       <!-- 탭 메뉴 -->
       <div class="flex border-1 border-b-2 border-white/20">
         <button
@@ -162,25 +239,32 @@ const paginatedDirectorList = getPaginatedList(
 
       <!-- 영화 검색 결과 -->
       <template v-if="selectedTab === '영화'">
-        <div class="grid grid-cols-3 gap-4 pt-6 pb-2">
-          <template v-if="isLoading">
+        <div class="grid grid-cols-2 gap-4 pt-6 pb-2">
+          <template v-if="isLoading && searchedMovies.length > 0">
             <SkeletonCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
-            <MovieCard
-              v-for="movie in paginatedMovieList"
-              :key="movie.movieId"
-              :movie="movie"
-              @click="goToMovieDetail(movie.movieId)"
-            />
+            <template v-if="searchedMovies.length === 0">
+              <div class="text-center text-gray-400 col-span-full py-48">
+                검색 결과가 없습니다.
+              </div>
+            </template>
+            <template v-else>
+              <MovieCard
+                v-for="movie in searchedMovies"
+                :key="movie.movieId"
+                :movie="movie"
+                @click="goToMovieDetail(movie.movieId)"
+              />
+            </template>
           </template>
         </div>
         <!-- 페이지 네이션 -->
         <BasePagination
-          v-if="!isLoading"
+          v-if="!isLoading && searchedMovies.length > 0 && totalMoviePages > 1"
           :currentPage="moviePage"
           :totalPages="totalMoviePages"
-          @change="moviePage = $event"
+          @change="handlePageChange"
         />
       </template>
 
@@ -189,22 +273,31 @@ const paginatedDirectorList = getPaginatedList(
         <div
           class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-6 pt-6 pb-2"
         >
-          <template v-if="isLoading">
+          <template v-if="isLoading && searchedReviewers.length > 0">
             <SkeletonUserCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
-            <ReviewerCard
-              v-for="reviewer in paginatedReviewerList"
-              :key="reviewer.memberId"
-              :reviewer="reviewer"
-              @click="goToReviewerDetail(reviewer.memberId)"
-            />
+            <template v-if="searchedReviewers.length === 0">
+              <div class="text-center text-gray-400 col-span-full py-48">
+                검색 결과가 없습니다.
+              </div>
+            </template>
+            <template v-else>
+              <ReviewerCard
+                v-for="reviewer in searchedReviewers"
+                :key="reviewer.memberId"
+                :reviewer="reviewer"
+                @click="goToReviewerDetail(reviewer.memberId)"
+              />
+            </template>
           </template>
         </div>
 
         <!-- 페이지 네이션 -->
         <BasePagination
-          v-if="!isLoading"
+          v-if="
+            !isLoading && searchedReviewers.length > 0 && totalReviewerPages > 1
+          "
           :currentPage="reviewerPage"
           :totalPages="totalReviewerPages"
           @change="reviewerPage = $event"
@@ -214,18 +307,53 @@ const paginatedDirectorList = getPaginatedList(
       <!-- 감독,배우 검색 결과 -->
       <template v-else>
         <div class="grid grid-cols-6 gap-4 gap-y-10 mt-6">
-          <template v-if="isLoading">
+          <template
+            v-if="
+              isLoading &&
+              (selectedTab === '감독' ? searchedDirectors : searchedActors)
+                .length > 0
+            "
+          >
             <SkeletonUserCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
-            <DirectorActorCard
-              v-for="movie in topRatedMovieList"
-              :key="movie.movieId"
-              :movie="movie"
-              @click="selectedItem = movie"
-            />
+            <template
+              v-if="
+                (selectedTab === '감독' ? searchedDirectors : searchedActors)
+                  .length === 0
+              "
+            >
+              <div class="text-center text-gray-400 col-span-full py-48">
+                검색 결과가 없습니다.
+              </div>
+            </template>
+            <template v-else>
+              <DirectorActorCard
+                v-for="item in selectedTab === '감독'
+                  ? searchedDirectors
+                  : searchedActors"
+                :key="item.personId"
+                :member="item"
+                @click="selectedItem = item"
+              />
+            </template>
           </template>
         </div>
+
+        <!-- 페이지네이션 -->
+        <!-- <BasePagination
+          v-if="!isLoading"
+          :currentPage="selectedTab === '감독' ? directorPage : actorPage"
+          :totalPages="
+            selectedTab === '감독' ? totalDirectorPages : totalActorPages
+          "
+          @change="
+            (page) => {
+              if (selectedTab === '감독') directorPage.value = page;
+              else actorPage.value = page;
+            }
+          "
+        />-->
       </template>
     </div>
   </BaseBackground>
