@@ -5,6 +5,7 @@ import BaseCard from "../common/BaseCard.vue";
 import { createReview } from "../../api/reviewApi";
 import { useUserStore } from "../../stores/userStore";
 import { EyeIcon, HeartIcon } from "@heroicons/vue/24/solid";
+import { toggleWishlist } from "../../api/movieApi";
 
 const props = defineProps({
   dataList: Object,
@@ -13,6 +14,20 @@ const props = defineProps({
 const userStore = useUserStore();
 const showRatingInput = ref(false);
 const tempRating = ref(0);
+const isWishlisted = ref(props.dataList.isWishlisted);
+const wishlistCount = ref(props.dataList.wishListCount);
+
+const handelWishlisted = async () => {
+  try {
+    await toggleWishlist(props.dataList.movieId, isWishlisted.value);
+    isWishlisted.value = !isWishlisted.value;
+    wishlistCount.value += isWishlisted.value ? 1 : -1;
+    props.dataList.isWishlisted = isWishlisted.value;
+    props.dataList.wishListCount = wishlistCount.value;
+  } catch (err) {
+    console.error("위시리스트 처리 실패", err);
+  }
+};
 
 const handelReviewed = () => {
   showRatingInput.value = true;
@@ -93,7 +108,7 @@ const submitReview = async () => {
 
     <BaseCard
       backgroundColor="neutral-800"
-      :title="dataList.wishListCount.toLocaleString() + '명'"
+      :title="wishlistCount.toLocaleString() + '명'"
       titleClass="text-sm text-white"
       divClass="flex items-center justify-between"
     >
@@ -106,7 +121,7 @@ const submitReview = async () => {
           <HeartIcon
             :class="[
               'w-5 h-5',
-              dataList.isWishlisted ? 'text-yellow-400' : 'text-gray-400',
+              isWishlisted ? 'text-yellow-400' : 'text-gray-400',
             ]"
           />
         </button>

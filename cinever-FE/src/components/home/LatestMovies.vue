@@ -11,9 +11,11 @@ onMounted(() => {
 
 const getLatestMovieList = async () => {
   try {
-    const res = await getLatest();
+    const res = await getLatest(0, 34);
     console.log(res);
-    latestMovieList.value = res.data.movieList;
+    latestMovieList.value = res.data.content.filter(
+      (movie) => movie.posterPath
+    );
   } catch (error) {
     console.error("최신 영화 목록 가져오기 실패:", error);
   }

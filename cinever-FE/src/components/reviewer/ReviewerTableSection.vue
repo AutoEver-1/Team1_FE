@@ -11,12 +11,13 @@ import {
 import { getReviewerRoleMeta } from "../../utils/reviewerRole";
 import BasePagination from "../common/BasePagination.vue";
 import { getPaginatedList, getTotalPages } from "../../services/paging";
+import DefaultProfile from "../../assets/images/default_profile.png";
 
 const dataList = ref([]);
 const totalPages = ref(1);
 const currentPage = ref(1);
 const itemsPerPage = ref(10); // 단순 순번 계산용
-
+const imgSrcMap = ref({});
 const router = useRouter();
 
 const goToUserDetail = (memberId) => {
@@ -28,15 +29,22 @@ const reviewerAll = async (page = 1) => {
   dataList.value = res.data.reviewerList.content;
   totalPages.value = res.data.reviewerList.totalPages - 1;
   currentPage.value = page;
+  dataList.value.forEach((reviewer) => {
+    imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
+  });
 };
 
 const handlePageChange = (page) => {
-  reviewerAll(page); // 새로운 페이지에 맞게 데이터 fetch
+  reviewerAll(page);
 };
 
 onMounted(() => {
   reviewerAll(1);
 });
+
+const onError = (id) => {
+  imgSrcMap.value[id] = DefaultProfile;
+};
 </script>
 
 <template>
@@ -67,10 +75,16 @@ onMounted(() => {
             @click="goToUserDetail(data.memberId)"
           >
             <div class="flex items-center gap-7">
-              <img
+              <!-- <img
                 :src="data.profile_img_url"
                 alt="profile_img"
                 class="w-16 h-16 rounded-full object-cover"
+              /> -->
+              <img
+                :src="imgSrcMap[data.memberId]"
+                alt="profile"
+                class="w-14 h-14 rounded-full object-cover"
+                @error="onError(data.memberId)"
               />
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
@@ -119,12 +133,12 @@ onMounted(() => {
           <td class="px-4 py-4 text-center">
             <div class="flex justify-center gap-3">
               <RouterLink
-                v-for="(movie, idx) in data.wishlist.slice(0, 3)"
+                v-for="(movie, idx) in data.wishlist?.slice(0, 3)"
                 :key="movie.movieId || idx"
                 :to="`/movie/${movie.movieId}`"
               >
                 <img
-                  :src="movie.poster_path"
+                  :src="movie.posterPath"
                   alt="wishlist_poster"
                   class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-110"
                 />

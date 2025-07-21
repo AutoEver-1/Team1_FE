@@ -4,6 +4,7 @@ import BaseProfileImage from "../../components/common/BaseProfileImage.vue";
 import BaseModal from "../../components/common/BaseModal.vue";
 import { useUserStore } from "../../stores/userStore";
 import { useRouter } from "vue-router";
+import UserEdit from "./UserEdit.vue";
 
 const router = useRouter();
 const props = defineProps({
@@ -43,6 +44,12 @@ const openFollowersModal = () => {
   isFollowersModalOpen.value = true;
 };
 
+const isUserModalOpen = ref(false);
+
+const openUserModal = () => {
+  isUserModalOpen.value = true;
+};
+
 const goToUserPage = (userId) => {
   router.push({
     name: "User",
@@ -55,7 +62,7 @@ const goToUserPage = (userId) => {
 <template>
   <div class="w-full max-w-4xl mx-auto px-6 pt-12 text-white" v-if="userInfo">
     <div class="flex flex-col md:flex-row items-center md:items-start gap-10">
-      <BaseProfileImage :src="imgSrc" size="160px" />
+      <BaseProfileImage :src="userInfo.profilePath" size="160px" />
       <div class="flex-1 w-full">
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-1">
@@ -94,14 +101,19 @@ const goToUserPage = (userId) => {
           >
             {{ isFollowing ? "팔로우 취소" : "+ 팔로우 하기" }}
           </button>
+          <button
+            v-else
+            class="hidden md:block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+            @click="openUserModal"
+          >
+            프로필 수정
+          </button>
         </div>
 
         <!-- 모바일 팔로우 버튼 -->
-        <div
-          v-if="!isOwnProfile"
-          class="mt-4 md:hidden w-full flex justify-center"
-        >
+        <div class="mt-4 md:hidden w-full flex justify-center">
           <button
+            v-if="!isOwnProfile"
             class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10 w-1/2"
             :class="
               isFollowing
@@ -111,6 +123,13 @@ const goToUserPage = (userId) => {
             @click="$emit('toggle-follow')"
           >
             {{ isFollowing ? "팔로우 취소" : "+ 팔로우 하기" }}
+          </button>
+          <button
+            v-else
+            class="text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10 w-1/2"
+            @click="openUserModal"
+          >
+            프로필 수정
           </button>
         </div>
 
@@ -145,6 +164,8 @@ const goToUserPage = (userId) => {
     </div>
   </div>
 
+  <!-- 프로필 수정 모달 -->
+  <UserEdit v-model:isUserModalOpen="isUserModalOpen" />
   <!-- 팔로잉 모달 -->
   <BaseModal
     v-model:isOpen="isFollowingModalOpen"
