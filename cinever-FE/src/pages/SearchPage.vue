@@ -214,12 +214,16 @@ watch(
 <template>
   <BaseBackground class="mt-16">
     <!-- 상단 검색 입력 결과 -->
-    <div class="relative min-w-full bg-amber-300/20 rounded">
+    <div
+      class="md:relative min-w-full md:bg-amber-300/20 rounded sticky top-16 md:top-0 bg-[#12100E] z-50"
+    >
       <div class="flex justify-center">
-        <div class="w-[70%] p-2">"{{ keyword }}" 의 검색결과</div>
+        <div class="md:w-[70%] w-[90%] md:p-2 py-3">
+          <span class="text-amber-500"> "{{ keyword }}"</span> 의 검색결과
+        </div>
       </div>
     </div>
-    <div class="relative w-[70%] min-h-[90vh] py-6 pb-20 mx-auto">
+    <div class="relative md:w-[70%] w-[90%] min-h-[90vh] py-6 pb-20 mx-auto">
       <!-- 탭 메뉴 -->
       <div class="flex border-1 border-b-2 border-white/20">
         <button
@@ -239,7 +243,7 @@ watch(
 
       <!-- 영화 검색 결과 -->
       <template v-if="selectedTab === '영화'">
-        <div class="grid grid-cols-2 gap-4 pt-6 pb-2">
+        <div class="grid md:grid-cols-2 grid-cols-1 gap-4 pt-6 pb-2">
           <template v-if="isLoading && searchedMovies.length > 0">
             <SkeletonCard v-for="n in 16" :key="n" />
           </template>
@@ -270,9 +274,7 @@ watch(
 
       <!-- 리뷰어 검색 결과 -->
       <template v-else-if="selectedTab === '리뷰어'">
-        <div
-          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-6 pt-6 pb-2"
-        >
+        <div class="grid md:grid-cols-4 grid-cols-1 gap-4 gap-y-6 pt-6 pb-2">
           <template v-if="isLoading && searchedReviewers.length > 0">
             <SkeletonUserCard v-for="n in 16" :key="n" />
           </template>
@@ -306,7 +308,7 @@ watch(
 
       <!-- 감독,배우 검색 결과 -->
       <template v-else>
-        <div class="grid grid-cols-6 gap-4 gap-y-10 mt-6">
+        <div class="grid md:grid-cols-6 grid-cols-2 gap-4 gap-y-10 mt-6">
           <template
             v-if="
               isLoading &&

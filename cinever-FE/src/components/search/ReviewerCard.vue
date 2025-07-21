@@ -28,7 +28,7 @@ const { roleClass, badgeClass, roleName } = getReviewerRoleMeta(
     ]"
   >
     <!-- 이미지 (큰 원형) -->
-    <div class="w-36 h-36 mb-3">
+    <div class="md:w-36 md:h-36 w-20 h-20 mb-3">
       <img
         :src="
           reviewer.profile_img_url && reviewer.profile_img_url !== '1'

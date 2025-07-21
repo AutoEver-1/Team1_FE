@@ -3,20 +3,15 @@ import { ref, watch, defineProps, defineEmits } from "vue";
 import BaseModal from "../common/BaseModal.vue";
 import BaseProfileImage from "../common/BaseProfileImage.vue";
 import BaseAuthInput from "../common/BaseAuthInput.vue";
-import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import Profile from "../../assets/images/default_profile.png";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 import { storage } from "../../api/firebase";
 import { useUserStore } from "../../stores/userStore";
 import { updateUser } from "../../api/user";
 
 const userStore = useUserStore();
 const user = userStore.user;
+const isSaving = ref(false); // ✅ 로딩 상태
 
 // 부모로부터 모달 열림 상태를 받음
 const props = defineProps({
@@ -89,25 +84,26 @@ const onProfileImageChange = (e) => {
 // };
 
 const saveProfile = async () => {
+  isSaving.value = true; // 로딩 시작
   try {
     const url = ref();
     if (file.value) {
       const storageRef = storage.ref();
       const fileRef = storageRef.child(`profile/${user.memberId}`);
-
       await fileRef.put(file.value);
       url.value = await fileRef.getDownloadURL();
-      console.log(form.value.nickname, url.value);
     }
+
     await updateUser(user.memberId, {
       nickname: form.value.nickname,
       profilePath: url.value,
     });
 
-    alert("유저 정보가 수정되었습니다!");
     window.location.reload();
   } catch (err) {
-    console.log("업로드 실패: " + err);
+    console.error("업로드 실패:", err);
+  } finally {
+    isSaving.value = false; // 로딩 종료
   }
 };
 
@@ -210,14 +206,21 @@ const uploadImage = async () => {
         <button
           @click="localIsOpen = false"
           class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg"
+          :disabled="isSaving"
         >
           취소
         </button>
+
         <button
           @click="saveProfile"
-          class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg"
+          :disabled="isSaving"
+          class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-lg flex items-center gap-2"
         >
-          저장
+          <span
+            v-if="isSaving"
+            class="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full"
+          ></span>
+          <span>{{ isSaving ? "저장 중..." : "저장" }}</span>
         </button>
       </div>
     </template>
