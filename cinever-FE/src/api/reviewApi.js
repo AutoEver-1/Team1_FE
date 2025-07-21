@@ -67,3 +67,13 @@ export const unlikeReview = async (reviewId) => {
     throw error;
   }
 };
+
+export const getFollowingReview = async () => {
+  try {
+    const response = await api.get(`${reviewApi}/following/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error("API 호출 실패:", error);
+    throw error;
+  }
+};

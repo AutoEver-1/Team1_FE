@@ -43,11 +43,11 @@ const handleMovieClick = (movie) => {
   >
     <div class="absolute top-0 left-0 w-full h-[95%] z-0 hidden md:block">
       <BaseYoutubeVideo
-        :videoId="selectedMovie.teaserVideo"
+        :videoId="selectedMovie.teaserVideo?.split('v=')[1]"
         class="w-full h-full object-cover"
         :thumbnailUrl="
           'https://img.youtube.com/vi/' +
-          selectedMovie.teaserVideo +
+          selectedMovie.teaserVideo?.split('v=')[1] +
           '/maxresdefault.jpg'
         "
       />

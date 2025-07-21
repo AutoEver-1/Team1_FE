@@ -69,9 +69,11 @@ const getMovieById = async () => {
         v-if="movieData"
       >
         <BaseYoutubeVideo
-          :videoId="youtubeId"
+          :videoId="movieData.video_path"
           :thumbnailUrl="
-            'https://img.youtube.com/vi/' + youtubeId + '/maxresdefault.jpg'
+            'https://img.youtube.com/vi/' +
+            movieData.video_path +
+            '/maxresdefault.jpg'
           "
           class="hidden md:block"
         />

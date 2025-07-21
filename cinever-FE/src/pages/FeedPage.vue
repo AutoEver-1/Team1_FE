@@ -5,183 +5,29 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 import BaseRating from "../components/common/BaseRating.vue";
 import { CalendarIcon } from "@heroicons/vue/24/outline";
+import { getFollowingReview } from "../api/reviewApi";
+import BaseProfileImage from "../components/common/BaseProfileImage.vue";
 
-/* ──────────────────────────────────────────
-  1) 더미 데이터 (최신순 정렬)
-────────────────────────────────────────── */
-const allReviews = [
-  {
-    movieId: 101,
-    title: "Inception",
-    posterPath: "https://image.tmdb.org/t/p/w500/inception.jpg",
-    date: "2010-07-16",
-    averageScore: 4.8,
-    isAdult: false,
-    following_role: "Critic",
-    following_profilepath: "https://example.com/profiles/user1.jpg",
-    following_nickname: "Dreamer",
-    following_memId: "1",
-    rating: 5.0,
-    reviewdDate: "2025-07-20",
-    Context: "A mind-bending sci-fi classic.",
-    likeCount: 120,
-    isLiked: true,
-  },
-  {
-    movieId: 102,
-    title: "The Matrix",
-    posterPath: "https://image.tmdb.org/t/p/w500/matrix.jpg",
-    date: "1999-03-31",
-    averageScore: 4.7,
-    isAdult: false,
-    following_role: "User",
-    following_profilepath: "https://example.com/profiles/user2.jpg",
-    following_nickname: "NeoFan",
-    following_memId: "2",
-    rating: 4.5,
-    reviewdDate: "2025-06-18",
-    Context: "Red pill or blue pill?",
-    likeCount: 98,
-    isLiked: true,
-  },
-  {
-    movieId: 103,
-    title: "Parasite",
-    posterPath: "https://image.tmdb.org/t/p/w500/parasite.jpg",
-    date: "2019-05-30",
-    averageScore: 4.9,
-    isAdult: true,
-    following_role: "Blogger",
-    following_profilepath: "https://example.com/profiles/user3.jpg",
-    following_nickname: "BongFan",
-    following_memId: "3",
-    rating: 5.0,
-    reviewdDate: "2025-05-12",
-    Context: "A masterpiece of social satire.",
-    likeCount: 210,
-    isLiked: false,
-  },
-  {
-    movieId: 104,
-    title: "Interstellar",
-    posterPath: "https://image.tmdb.org/t/p/w500/interstellar.jpg",
-    date: "2014-11-07",
-    averageScore: 4.6,
-    isAdult: false,
-    following_role: "Critic",
-    following_profilepath: "https://example.com/profiles/user4.jpg",
-    following_nickname: "SpaceLover",
-    following_memId: "4",
-    rating: 4.8,
-    reviewdDate: "2025-04-02",
-    Context: "Love transcends time and space.",
-    likeCount: 160,
-    isLiked: true,
-  },
-  {
-    movieId: 105,
-    title: "Fight Club",
-    posterPath: "https://image.tmdb.org/t/p/w500/fightclub.jpg",
-    date: "1999-10-15",
-    averageScore: 4.4,
-    isAdult: true,
-    following_role: "User",
-    following_profilepath: "https://example.com/profiles/user5.jpg",
-    following_nickname: "SoapMaker",
-    following_memId: "5",
-    rating: 4.2,
-    reviewdDate: "2025-03-10",
-    Context: "First rule: don't talk about it.",
-    likeCount: 80,
-    isLiked: false,
-  },
-  {
-    movieId: 106,
-    title: "The Godfather",
-    posterPath: "https://image.tmdb.org/t/p/w500/godfather.jpg",
-    date: "1972-03-24",
-    averageScore: 5.0,
-    isAdult: true,
-    following_role: "Critic",
-    following_profilepath: "https://example.com/profiles/user6.jpg",
-    following_nickname: "DonCorleone",
-    following_memId: "6",
-    rating: 5.0,
-    reviewdDate: "2025-02-05",
-    Context: "An offer you can't refuse.",
-    likeCount: 300,
-    isLiked: true,
-  },
-  {
-    movieId: 107,
-    title: "Pulp Fiction",
-    posterPath: "https://image.tmdb.org/t/p/w500/pulpfiction.jpg",
-    date: "1994-10-14",
-    averageScore: 4.5,
-    isAdult: true,
-    following_role: "User",
-    following_profilepath: "https://example.com/profiles/user7.jpg",
-    following_nickname: "MiaFan",
-    following_memId: "7",
-    rating: 4.6,
-    reviewdDate: "2025-01-22",
-    Context: "Tarantino's masterpiece.",
-    likeCount: 150,
-    isLiked: true,
-  },
-  {
-    movieId: 108,
-    title: "The Dark Knight",
-    posterPath: "https://image.tmdb.org/t/p/w500/darkknight.jpg",
-    date: "2008-07-18",
-    averageScore: 4.9,
-    isAdult: false,
-    following_role: "Blogger",
-    following_profilepath: "https://example.com/profiles/user8.jpg",
-    following_nickname: "BatFan",
-    following_memId: "8",
-    rating: 5.0,
-    reviewdDate: "2024-12-11",
-    Context: "Why so serious?",
-    likeCount: 250,
-    isLiked: true,
-  },
-  {
-    movieId: 109,
-    title: "Forrest Gump",
-    posterPath: "https://image.tmdb.org/t/p/w500/forrestgump.jpg",
-    date: "1994-07-06",
-    averageScore: 4.3,
-    isAdult: false,
-    following_role: "User",
-    following_profilepath: "https://example.com/profiles/user9.jpg",
-    following_nickname: "RunForrest",
-    following_memId: "9",
-    rating: 4.0,
-    reviewdDate: "2024-11-08",
-    Context: "Life is like a box of chocolates.",
-    likeCount: 90,
-    isLiked: false,
-  },
-  {
-    movieId: 110,
-    title: "Avengers: Endgame",
-    posterPath: "https://image.tmdb.org/t/p/w500/endgame.jpg",
-    date: "2019-04-26",
-    averageScore: 4.7,
-    isAdult: false,
-    following_role: "Critic",
-    following_profilepath: "https://example.com/profiles/user10.jpg",
-    following_nickname: "MarvelFan",
-    following_memId: "10",
-    rating: 4.8,
-    reviewdDate: "2024-10-01",
-    Context: "A finale for the ages.",
-    likeCount: 310,
-    isLiked: true,
-  },
-];
-
+// const allReviews = [
+//   {
+//     movieId: 101,
+//     title: "Inception",
+//     posterPath: "https://image.tmdb.org/t/p/w500/inception.jpg",
+//     date: "2010-07-16",
+//     averageScore: 4.8,
+//     isAdult: false,
+//     following_role: "Critic",
+//     following_profilepath: "https://example.com/profiles/user1.jpg",
+//     following_nickname: "Dreamer",
+//     following_memId: "1",
+//     rating: 5.0,
+//     reviewdDate: "2025-07-20",
+//     Context: "A mind-bending sci-fi classic.",
+//     likeCount: 120,
+//     isLiked: true,
+//   },
+// ];
+const allReviews = ref([]);
 /* ──────────────────────────────────────────
   2) 무한스크롤 상태
 ────────────────────────────────────────── */
@@ -191,15 +37,16 @@ const visibleReviews = ref([]);
 const endReached = ref(false);
 
 /** 다음 페이지를 visibleReviews에 push */
-const loadNextPage = () => {
+const loadNextPage = async () => {
   if (endReached.value) return;
   const start = page.value * PAGE_SIZE;
-  const next = allReviews.slice(start, start + PAGE_SIZE);
+  const next = allReviews.value?.slice(start, start + PAGE_SIZE);
   if (next.length) {
     visibleReviews.value.push(...next);
     page.value++;
   }
-  if (visibleReviews.value.length >= allReviews.length) endReached.value = true;
+  if (visibleReviews.value.length >= allReviews.value?.length)
+    endReached.value = true;
 };
 
 /* ──────────────────────────────────────────
@@ -208,11 +55,10 @@ const loadNextPage = () => {
 const grouped = computed(() => {
   const map = new Map();
   visibleReviews.value.forEach((r) => {
-    if (!map.has(r.reviewdDate)) map.set(r.reviewdDate, []);
-    map.get(r.reviewdDate).push(r);
+    if (!map.has(r.reviewedDate)) map.set(r.reviewedDate, []);
+    map.get(r.reviewedDate).push(r);
   });
 
-  console.log([...map.entries()].sort((a, b) => b[0].localeCompare(a[0])));
   // 그룹도 최신순
   return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
 });
@@ -253,7 +99,7 @@ const setGroupRef = (el, idx) => {
 };
 
 /** 날짜 스택 IntersectionObserver 초기화 */
-const initDateObserver = () => {
+const initDateObserver = async () => {
   dateObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -280,7 +126,7 @@ const initDateObserver = () => {
 const sentinel = ref(null);
 let scrollObserver = null;
 
-const initScrollObserver = () => {
+const initScrollObserver = async () => {
   scrollObserver = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && loadNextPage()),
     { threshold: 1 }
@@ -292,10 +138,11 @@ const initScrollObserver = () => {
   7) 생명주기
 ────────────────────────────────────────── */
 onMounted(async () => {
-  loadNextPage(); // 첫 페이지
+  await getReviewList();
+  await loadNextPage(); // 첫 페이지
   await nextTick(); // DOM 그린 뒤
-  initDateObserver(); // 날짜 스택 옵저버
-  initScrollObserver(); // 무한스크롤 옵저버
+  await initDateObserver(); // 날짜 스택 옵저버
+  await initScrollObserver(); // 무한스크롤 옵저버
 });
 
 onBeforeUnmount(() => {
@@ -305,6 +152,12 @@ onBeforeUnmount(() => {
     groupEls.value.forEach((el) => el && dateObserver.unobserve(el));
   }
 });
+
+const getReviewList = async () => {
+  const res = await getFollowingReview();
+  allReviews.value = res.reviewList;
+  console.log(allReviews);
+};
 </script>
 
 <template>
@@ -346,23 +199,23 @@ onBeforeUnmount(() => {
                 class="flex flex-col pb-2 sm:pb-4 border-b border-white/15 sm:flex-row sm:items-center sm:justify-between"
               >
                 <RouterLink
-                  :to="`/user/${review.following_memId}`"
+                  :to="`/user/${review.followingMemId}`"
                   class="flex items-center gap-3"
                 >
-                  <img
-                    :src="review.following_profilepath"
-                    alt="avatar"
-                    class="h-8 w-8 rounded-full object-cover sm:h-8 sm:w-8"
+                  <BaseProfileImage
+                    size="40px"
+                    :src="review.followingProfilePath"
                   />
+
                   <div>
                     <p
                       class="flex items-center gap-2 text-sm font-semibold text-white sm:text-base"
                     >
-                      {{ review.following_nickname }}
+                      {{ review.followingNickname }}
                       <span
                         class="w-fit text-xs font-bold text-black px-2 py-0.5 rounded bg-yellow-400"
                       >
-                        {{ review.following_role }}
+                        {{ review.followingRole }}
                       </span>
                     </p>
                     <p class="text-[10px] text-white/60 sm:text-xs">
@@ -403,7 +256,7 @@ onBeforeUnmount(() => {
                   </p>
                   <p class="text-[10px] text-white/60 sm:text-xs flex gap-1">
                     <CalendarIcon class="w-4 h-4" />
-                    {{ formatDate(review.date) }}
+                    {{ review.releaseDate }}
                   </p>
                   <p class="mt-1 flex items-center gap-1 text-xs sm:text-sm">
                     평균 평점
@@ -424,12 +277,12 @@ onBeforeUnmount(() => {
 
               <!-- 리뷰 내용 -->
               <p class="text-xs text-white/60 md:hidden mt-4">
-                {{ group[0] }}
+                {{ review.reviewedDate }}
               </p>
               <p
                 class="mt-1 pb-4 border-b border-white/15 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
               >
-                {{ review.Context }}
+                {{ review.context }}
               </p>
 
               <!-- 좋아요 -->

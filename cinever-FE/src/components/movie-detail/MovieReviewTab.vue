@@ -55,6 +55,9 @@ const handleUpdate = async () => {
   }
 
   try {
+    extractedKeywords.value = await fetchKeywords(keyword.value);
+    console.log("키워드:", extractedKeywords.value);
+
     await updateReview(props.movieId, {
       memberId: userStore.user.memberId,
       context: keyword.value,
