@@ -69,3 +69,13 @@ export const followUser = async (memberId) => {
 export const unfollowUser = async (memberId) => {
   return await api.delete(`${userApi}/${memberId}/follow`);
 };
+
+export const updateUser = async (memberId, payload) => {
+  try {
+    const response = await api.patch(`${userApi}/${memberId}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("유저 수정 실패:", error);
+    throw error;
+  }
+};

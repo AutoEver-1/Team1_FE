@@ -13,9 +13,9 @@ import {
 } from "firebase/storage";
 import { storage } from "../../api/firebase";
 import { useUserStore } from "../../stores/userStore";
+import { updateUser } from "../../api/user";
 
 const userStore = useUserStore();
-
 const user = userStore.user;
 
 // 부모로부터 모달 열림 상태를 받음
@@ -90,15 +90,22 @@ const onProfileImageChange = (e) => {
 
 const saveProfile = async () => {
   try {
+    const url = ref();
     if (file.value) {
       const storageRef = storage.ref();
       const fileRef = storageRef.child(`profile/${user.memberId}`);
 
       await fileRef.put(file.value);
-      const url = await fileRef.getDownloadURL();
-      console.log(url);
+      url.value = await fileRef.getDownloadURL();
+      console.log(form.value.nickname, url.value);
     }
-    // window.location.reload();
+    await updateUser(user.memberId, {
+      nickname: form.value.nickname,
+      profilePath: url.value,
+    });
+
+    alert("유저 정보가 수정되었습니다!");
+    window.location.reload();
   } catch (err) {
     console.log("업로드 실패: " + err);
   }
