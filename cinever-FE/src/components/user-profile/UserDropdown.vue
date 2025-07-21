@@ -5,6 +5,7 @@ import { useUserStore } from "../../stores/userStore";
 import { useRouter } from "vue-router";
 import {
   ArrowRightStartOnRectangleIcon,
+  ChartBarIcon,
   UserIcon,
 } from "@heroicons/vue/24/outline";
 import { storeToRefs } from "pinia";
@@ -14,8 +15,14 @@ const userStore = useUserStore();
 
 const { user } = storeToRefs(userStore);
 
+const isAdmin = user.value.roleName === "ADMIN";
+
 const goToProfile = () => {
   router.push(`/user/${user.value.memberId}`);
+};
+
+const goToAdminPage = () => {
+  router.push(`/admin`);
 };
 
 const logout = () => {
@@ -53,6 +60,14 @@ const logout = () => {
           >
             <UserIcon class="w-4 h-4" />
             마이페이지
+          </li>
+          <li
+            v-if="isAdmin"
+            @click="goToAdminPage"
+            class="flex items-center gap-2 p-3 px-4 hover:bg-white/20 cursor-pointer rounded"
+          >
+            <ChartBarIcon class="w-4 h-4" />
+            관리자 페이지
           </li>
           <li
             @click="logout"
