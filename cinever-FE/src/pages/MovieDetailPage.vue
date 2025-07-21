@@ -80,11 +80,11 @@ const getMovieById = async () => {
             <div
               class="flex flex-col lg:flex-row gap-10 lg:mt-[25%] items-start"
             >
-              <div class="w-full lg:w-[30%] lg:sticky top-16 self-start">
+              <div class="w-full lg:w-1/4 lg:sticky top-16 self-start">
                 <MovieDetailLeft :dataList="movieData" />
               </div>
 
-              <div class="w-full lg:w-[70%] space-y-6">
+              <div class="w-full lg:w-3/4 space-y-6">
                 <MovieTitleBox :dataList="movieData" />
                 <BaseTab
                   v-model:selectedId="selectedTab"

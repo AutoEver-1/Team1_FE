@@ -3,6 +3,7 @@ import BaseCard from "../common/BaseCard.vue";
 import BaseRating from "../common/BaseRating.vue";
 import BaseBadge from "../common/BaseBadge.vue";
 import BaseModal from "../common/BaseModal.vue";
+import BaseProfileImage from "../common/BaseProfileImage.vue";
 import { ref, computed } from "vue";
 import {
   CalendarIcon,
@@ -205,13 +206,14 @@ const uniqueDirectors = computed(() => {
       <template #contents>
         <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
           <div
-            class="flex flex-col items-center min-w-20 text-center cursor-pointer"
+            class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
             v-for="actor in dataList.actors"
             @click="openPersonModal(actor)"
           >
-            <img
+            <BaseProfileImage
               :src="actor.profilePath"
               class="w-20 h-20 rounded-full object-cover"
+              size="80px"
             />
             <div class="text-xs text-gray-500 font-medium mt-1">
               {{ actor.name }}
