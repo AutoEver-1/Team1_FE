@@ -96,12 +96,19 @@ export const getTopRated = async (page = 0, size = 20) => {
 };
 
 // TOP 100
-export const getTop100 = async () => {
+export const getTop100 = async (genreId) => {
   try {
-    const response = await api.get(`${movieApi}/top100`);
+    const response = await api.get(`${movieApi}/top100`, {
+      params: { genreId },
+    });
     return response.data;
   } catch (error) {
     console.error("API 호출 실패:", error);
     throw error;
   }
+};
+
+export const toggleWishlist = async (movieId, isWishlisted) => {
+  const method = isWishlisted ? "delete" : "post";
+  return await api[method](`/api/movie/${movieId}/wish`);
 };

@@ -24,7 +24,7 @@ defineProps({
     <div class="flex items-center text-amber-400">
       <BaseRating :score="dataList.averageScore" size="20" />
       <span class="ml-2 text-[20px] font-medium text-amber-400">
-        {{ dataList.averageScore ? dataList.averageScore : "-" }}
+        {{ dataList.averageScore ? dataList.averageScore?.toFixed(1) : "-" }}
       </span>
       <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
         {{ dataList.averageScore ? "\u00A0/ 5.0" : "" }}
@@ -38,7 +38,7 @@ defineProps({
         class="mt-1 w-8 h-auto"
       />
       <span class="text-[16px] text-white">
-        {{ dataList.tmdbScore ? dataList.tmdbScore : "-" }}
+        {{ dataList.tmdbScore ? dataList.tmdbScore?.toFixed(1) : "-" }}
       </span>
       <span class="mt-1 text-xs text-gray-200 opacity-50">
         {{ dataList.tmdbScore ? "/ 10.0" : "" }}

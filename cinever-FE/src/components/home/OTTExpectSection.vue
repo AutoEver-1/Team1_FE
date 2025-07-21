@@ -30,7 +30,7 @@ const ottList = [
 
 const selectedOtt = ref(ottList[0].id);
 const allDataList = ref({});
-const dataList = ref([]); // ✅ 하나로 합쳐진 배열
+const dataList = ref([]);
 
 // OTT ID → 데이터 키 매핑
 const ottMovieKeyMap = {
@@ -74,7 +74,8 @@ const loadAllOttData = async () => {
 // 선택한 OTT의 영화 데이터 세팅
 const updateDataList = (ottId) => {
   selectedOtt.value = ottId;
-  dataList.value = allDataList.value[ottId] ?? [];
+  dataList.value =
+    allDataList.value[ottId]?.filter((movie) => movie.posterPath) ?? [];
   console.log(dataList.value);
 };
 

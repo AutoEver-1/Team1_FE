@@ -83,7 +83,7 @@ const getReviewById = async () => {
                 {{ review.title }}
               </p>
               <p class="text-xs text-white/60 mt-1">
-                {{ review.reviewdDate }}
+                {{ review.reviewdDate?.split("T")[0] }}
               </p>
               <p class="mt-1 pb-4 text-xs leading-relaxed text-white/90">
                 {{ review.context }}
@@ -145,7 +145,7 @@ const getReviewById = async () => {
                 {{ review.title }}
               </p>
               <p class="text-xs text-white/60 mt-1">
-                {{ review.reviewdDate }}
+                {{ review.reviewdDate?.split("T")[0] }}
               </p>
               <p class="mt-2 text-xs leading-relaxed text-white/90">
                 {{ review.context }}
