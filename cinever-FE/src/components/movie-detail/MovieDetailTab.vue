@@ -3,7 +3,8 @@ import BaseCard from "../common/BaseCard.vue";
 import BaseRating from "../common/BaseRating.vue";
 import BaseBadge from "../common/BaseBadge.vue";
 import BaseModal from "../common/BaseModal.vue";
-import { ref } from "vue";
+import BaseProfileImage from "../common/BaseProfileImage.vue";
+import { ref, computed } from "vue";
 import {
   CalendarIcon,
   Squares2X2Icon,
@@ -49,6 +50,15 @@ const prevImage = () => {
     currentImageIndex.value--;
   }
 };
+
+const uniqueDirectors = computed(() => {
+  const seen = new Set();
+  return (props.dataList.director || []).filter((d) => {
+    if (seen.has(d.personId)) return false;
+    seen.add(d.personId);
+    return true;
+  });
+});
 </script>
 <template>
   <div class="space-y-3">
@@ -145,10 +155,13 @@ const prevImage = () => {
             <div
               class="w-20 h-20 bg-white/80 p-1 flex justify-center items-center rounded-full"
             >
-              <img :src="company.logo_path" class="w-full object-cover" />
+              <img
+                :src="'https://image.tmdb.org/t/p/original' + company.name"
+                class="w-full object-cover"
+              />
             </div>
-            <div class="text-xs text-gray-500 font-medium mt-2">
-              {{ company.name }}
+            <div class="w-20 text-xs text-gray-500 font-medium mt-2">
+              {{ company.logo_path }}
             </div>
           </div>
         </div>
@@ -161,7 +174,8 @@ const prevImage = () => {
       </template>
       <template #contents>
         <BaseCard
-          v-for="d in dataList.director"
+          v-for="d in uniqueDirectors"
+          :key="d.personId"
           backgroundColor="black"
           class="flex gap-4 cursor-pointer hover:bg-white/5 transition"
           @click="openPersonModal(d)"
@@ -170,7 +184,7 @@ const prevImage = () => {
             <div class="w-16 h-16 rounded-full overflow-hidden">
               <img :src="d.profilePath" class="w-full h-full object-cover" />
             </div>
-            <div class="sapce-y-0">
+            <div class="space-y-0">
               <p class="text-sm">{{ d.name }}</p>
               <p class="text-xs text-gray-400 mt-1">
                 {{ d.gender }}
@@ -185,23 +199,26 @@ const prevImage = () => {
       </template>
     </BaseCard>
 
-    <BaseCard title="배우">
+    <BaseCard title="배우" class="w-[43vw]">
       <template #icon>
         <UserGroupIcon class="w-5 h-5" />
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
-          <div
-            class="flex flex-col items-center min-w-20 text-center cursor-pointer"
-            v-for="actor in dataList.actors"
-            @click="openPersonModal(actor)"
-          >
-            <img
-              :src="actor.profilePath"
-              class="w-20 h-20 rounded-full object-cover"
-            />
-            <div class="text-xs text-gray-500 font-medium mt-1">
-              {{ actor.name }}
+        <div>
+          <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
+            <div
+              class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
+              v-for="actor in dataList.actors"
+              @click="openPersonModal(actor)"
+            >
+              <BaseProfileImage
+                :src="actor.profilePath"
+                class="w-20 h-20 rounded-full object-cover"
+                size="80px"
+              />
+              <div class="text-xs text-gray-500 font-medium mt-1">
+                {{ actor.name }}
+              </div>
             </div>
           </div>
         </div>

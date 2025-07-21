@@ -6,7 +6,7 @@ import BaseStarRating from "../common/BaseStarRating.vue";
 import BaseTextArea from "../common/BaseTextArea.vue";
 import { ref, computed } from "vue";
 import { fetchKeywords } from "../../api/flask";
-import { createReview } from "../../api/reviewApi";
+import { createReview, updateReview, deleteReview } from "../../api/reviewApi";
 import { useUserStore } from "../../stores/userStore";
 import WordCloud from "vue3-word-cloud";
 
@@ -14,6 +14,7 @@ const keyword = ref("");
 const rating = ref(0);
 const extractedKeywords = ref([]);
 const userStore = useUserStore();
+const isLoading = ref(false);
 
 const props = defineProps({
   dataList: Object,
@@ -26,7 +27,24 @@ const filteredReviews = computed(() =>
 
 const myReviews = computed(() => props.dataList?.filter((r) => r.isMine));
 
-const handleSubmit = async () => {
+const isEditing = ref(false);
+
+const cancelEdit = () => {
+  isEditing.value = false;
+  keyword.value = "";
+  rating.value = 0;
+};
+
+const startEdit = () => {
+  const myReview = myReviews.value[0];
+  if (myReview) {
+    keyword.value = myReview.context;
+    rating.value = myReview.rating;
+    isEditing.value = true;
+  }
+};
+
+const handleUpdate = async () => {
   if (!keyword.value.trim()) {
     alert("리뷰를 입력해주세요.");
     return;
@@ -41,6 +59,37 @@ const handleSubmit = async () => {
     extractedKeywords.value = await fetchKeywords(keyword.value);
     console.log("키워드:", extractedKeywords.value);
 
+    await updateReview(props.movieId, {
+      memberId: userStore.user.memberId,
+      context: keyword.value,
+      rating: rating.value,
+      movieId: props.movieId,
+    });
+
+    alert("리뷰가 수정되었습니다!");
+    window.location.reload();
+  } catch (error) {
+    console.error("리뷰 수정 실패:", error);
+    alert("리뷰 수정 중 오류가 발생했습니다.");
+  }
+};
+
+const handleSubmit = async () => {
+  if (!keyword.value.trim()) {
+    alert("리뷰를 입력해주세요.");
+    return;
+  }
+
+  if (!rating.value || rating.value < 0.5) {
+    alert("별점을 입력해주세요.");
+    return;
+  }
+
+  try {
+    isLoading.value = true; // 로딩 시작
+
+    extractedKeywords.value = await fetchKeywords(keyword.value);
+
     await createReview(props.movieId, {
       memberId: userStore.user.memberId,
       context: keyword.value,
@@ -48,18 +97,35 @@ const handleSubmit = async () => {
       movieId: props.movieId,
     });
 
-    alert("리뷰가 등록되었습니다!");
+    // alert("리뷰가 등록되었습니다!");
     window.location.reload();
-
-    keyword.value = "";
-    rating.value = 0;
-    extractedKeywords.value = [];
   } catch (error) {
     console.error("리뷰 등록 실패:", error);
-    alert("리뷰 등록 중 오류가 발생했습니다.", error);
+    alert("리뷰 등록 중 오류가 발생했습니다.");
+  } finally {
+    isLoading.value = false; // 로딩 끝
   }
 };
 
+const handleDelete = async () => {
+  const myReview = myReviews.value[0];
+  if (!myReview) {
+    alert("삭제할 리뷰가 없습니다.");
+    return;
+  }
+
+  if (confirm("정말 삭제하시겠습니까?")) {
+    try {
+      await deleteReview(myReviews.id);
+      alert("리뷰가 삭제되었습니다!");
+      window.location.reload();
+    } catch (error) {
+      console.error("리뷰 삭제 실패:", error);
+      alert("리뷰 삭제 중 오류가 발생했습니다.");
+    }
+  }
+};
+console.log(myReviews.value);
 const averageRating = computed(() => {
   const all = props.dataList ?? [];
   const sum = all.reduce((acc, r) => acc + r.rating, 0);
@@ -82,16 +148,16 @@ const getStarPercentage = (star) => {
 };
 
 const wordData = ref([
-  { text: "연출", weight: 10 },
-  { text: "스토리", weight: 8 },
-  { text: "연기", weight: 12 },
-  { text: "OST", weight: 6 },
-  { text: "긴장감", weight: 9 },
-  { text: "감동", weight: 7 },
-  { text: "지루함", weight: 4 },
-  { text: "몰입감", weight: 11 },
-  { text: "캐릭터", weight: 5 },
-  { text: "전개", weight: 6 },
+  ["연출", 10],
+  ["스토리", 8],
+  ["연기", 12],
+  ["OST", 6],
+  ["긴장감", 9],
+  ["감동", 7],
+  ["지루함", 4],
+  ["몰입감", 11],
+  ["캐릭터", 5],
+  ["전개", 6],
 ]);
 </script>
 
@@ -125,18 +191,19 @@ const wordData = ref([
     </div>
 
     <div class="md:w-1/2 w-full">
-      <!-- ✅ 반드시 높이 지정 필요! -->
-      <div class="w-full h-full relative bg-white/5">
+      <div class="w-full h-full relative">
         <WordCloud
           :words="wordData"
-          :color="() => '#FACC15'"
-          :fontSizeMapper="(word) => word.weight * 5 + 12"
-          :rotation="0"
+          :color="
+            ([, weight]) =>
+              weight > 10 ? '#FDC500' : weight > 5 ? '#FFF066' : '#FFFBE1'
+          "
+          font-family="Roboto"
         />
       </div>
     </div>
   </div>
-  <div class="p-4 rounded-md">
+  <div v-if="myReviews.length === 0" class="p-4 rounded-md">
     <div class="mb-2 flex">
       <BaseStarRating v-model="rating" />
     </div>
@@ -151,18 +218,42 @@ const wordData = ref([
     </div>
     <div class="flex gap-2 justify-end mt-3">
       <BaseButton
-        label="등록"
-        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
+        :label="isLoading ? '' : '등록'"
+        :disabled="isLoading"
+        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 flex justify-center items-center"
         @click="handleSubmit"
-      />
+      >
+        <svg
+          v-if="isLoading"
+          class="animate-spin h-4 w-4 text-black"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"
+          ></path>
+        </svg>
+        <span v-if="isLoading" class="ml-2 text-sm">등록 중...</span>
+      </BaseButton>
     </div>
   </div>
-
   <div class="bg-[#16130f] p-6 space-y-4 gap-1 mb-4">
     <p class="text-white">
       <span class="text-amber-500 text-xl font-semibold">My</span> 리뷰
     </p>
     <BaseReview
+      v-if="!isEditing"
       v-for="review in myReviews"
       :key="review.id"
       :avatar="review.profile_img_url"
@@ -172,6 +263,52 @@ const wordData = ref([
       starColor="text-amber-500"
       :userId="userStore.user.memberId"
     />
+
+    <!-- 작성/수정 폼 -->
+    <div v-if="!myReviews.length === 0 || isEditing" class="p-4 rounded-md">
+      <div class="mb-2 flex">
+        <BaseStarRating v-model="rating" />
+      </div>
+
+      <div class="flex gap-2 justify-center items-center">
+        <BaseTextArea
+          v-model="keyword"
+          placeholder="리뷰를 작성해주세요"
+          minRows="4"
+          maxRows="4"
+        />
+      </div>
+
+      <div class="flex gap-2 justify-end mt-3">
+        <!-- 수정 모드 -->
+        <BaseButton
+          v-if="isEditing"
+          label="취소"
+          class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
+          @click="cancelEdit"
+        />
+        <BaseButton
+          v-if="isEditing"
+          label="수정 완료"
+          class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
+          @click="handleUpdate"
+        />
+      </div>
+    </div>
+    <div class="flex gap-2 justify-end mt-3">
+      <BaseButton
+        v-if="myReviews.length > 0 && !isEditing"
+        label="수정"
+        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
+        @click="startEdit"
+      />
+      <BaseButton
+        v-if="myReviews.length > 0 && !isEditing"
+        label="삭제"
+        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
+        @click="handleDelete"
+      />
+    </div>
   </div>
 
   <div class="min-h-screen bg-[#16130f] p-6 space-y-4">
@@ -191,5 +328,34 @@ const wordData = ref([
       starColor="text-amber-500"
       :userId="review.memberId"
     />
+  </div>
+  <!-- 전체화면 로딩 오버레이 -->
+  <div
+    v-if="isLoading"
+    class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50"
+  >
+    <div class="flex flex-col items-center space-y-4">
+      <svg
+        class="animate-spin h-12 w-12 text-yellow-400"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"
+        ></path>
+      </svg>
+      <p class="text-white text-lg font-semibold">리뷰 등록 중...</p>
+    </div>
   </div>
 </template>

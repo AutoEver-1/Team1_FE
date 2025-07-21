@@ -2,47 +2,86 @@
 import BaseButton from "../common/BaseButton.vue";
 import BasePosterSlider from "../common/BasePosterSlider.vue";
 import { ref, onMounted } from "vue";
-import { getOttExpect } from "../../api/movieApi";
+import { getOttExpect, getOttRecently } from "../../api/movieApi";
 
+// OTT 정보 리스트
 const ottList = [
   {
     name: "넷플릭스",
-    id: 1,
+    id: 11,
     logo: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Netflix_2015_N_logo.svg",
   },
   {
     name: "왓챠",
-    id: 2,
+    id: 87,
     logo: "src/assets/watcha_icon.svg",
   },
   {
     name: "디즈니+",
-    id: 3,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+    id: 350,
+    logo: "https://static.kinolights.com/icon/btn_squircle_disneyplus.png",
   },
   {
     name: "웨이브",
-    id: 4,
+    id: 371,
     logo: "src/assets/wave_icon.png",
   },
 ];
 
 const selectedOtt = ref(ottList[0].id);
-const dataList = ref();
+const allDataList = ref({});
+const dataList = ref([]);
+
+// OTT ID → 데이터 키 매핑
+const ottMovieKeyMap = {
+  11: "netflixMovieList",
+  87: "watchaMovieList",
+  350: "disneyPlusMovieList",
+  371: "waveMovieList",
+};
+
+// 특정 OTT에 대한 영화 리스트만 추출
+const flattenMovieList = (rawData, ottId) => {
+  const key = ottMovieKeyMap[ottId];
+  return rawData?.[key] ?? [];
+};
+
+// 전체 OTT 데이터 로딩 (한 번만)
+const loadAllOttData = async () => {
+  const result = {};
+
+  for (const ott of ottList) {
+    try {
+      const [expectRes, recentlyRes] = await Promise.all([
+        getOttExpect(ott.id),
+        getOttRecently(ott.id),
+      ]);
+
+      const expectList = flattenMovieList(expectRes.data, ott.id);
+      const recentlyList = flattenMovieList(recentlyRes.data, ott.id);
+
+      result[ott.id] = [...expectList, ...recentlyList]; // ✅ 합쳐서 저장
+    } catch (err) {
+      console.error(`${ott.name} 데이터 불러오기 실패`, err);
+      result[ott.id] = [];
+    }
+  }
+
+  allDataList.value = result;
+  updateDataList(selectedOtt.value);
+};
+
+// 선택한 OTT의 영화 데이터 세팅
+const updateDataList = (ottId) => {
+  selectedOtt.value = ottId;
+  dataList.value =
+    allDataList.value[ottId]?.filter((movie) => movie.posterPath) ?? [];
+  console.log(dataList.value);
+};
 
 onMounted(() => {
-  getExpectList(selectedOtt.value);
+  loadAllOttData();
 });
-
-const getExpectList = async (ottId) => {
-  const res = await getOttExpect(ottId);
-  dataList.value = res.data.expectedReleaseMovieList;
-};
-
-const handleOttSelect = (ottId) => {
-  selectedOtt.value = ottId;
-  getExpectList(ottId);
-};
 </script>
 
 <template>
@@ -51,7 +90,7 @@ const handleOttSelect = (ottId) => {
       <p
         class="text-white text-md sm:text-2xl font-semibold md:font-bold mb-3 md:mb-6 text-left"
       >
-        OTT별 개봉 예정작
+        OTT별 최신 영화
       </p>
 
       <div
@@ -70,12 +109,17 @@ const handleOttSelect = (ottId) => {
                 : 'bg-transparent text-amber-200 border border-amber-400 hover:bg-amber-400 hover:text-black w-24 md:w-28',
             ].join(' ')
           "
-          @click="handleOttSelect(ott.id)"
+          @click="updateDataList(ott.id)"
         />
       </div>
 
       <div class="flex gap-6 flex-col">
-        <BasePosterSlider :dataList="dataList" />
+        <BasePosterSlider
+          v-if="dataList.length"
+          :dataList="dataList"
+          title="개봉예정 + 최근작"
+        />
+        <div v-else class="text-amber-200">영화 정보가 없습니다.</div>
       </div>
     </div>
   </div>

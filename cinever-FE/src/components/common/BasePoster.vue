@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import BaseRating from "./BaseRating.vue";
 import BaseBadge from "./BaseBadge.vue";
 
 const isHover = ref(false);
 
-defineProps({
+const props = defineProps({
   averageScore: Number,
   director: Array,
   genre: Array,
@@ -16,6 +16,13 @@ defineProps({
   title: String,
   tmdbScore: Number,
   cumulativeAttendance: Number,
+});
+
+const fullPosterUrl = computed(() => {
+  if (!props.posterPath) return "";
+  return props.posterPath.startsWith("http")
+    ? props.posterPath
+    : `https://image.tmdb.org/t/p/original${props.posterPath}`;
 });
 </script>
 
@@ -28,10 +35,10 @@ defineProps({
     >
       <div
         class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden flex"
-        :class="isHover ? 'w-[340px] z-50' : 'w-[120px] md:w-[160px]'"
+        :class="isHover ? 'w-[370px] z-50' : 'w-[120px] md:w-[160px]'"
       >
         <img
-          :src="posterPath"
+          :src="fullPosterUrl"
           alt="poster"
           class="h-[180px] md:w-[160px] md:h-full object-cover rounded-l-xl"
         />
@@ -60,7 +67,7 @@ defineProps({
               class="text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis"
               :class="isHover ? 'opacity-100' : 'opacity-0'"
             >
-              {{ title.length > 15 ? title.slice(0, 15) + "..." : title }}
+              {{ title?.length > 12 ? title.slice(0, 12) + "..." : title }}
             </h2>
 
             <div
@@ -87,7 +94,7 @@ defineProps({
                   alt="IMDb"
                   class="w-6 h-auto"
                 />
-                <span class="text-sm text-white">
+                <span class="ml-2 text-sm font-medium text-amber-400">
                   {{ isHover ? tmdbScore : "-" }}
                 </span>
                 <span class="text-xs text-gray-200 opacity-50">
@@ -96,17 +103,24 @@ defineProps({
               </div>
             </div>
 
-            <div class="space-y-1.5 mt-1">
-              <BaseBadge :dataList="genre" index="#" />
+            <div class="space-y-1.5 pt-2">
+              <BaseBadge :dataList="genre?.slice(0, 2)" index="#" />
               <p
-                class="text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                class="text-xs whitespace-nowrap overflow-hidden text-ellipsis pt-2"
               >
                 개봉: {{ releaseDate.split("-")[0] }}
               </p>
               <p
                 class="text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                v-if="director != ''"
               >
-                감독: {{ director.map((d) => d.name).join(", ") }}
+                감독:
+                {{
+                  director
+                    .map((d) => d.name)
+                    .join(", ")
+                    .slice(0, 15)
+                }}...
               </p>
             </div>
           </div>

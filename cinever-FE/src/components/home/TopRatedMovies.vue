@@ -11,8 +11,8 @@ onMounted(() => {
 
 const getTopRatedMovieList = async () => {
   try {
-    const res = await getTopRated();
-    topRatedMovieList.value = res.data.movieList;
+    const res = await getTopRated(0, 28);
+    topRatedMovieList.value = res.data.content;
   } catch (error) {
     console.error("역대 최고 평점 영화 목록 가져오기 실패:", error);
   }

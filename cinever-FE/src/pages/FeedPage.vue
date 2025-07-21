@@ -4,201 +4,30 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 import BaseRating from "../components/common/BaseRating.vue";
+import { CalendarIcon } from "@heroicons/vue/24/outline";
+import { getFollowingReview } from "../api/reviewApi";
+import BaseProfileImage from "../components/common/BaseProfileImage.vue";
 
-/* ──────────────────────────────────────────
-  1) 더미 데이터 (최신순 정렬)
-────────────────────────────────────────── */
-const allReviews = [
-  {
-    id: 1,
-    date: "2025-07-15",
-    user: {
-      nickname: "아트하우스L",
-      role: "배우",
-      preference: "멜로 · 로드무비",
-      avatar: "https://i.pravatar.cc/150?img=11",
-    },
-    movie: {
-      title: "라라랜드",
-      genre: "뮤지컬 · 로맨스",
-      avgScore: 4.6,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg",
-    },
-    myScore: 5,
-    likeCount: 45,
-    content: "재즈와 사랑, 그 아름답고도 씁쓸한 교차점.",
-  },
-  {
-    id: 1,
-    date: "2025-07-15",
-    user: {
-      nickname: "아트하우스L",
-      role: "배우",
-      preference: "멜로 · 로드무비",
-      avatar: "https://i.pravatar.cc/150?img=11",
-    },
-    movie: {
-      title: "라라랜드",
-      genre: "뮤지컬 · 로맨스",
-      avgScore: 4.6,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg",
-    },
-    myScore: 5,
-    likeCount: 45,
-    content: "재즈와 사랑, 그 아름답고도 씁쓸한 교차점.",
-  },
-  {
-    id: 2,
-    date: "2025-07-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  {
-    id: 2,
-    date: "2025-06-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  {
-    id: 2,
-    date: "2025-05-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  {
-    id: 2,
-    date: "2025-04-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  {
-    id: 2,
-    date: "2025-03-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  {
-    id: 2,
-    date: "2023-07-14",
-    user: {
-      nickname: "무비덕후",
-      role: "관객",
-      preference: "스릴러 · SF",
-      avatar: "https://i.pravatar.cc/150?img=1",
-    },
-    movie: {
-      title: "인터스텔라",
-      genre: "SF",
-      avgScore: 4.5,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/8nO6UVikWSXVjRMzYbQV4MbEJyB.jpg",
-    },
-    myScore: 5,
-    likeCount: 12,
-    content:
-      "블랙홀·상대성이론·부녀愛까지 완벽한 우주 가족영화. 쿠퍼의 “STAY” 장면은 몇 번을 봐도 눈물을 자아낸다.",
-  },
-  /* 필요에 따라 더 추가 … */
-  {
-    id: 15,
-    date: "2025-07-01",
-    user: {
-      nickname: "FILM_J",
-      role: "감독",
-      preference: "아트 · 실험",
-      avatar: "https://i.pravatar.cc/150?img=8",
-    },
-    movie: {
-      title: "테넷",
-      genre: "액션 · SF",
-      avgScore: 3.8,
-      poster:
-        "https://image.tmdb.org/t/p/w185_and_h278_bestv2/k68nPLbIST6NP96JmTxmZijEvCA.jpg",
-    },
-    myScore: 4,
-    likeCount: 20,
-    content:
-      "엔트로피 거스름돈까지 챙겨 가는 놀란의 시계태엽. 머리보다 귀를 믿어야 이해가 간다.",
-  },
-].sort((a, b) => b.date.localeCompare(a.date)); // 최신순 정렬
-
+// const allReviews = [
+//   {
+//     movieId: 101,
+//     title: "Inception",
+//     posterPath: "https://image.tmdb.org/t/p/w500/inception.jpg",
+//     date: "2010-07-16",
+//     averageScore: 4.8,
+//     isAdult: false,
+//     following_role: "Critic",
+//     following_profilepath: "https://example.com/profiles/user1.jpg",
+//     following_nickname: "Dreamer",
+//     following_memId: "1",
+//     rating: 5.0,
+//     reviewdDate: "2025-07-20",
+//     Context: "A mind-bending sci-fi classic.",
+//     likeCount: 120,
+//     isLiked: true,
+//   },
+// ];
+const allReviews = ref([]);
 /* ──────────────────────────────────────────
   2) 무한스크롤 상태
 ────────────────────────────────────────── */
@@ -208,15 +37,16 @@ const visibleReviews = ref([]);
 const endReached = ref(false);
 
 /** 다음 페이지를 visibleReviews에 push */
-const loadNextPage = () => {
+const loadNextPage = async () => {
   if (endReached.value) return;
   const start = page.value * PAGE_SIZE;
-  const next = allReviews.slice(start, start + PAGE_SIZE);
+  const next = allReviews.value?.slice(start, start + PAGE_SIZE);
   if (next.length) {
     visibleReviews.value.push(...next);
     page.value++;
   }
-  if (visibleReviews.value.length >= allReviews.length) endReached.value = true;
+  if (visibleReviews.value.length >= allReviews.value?.length)
+    endReached.value = true;
 };
 
 /* ──────────────────────────────────────────
@@ -225,12 +55,19 @@ const loadNextPage = () => {
 const grouped = computed(() => {
   const map = new Map();
   visibleReviews.value.forEach((r) => {
-    if (!map.has(r.date)) map.set(r.date, []);
-    map.get(r.date).push(r);
+    if (!map.has(r.reviewedDate)) map.set(r.reviewedDate, []);
+    map.get(r.reviewedDate).push(r);
   });
+
   // 그룹도 최신순
   return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
 });
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "-";
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+};
 
 /* ──────────────────────────────────────────
   4) 화면에 표시될 현재 날짜 (스택용)
@@ -262,7 +99,7 @@ const setGroupRef = (el, idx) => {
 };
 
 /** 날짜 스택 IntersectionObserver 초기화 */
-const initDateObserver = () => {
+const initDateObserver = async () => {
   dateObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -289,7 +126,7 @@ const initDateObserver = () => {
 const sentinel = ref(null);
 let scrollObserver = null;
 
-const initScrollObserver = () => {
+const initScrollObserver = async () => {
   scrollObserver = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && loadNextPage()),
     { threshold: 1 }
@@ -301,10 +138,11 @@ const initScrollObserver = () => {
   7) 생명주기
 ────────────────────────────────────────── */
 onMounted(async () => {
-  loadNextPage(); // 첫 페이지
+  await getReviewList();
+  await loadNextPage(); // 첫 페이지
   await nextTick(); // DOM 그린 뒤
-  initDateObserver(); // 날짜 스택 옵저버
-  initScrollObserver(); // 무한스크롤 옵저버
+  await initDateObserver(); // 날짜 스택 옵저버
+  await initScrollObserver(); // 무한스크롤 옵저버
 });
 
 onBeforeUnmount(() => {
@@ -314,37 +152,43 @@ onBeforeUnmount(() => {
     groupEls.value.forEach((el) => el && dateObserver.unobserve(el));
   }
 });
+
+const getReviewList = async () => {
+  const res = await getFollowingReview();
+  allReviews.value = res.reviewList;
+  console.log(allReviews);
+};
 </script>
 
 <template>
   <BaseBackground>
     <!-- ① 고정(스택) 날짜 표시 -->
     <div
-      class="fixed left-2 sm:left-[15%] top-32 z-30 flex flex-col items-end pointer-events-none"
+      class="hidden md:flex fixed left-[20%] top-32 z-30 flex-col items-end pointer-events-none"
     >
       <p class="text-base font-bold">{{ currentYear }}</p>
-      <p class="mt-2 text-sm font-semibold">{{ currentMonth }}</p>
-      <p class="mt-1 text-sm font-semibold">{{ currentDay }}</p>
+      <p class="mt-2 text-3xl font-semibold text-amber-500">
+        {{ currentMonth }}
+      </p>
+      <p class="mt-1 text-3xl font-semibold text-amber-500">{{ currentDay }}</p>
     </div>
 
     <!-- ② 리뷰 목록 -->
-    <div class="mx-auto max-w-4xl py-32 w-full sm:w-[75%]">
-      <div class="flex flex-col gap-8 sm:gap-10 lg:gap-14">
+    <div class="md:mx-auto max-w-4xl pt-20 pb-32 md:py-32 w-full md:w-full">
+      <div class="flex flex-col gap-8 sm:gap-10 lg:gap-14 w-full">
         <!-- 그룹 루프 -->
         <div
           v-for="(group, i) in grouped"
           :key="group[0]"
           :data-date="group[0]"
           :ref="(el) => setGroupRef(el, i)"
-          class="relative flex gap-4 sm:gap-6"
+          class="relative flex sm:gap-6 justify-center"
         >
           <!-- 타임라인 자리 확보(폭 10%) -->
-          <div class="w-[10%] shrink-0"></div>
+          <div class="md:w-[10%] shrink-0"></div>
 
           <!-- ── 리뷰 카드 컬럼 ── -->
-          <div
-            class="flex w-[80%] sm:w-[75%] flex-col gap-8 sm:gap-10 lg:gap-14"
-          >
+          <div class="flex w-[90%] flex-col gap-8 sm:gap-10 lg:gap-14">
             <div
               v-for="review in group[1]"
               :key="review.id"
@@ -354,56 +198,65 @@ onBeforeUnmount(() => {
               <div
                 class="flex flex-col pb-2 sm:pb-4 border-b border-white/15 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div class="flex items-center gap-3">
-                  <img
-                    :src="review.user.avatar"
-                    alt="avatar"
-                    class="h-8 w-8 rounded-full object-cover sm:h-8 sm:w-8"
+                <RouterLink
+                  :to="`/user/${review.followingMemId}`"
+                  class="flex items-center gap-3"
+                >
+                  <BaseProfileImage
+                    size="40px"
+                    :src="review.followingProfilePath"
                   />
+
                   <div>
                     <p
                       class="flex items-center gap-2 text-sm font-semibold text-white sm:text-base"
                     >
-                      {{ review.user.nickname }}
+                      {{ review.followingNickname }}
                       <span
                         class="w-fit text-xs font-bold text-black px-2 py-0.5 rounded bg-yellow-400"
                       >
-                        {{ review.user.role }}
+                        {{ review.followingRole }}
                       </span>
                     </p>
                     <p class="text-[10px] text-white/60 sm:text-xs">
-                      {{ review.user.preference }}
+                      <!-- {{ review.user.preference }} -->
                     </p>
                   </div>
-                </div>
+                </RouterLink>
                 <div class="flex items-center text-amber-400">
-                  <BaseRating :score="review.myScore" size="20" />
+                  <BaseRating :score="review.rating" size="20" />
                   <span class="ml-2 text-[20px] font-medium">
-                    {{ review.myScore ?? "-" }}
+                    {{ review.rating ?? "-" }}
                   </span>
                   <span
                     class="text-xs font-medium text-gray-200 opacity-50 mt-2"
                   >
-                    {{ review.myScore ? "\u00A0/ 5.0" : "" }}
+                    {{ review.rating ? "\u00A0/ 5.0" : "" }}
                   </span>
                 </div>
               </div>
 
               <!-- 영화 정보 -->
               <div class="mt-4 flex gap-4">
-                <img
-                  :src="review.movie.poster"
-                  alt="poster"
-                  class="h-20 w-14 rounded object-cover shadow-sm sm:h-24 sm:w-16"
-                />
+                <RouterLink :to="`/movie/${review.movieId}`">
+                  <img
+                    :src="review.posterPath"
+                    alt="poster"
+                    class="h-20 w-14 rounded object-cover shadow-sm sm:h-24 sm:w-16"
+                  />
+                </RouterLink>
                 <div>
                   <p
                     class="truncate text-sm font-medium text-white sm:text-base"
                   >
-                    {{ review.movie.title }}
+                    {{ review.title }}
                   </p>
                   <p class="text-[10px] text-white/60 sm:text-xs">
-                    {{ review.movie.genre }}
+                    <!-- {{ review.movie.genre }} -->
+                  </p>
+                  <p class="text-[10px] text-white/60 sm:text-xs flex gap-1">
+                    <CalendarIcon class="w-4 h-4" />
+                    {{ review.releaseDate }}
                   </p>
                   <p class="mt-1 flex items-center gap-1 text-xs sm:text-sm">
                     평균 평점
@@ -417,16 +270,19 @@ onBeforeUnmount(() => {
                         d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                       />
                     </svg>
-                    {{ review.movie.avgScore.toFixed(1) }}
+                    {{ review.averageScore.toFixed(1) }}
                   </p>
                 </div>
               </div>
 
               <!-- 리뷰 내용 -->
+              <p class="text-xs text-white/60 md:hidden mt-4">
+                {{ review.reviewedDate }}
+              </p>
               <p
-                class="mt-4 pb-4 border-b border-white/15 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
+                class="mt-1 pb-4 border-b border-white/15 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
               >
-                {{ review.content }}
+                {{ review.context }}
               </p>
 
               <!-- 좋아요 -->
