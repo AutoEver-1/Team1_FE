@@ -7,7 +7,7 @@
       <div class="max-w-6xl w-[80%] mt-14 mb-20 relative hidden lg:block">
         <BestReviewerSection />
       </div>
-      <div class="w-[90%] max-w-4xl mb-20 overflow-x-auto hidden lg:block">
+      <div class="w-[90%] max-w-5xl mb-20 overflow-x-auto hidden lg:block">
         <ReviewerTableSection />
       </div>
       <div class="w-[90%] mb-20 overflow-x-auto block lg:hidden">
