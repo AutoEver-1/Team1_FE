@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 
 const getReviewList = async () => {
   const res = await getFollowingReview();
-  allReviews.value = res.reviewList;
+  allReviews.value = res.reviewList.slice().reverse();
   console.log(allReviews);
 };
 </script>
