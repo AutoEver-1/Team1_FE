@@ -29,7 +29,7 @@ defineEmits(["change"]);
       :key="page"
       @click="$emit('change', page)"
       :class="[
-        'px-3 py-1 rounded-full',
+        'px-3 py-1 rounded-full outline-none',
         currentPage === page
           ? 'bg-amber-500/90 text-amber-900 '
           : 'bg-transparent text-white/90 hover:bg-white/20',

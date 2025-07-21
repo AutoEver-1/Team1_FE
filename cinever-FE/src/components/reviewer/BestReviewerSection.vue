@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Mousewheel } from "swiper/modules";
+import { getReviewerRoleMeta } from "../../utils/reviewerRole";
 
 const dataList = ref([]);
 const swiperInstance = ref(null);
@@ -28,11 +29,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="relative w-full px-2">
+  <div class="relative w-full">
     <Swiper
       @swiper="(swiper) => (swiperInstance = swiper)"
       :modules="[Navigation, Mousewheel]"
-      :space-between="16"
+      :space-between="10"
       :slides-per-view="1.2"
       :breakpoints="{
         1024: { slidesPerView: 3.2 },
@@ -43,14 +44,17 @@ onMounted(async () => {
       <SwiperSlide
         v-for="(data, i) in dataList"
         :key="data.memberId"
-        class="group"
+        class="group py-2"
       >
         <RouterLink :to="'/user/' + data.memberId">
           <div
-            class="relative backdrop-blur-md bg-white/5 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 h-[320px] w-[220px]"
+            :class="[
+              'relative backdrop-blur-xl backdrop-saturate-150 rounded-xl overflow-hidden transition duration-300 h-[320px] w-[218px]',
+              getReviewerRoleMeta(data.role).roleClass,
+            ]"
           >
-            <div class="absolute top-0 left-2 px-1 py-0.5 z-10 w-10">
-              <BaseRankingBadge :rank="i + 1" size="40" />
+            <div class="absolute -top-1 left-2 px-1 py-0.5 z-10 w-10">
+              <BaseRankingBadge :rank="i + 1" size="44" color="gold" />
             </div>
 
             <div
@@ -59,22 +63,28 @@ onMounted(async () => {
               <img
                 :src="data.profile_img_url"
                 alt="profile"
-                class="transition-all duration-300 w-28 h-28 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-10"
+                class="transition-all duration-300 w-32 h-32 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-6"
               />
 
               <div
-                class="mt-2 flex flex-col items-center justify-center gap-1 group-hover:flex-row group-hover:gap-2"
+                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:flex-row group-hover:gap-2"
               >
                 <p
                   class="text-lg font-semibold text-center group-hover:text-sm"
                 >
                   {{ data.nickname }}
                 </p>
-                <span
+                <!-- <span
                   class="inline-block text-sm font-bold bg-amber-500 text-black px-2 py-0.5 rounded group-hover:text-[10px] group-hover:h-5 group-hover:py-0"
                 >
                   {{ data.role }}
-                </span>
+                </span> -->
+                <div
+                  class="w-fit px-3 py-1 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150 shadow-sm"
+                  :class="getReviewerRoleMeta(data.role).badgeClass"
+                >
+                  {{ getReviewerRoleMeta(data.role).roleName }}
+                </div>
               </div>
             </div>
 
@@ -155,7 +165,6 @@ onMounted(async () => {
 .swiper-slide-active > div {
   transform: scale(1.05);
   z-index: 10;
-  box-shadow: 0 0 24px rgba(255, 255, 255, 0.1);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 .group:hover > div {

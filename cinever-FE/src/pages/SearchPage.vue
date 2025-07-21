@@ -11,6 +11,7 @@ import { useRoute, useRouter } from "vue-router";
 import { getReviewerAll } from "../api/reviewerApi";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid";
 import BasePagination from "../components/common/BasePagination.vue";
+import { getPaginatedList, getTotalPages } from "../services/paging";
 
 // 탭 메뉴
 const tabs = ["영화", "리뷰어", "감독", "배우"];
@@ -91,23 +92,6 @@ const getTopRatedMovieList = async () => {
   }
 };
 
-const getTotalPages = (listRef) => {
-  return computed(() => {
-    return listRef.value
-      ? Math.ceil(listRef.value.length / itemsPerPage.value)
-      : 1;
-  });
-};
-
-const getPaginatedList = (listRef, pageRef) => {
-  return computed(() => {
-    if (!listRef.value) return [];
-    const start = (pageRef.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return listRef.value.slice(start, end);
-  });
-};
-
 const moviePage = ref(1);
 const reviewerPage = ref(1);
 const actorPage = ref(1); // 추가 필요 시
@@ -115,16 +99,32 @@ const directorPage = ref(1); // 추가 필요 시
 const itemsPerPage = ref(12);
 
 // 페이지 수 계산
-const totalMoviePages = getTotalPages(topRatedMovieList);
-const totalReviewerPages = getTotalPages(searchedReviewers);
-const totalActorPages = getTotalPages(topRatedMovieList); // 임시
-const totalDirectorPages = getTotalPages(topRatedMovieList); // 임시
+const totalMoviePages = getTotalPages(topRatedMovieList, itemsPerPage);
+const totalReviewerPages = getTotalPages(searchedReviewers, itemsPerPage);
+const totalActorPages = getTotalPages(topRatedMovieList, itemsPerPage); // 임시
+const totalDirectorPages = getTotalPages(topRatedMovieList, itemsPerPage); // 임시
 
 // 각 페이지에 보여줄 목록
-const paginatedMovieList = getPaginatedList(topRatedMovieList, moviePage);
-const paginatedReviewerList = getPaginatedList(searchedReviewers, reviewerPage);
-const paginatedActorList = getPaginatedList(topRatedMovieList, actorPage); // 임시
-const paginatedDirectorList = getPaginatedList(topRatedMovieList, directorPage); // 임시
+const paginatedMovieList = getPaginatedList(
+  topRatedMovieList,
+  moviePage,
+  itemsPerPage
+);
+const paginatedReviewerList = getPaginatedList(
+  searchedReviewers,
+  reviewerPage,
+  itemsPerPage
+);
+const paginatedActorList = getPaginatedList(
+  topRatedMovieList,
+  actorPage,
+  itemsPerPage
+); // 임시
+const paginatedDirectorList = getPaginatedList(
+  topRatedMovieList,
+  directorPage,
+  itemsPerPage
+); // 임시
 
 // // 페이지 이동 함수
 // const goToPage = (page) => {
