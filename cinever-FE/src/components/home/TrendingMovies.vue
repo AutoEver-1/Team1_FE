@@ -11,8 +11,10 @@ onMounted(() => {
 
 const getPopularMovieList = async () => {
   try {
-    const res = await getPopular(0, 28);
-    popularMovieList.value = res.data.content;
+    const res = await getPopular(0, 30);
+    popularMovieList.value = res.data.content.filter(
+      (movie) => movie.posterPath
+    );
     console.log(popularMovieList);
   } catch (error) {
     console.error("실시간 인기 영화 가져오기 실패:", error);

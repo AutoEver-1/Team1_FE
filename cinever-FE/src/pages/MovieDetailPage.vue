@@ -69,6 +69,7 @@ const getMovieById = async () => {
         v-if="movieData"
       >
         <BaseYoutubeVideo
+          v-if="movieData.video_path"
           :videoId="movieData.video_path"
           :thumbnailUrl="
             'https://img.youtube.com/vi/' +
@@ -80,7 +81,8 @@ const getMovieById = async () => {
         <div class="w-full px-4 md:px-8 lg:w-[70%]">
           <div class="text-white min-h-screen py-10">
             <div
-              class="flex flex-col lg:flex-row gap-10 lg:mt-[25%] items-start"
+              class="flex flex-col lg:flex-row gap-10 items-start"
+              :class="movieData.video_path ? 'lg:mt-[25%]' : 'mt-[5%]'"
             >
               <div class="w-full lg:w-[30%] lg:sticky top-16 self-start">
                 <MovieDetailLeft :dataList="movieData" />

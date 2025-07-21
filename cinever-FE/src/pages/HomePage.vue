@@ -14,6 +14,7 @@ import EmojiQuizBanner from "../components/home/EmojiQuizBanner.vue";
 import Footer from "../components/common/Footer.vue";
 
 const isMobile = ref(false);
+const boxofficeLoaded = ref(false);
 
 onMounted(() => {
   isMobile.value = window.innerWidth < 768;
@@ -57,22 +58,21 @@ onUnmounted(() => {
       id="section-1"
       class="relative snap-start w-full h-[100dvh] overflow-hidden"
     >
-      <BoxofficeSection />
+      <BoxofficeSection @loaded="boxofficeLoaded = true" />
     </div>
 
-    <BaseBackground>
+    <BaseBackground v-if="boxofficeLoaded">
       <div
         class="relative snap-start w-full overflow-hidden pt-32 gap-14 flex flex-col"
       >
         <QuoteSection />
-        <OTTExpectSection />
-        <!-- <OTTRecentlySection /> -->
-        <ReviewRecentlySection />
         <TrendingMovies />
         <TopRatedMovies />
-        <EmojiQuizBanner />
         <RecommendedYoutubeSection />
+        <OTTExpectSection />
+        <ReviewRecentlySection />
         <LatestMovies />
+        <EmojiQuizBanner />
         <Footer />
       </div>
     </BaseBackground>
@@ -84,12 +84,11 @@ onUnmounted(() => {
     >
       <BoxofficeSection />
       <QuoteSection />
-      <OTTExpectSection />
-      <!-- <OTTRecentlySection /> -->
-      <ReviewRecentlySection />
-      <LatestMovies />
       <TrendingMovies />
+      <OTTExpectSection />
+      <ReviewRecentlySection />
       <TopRatedMovies />
+      <LatestMovies />
     </div>
   </div>
 </template>

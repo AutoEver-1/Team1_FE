@@ -67,7 +67,7 @@ const fullPosterUrl = computed(() => {
               class="text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis"
               :class="isHover ? 'opacity-100' : 'opacity-0'"
             >
-              {{ title?.length > 15 ? title.slice(0, 15) + "..." : title }}
+              {{ title?.length > 12 ? title.slice(0, 12) + "..." : title }}
             </h2>
 
             <div

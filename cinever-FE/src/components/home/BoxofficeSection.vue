@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineEmits } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -14,17 +14,25 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const boxOfficeMovieList = ref();
 const selectedMovie = ref(null);
-const youtubeId = "42CK_hmKkq0";
+const emit = defineEmits(["loaded"]);
+const isLoading = ref(true);
 
 onMounted(() => {
   getBoxOfficeMovieList();
+  emit("loaded");
 });
 
 const getBoxOfficeMovieList = async () => {
-  const res = await getBoxOfficeRanking();
-  boxOfficeMovieList.value = res.data.movieList;
-  selectedMovie.value = boxOfficeMovieList.value[0];
-  console.log(boxOfficeMovieList);
+  isLoading.value = true;
+  try {
+    const res = await getBoxOfficeRanking();
+    boxOfficeMovieList.value = res.data.movieList;
+    selectedMovie.value = boxOfficeMovieList.value[0];
+  } catch (e) {
+    console.error("박스오피스 데이터 불러오기 실패", e);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const handleMovieClick = (movie) => {
@@ -37,6 +45,40 @@ const handleMovieClick = (movie) => {
 </script>
 
 <template>
+  <!-- 로딩 화면 -->
+  <div
+    v-if="isLoading"
+    class="w-full h-[90vh] flex flex-col justify-center items-center bg-black text-white gap-6"
+  >
+    <!-- 로딩 애니메이션 -->
+    <div class="relative w-16 h-16">
+      <div
+        class="absolute inset-0 rounded-full border-4 border-amber-400 border-t-transparent animate-spin"
+      ></div>
+      <div
+        class="absolute inset-2 rounded-full bg-black flex items-center justify-center"
+      >
+        <svg
+          class="w-6 h-6 text-amber-400 animate-pulse"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.75 3.75L14.25 12L9.75 20.25"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- 로딩 텍스트 -->
+    <p class="text-sm sm:text-base text-gray-300 animate-pulse">
+      박스오피스 인기 영화를 불러오는 중입니다...
+    </p>
+  </div>
   <div
     v-if="selectedMovie"
     class="relative w-full md:min-h-[100vh] md:bg-black text-white overflow-hidden md:top-12"
@@ -208,5 +250,16 @@ const handleMovieClick = (movie) => {
   );
   -webkit-mask-image: linear-gradient(var(--direction), black, transparent);
   mask-image: linear-gradient(var(--direction), black, transparent);
+}
+.loader {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

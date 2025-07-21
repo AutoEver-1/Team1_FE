@@ -7,7 +7,7 @@ export const getUserInfo = async (id) => {
     const response = await api.get(`${userApi}/${id}`);
     return response.data;
   } catch (error) {
-    console.error("API 호출 실패:", error);
+    console.error("getUserInfo API 호출 실패:", error);
     throw error;
   }
 };
