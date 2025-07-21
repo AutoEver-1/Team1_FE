@@ -54,7 +54,7 @@ const getRecommendedMovieList = async () => {
     });
 
     // 키워드 영화 검색 미리보기
-    resultList.value = res.data?.movieList?.content || [];
+    resultList.value = res.movieList?.content || [];
     console.log(resultList.value);
 
     // 초기 상태에 전체 영화 데이터를 results에 넣음
@@ -113,7 +113,12 @@ const selectKeyword = (item) => {
 const toggleOpen = () => {
   isOpen.value = !isOpen.value;
   if (isOpen.value) {
-    nextTick(() => inputRef.value?.focus()); // 포커스 주기
+    nextTick(() => {
+      inputRef.value?.focus();
+      setTimeout(() => {
+        getRecommendedMovieList();
+      }, 500); // 슬라이드 애니메이션 duration(ms)에 맞춤
+    });
   }
 };
 

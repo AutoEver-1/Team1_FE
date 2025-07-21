@@ -3,10 +3,15 @@
     @click="$emit('click', movie)"
     class="flex items-center gap-5 px-3 py-2 rounded-lg cursor-pointer bg-white/5 backdrop-blur-lg hover:bg-white/15 border border-white/10 shadow-lg transition-all duration-300 overflow-hidden"
   >
-    <img :src="posterSrc" class="w-[70%] max-w-16 object-contain rounded" />
+    <img
+      :src="posterSrc"
+      class="w-[70%] max-w-16 min-h-[96px] object-contain rounded"
+    />
 
     <div class="flex flex-col gap-1 pb-1">
-      <h2 class="text-base font-medium">{{ movie.title }}</h2>
+      <h2 class="text-base font-medium whitespace-nowrap">
+        {{ movie.title }}
+      </h2>
       <p class="text-xs text-white/40">
         {{ directorNames }} · {{ releaseYear }}
       </p>

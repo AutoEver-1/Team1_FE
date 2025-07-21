@@ -1,5 +1,5 @@
 <script setup>
-import fallbackImg from "../../assets/images/logo.png";
+import fallbackImg from "../../assets/images/default_profile.png";
 import {
   HeartIcon,
   ChatBubbleLeftEllipsisIcon,
@@ -30,7 +30,11 @@ const { roleClass, badgeClass, roleName } = getReviewerRoleMeta(
     <!-- 이미지 (큰 원형) -->
     <div class="w-36 h-36 mb-3">
       <img
-        :src="reviewer.profile_img_url || fallbackImg"
+        :src="
+          reviewer.profile_img_url && reviewer.profile_img_url !== '1'
+            ? reviewer.profile_img_url
+            : fallbackImg
+        "
         class="w-full h-full object-cover rounded-full"
       />
     </div>
@@ -46,8 +50,12 @@ const { roleClass, badgeClass, roleName } = getReviewerRoleMeta(
       </div>
 
       <!-- 리뷰어 닉네임 -->
-      <h2 class="text-lg font-semibold">{{ reviewer.nickname }}</h2>
-
+      <h2
+        class="text-lg font-semibold truncate w-full max-w-[180px]"
+        title="reviewer.nickname"
+      >
+        {{ reviewer.nickname }}
+      </h2>
       <!-- 하단 리뷰어 정보(팔로워 수, 리뷰 수, 평균 평점) -->
       <div class="mt-1 flex gap-3 text-xs text-white/60">
         <div class="flex flex-col gap-1 items-center justify-center">
