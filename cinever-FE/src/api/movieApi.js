@@ -105,3 +105,8 @@ export const getTop100 = async () => {
     throw error;
   }
 };
+
+export const toggleWishlist = async (movieId, isWishlisted) => {
+  const method = isWishlisted ? "delete" : "post";
+  return await api[method](`/api/movie/${movieId}/wish`);
+};
