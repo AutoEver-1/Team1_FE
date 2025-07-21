@@ -12,9 +12,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Mousewheel } from "swiper/modules";
 import { getReviewerRoleMeta } from "../../utils/reviewerRole";
+import DefaultProfile from "../../assets/images/default_profile.png";
 
 const dataList = ref([]);
+const imgSrcMap = ref({});
 const swiperInstance = ref(null);
+
 const handlePrev = () => {
   swiperInstance.value?.slidePrev();
 };
@@ -25,7 +28,15 @@ const handleNext = () => {
 onMounted(async () => {
   const res = await getReviewerAll();
   dataList.value = res.data.reviewerList.content;
+  // imgSrcMap 초기화
+  dataList.value.forEach((reviewer) => {
+    imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
+  });
 });
+
+const onError = (id) => {
+  imgSrcMap.value[id] = DefaultProfile;
+};
 </script>
 
 <template>
@@ -49,7 +60,7 @@ onMounted(async () => {
         <RouterLink :to="'/user/' + data.memberId">
           <div
             :class="[
-              'relative backdrop-blur-xl backdrop-saturate-150 rounded-xl overflow-hidden transition duration-300 h-[320px] w-[218px]',
+              'relative backdrop-blur-xl backdrop-saturate-150 rounded-xl overflow-hidden transition duration-300 h-[320px] w-[218px] flex flex-col justify-center',
               getReviewerRoleMeta(data.role).roleClass,
             ]"
           >
@@ -60,27 +71,31 @@ onMounted(async () => {
             <div
               class="flex flex-col items-center justify-center transition-all duration-300 h-[320px] group-hover:h-[120px]"
             >
+              <!-- <BaseProfileImage
+                :src="avatar"
+                @click="goToUserPage(userId)"
+                class="transition-all duration-300 w-32 h-32 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-6"
+                size="128px"
+              /> -->
               <img
-                :src="data.profile_img_url"
+                :src="imgSrcMap[data.memberId]"
                 alt="profile"
                 class="transition-all duration-300 w-32 h-32 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-6"
+                @error="onError(data.memberId)"
               />
-
               <div
-                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:flex-row group-hover:gap-2"
+                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:gap-2"
               >
+                <!-- <div
+                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:flex-row group-hover:gap-2"
+              > -->
                 <p
-                  class="text-lg font-semibold text-center group-hover:text-sm"
+                  class="text-lg font-semibold text-center group-hover:text-sm break-words w-full max-w-[160px] mx-auto"
                 >
                   {{ data.nickname }}
                 </p>
-                <!-- <span
-                  class="inline-block text-sm font-bold bg-amber-500 text-black px-2 py-0.5 rounded group-hover:text-[10px] group-hover:h-5 group-hover:py-0"
-                >
-                  {{ data.role }}
-                </span> -->
                 <div
-                  class="w-fit px-3 py-1 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150 shadow-sm"
+                  class="w-fit px-3 py-1 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150 shadow-sm group-hover:px-1.5 group-hover:py-0 group-hover:text-[10px]"
                   :class="getReviewerRoleMeta(data.role).badgeClass"
                 >
                   {{ getReviewerRoleMeta(data.role).roleName }}
@@ -128,7 +143,8 @@ onMounted(async () => {
                   class="relative"
                 >
                   <img
-                    :src="movie.poster_path"
+                    v-if="movie.posterPath"
+                    :src="movie.posterPath"
                     alt="wish"
                     class="w-14 h-20 rounded object-cover hover:opacity-90 transition"
                   />
