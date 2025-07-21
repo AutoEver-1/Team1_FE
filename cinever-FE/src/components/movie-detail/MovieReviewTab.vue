@@ -191,7 +191,7 @@ const wordData = ref([
     </div>
 
     <div class="md:w-1/2 w-full">
-      <div class="w-full h-full relative">
+      <div class="w-full h-40 md:h-full relative">
         <WordCloud
           :words="wordData"
           :color="

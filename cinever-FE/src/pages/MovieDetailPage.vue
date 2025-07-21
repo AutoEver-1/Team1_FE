@@ -62,7 +62,7 @@ const getMovieById = async () => {
 </script>
 
 <template>
-  <BaseBackground class="mt-16">
+  <BaseBackground class="pt-14">
     <div class="relative w-full h-full">
       <div
         class="relative z-10 flex flex-col items-center justify-center text-white"

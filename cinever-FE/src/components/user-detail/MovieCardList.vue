@@ -1,9 +1,11 @@
 <template>
-  <div class="flex gap-4 overflow-x-auto">
+  <div
+    class="md:grid md:grid-cols-5 md:overflow-hidden flex overflow-scroll gap-4"
+  >
     <div
       v-for="movie in list"
       :key="movie.movieId"
-      class="max-w-[140px] bg-zinc-900 rounded-lg overflow-hidden shadow group relative"
+      class="max-w-[140px] min-w-32 bg-zinc-900 rounded-lg overflow-hidden shadow group relative"
     >
       <img
         :src="movie.posterPath"
