@@ -26,42 +26,40 @@ const goToMoviePage = (movieId) => {
         class="cursor-pointer relative w-full overflow-hidden rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10 sm:p-6"
         @click="goToMoviePage(review.movieId)"
       >
-        <!-- 유저 + 별점 -->
-        <div
-          class="flex flex-col pb-2 sm:pb-4 border-b border-white/15 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div class="flex items-center gap-3"></div>
-          <div class="flex items-center text-amber-400">
-            <BaseRating :score="review.rating" size="20" />
-            <span class="ml-2 text-[20px] font-medium">
-              {{ review.rating ?? "-" }}
-            </span>
-            <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
-              {{ review.rating ? "\u00A0/ 5.0" : "" }}
-            </span>
-          </div>
-        </div>
-
-        <!-- 영화 정보 -->
         <div class="mt-4 flex gap-4">
           <img
             :src="review.posterPath"
             alt="poster"
             class="h-20 w-14 rounded object-cover shadow-sm sm:h-24 sm:w-16"
           />
-          <div>
-            <p class="truncate text-sm font-medium text-white sm:text-base">
+          <div class="w-full">
+            <p
+              class="truncate text-sm w-full font-medium text-white sm:text-base border-b border-white/15 pb-2"
+            >
               {{ review.title }}
             </p>
+
+            <div class="flex items-center text-amber-400">
+              <BaseRating :score="review.rating" size="20" />
+              <span class="ml-2 text-[20px] font-medium">
+                {{ review.rating ?? "-" }}
+              </span>
+              <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
+                {{ review.rating ? "\u00A0/ 5.0" : "" }}
+              </span>
+            </div>
             <p
-              class="mt-4 pb-4 text-xs leading-relaxed text-white/90 sm:mt-6 sm:text-sm"
+              class="pb-4 text-xs leading-relaxed text-white/90 sm:text-sm mt-1"
             >
               {{ review.context }}
             </p>
           </div>
         </div>
         <div class="flex justify-end">
-          <button
+          <p class="text-xs text-white/60 mt-1">
+            {{ review.reviewdDate?.split("T")[0] }}
+          </p>
+          <!-- <button
             class="flex items-center gap-1 text-xs text-white/60 transition hover:text-amber-400 sm:text-sm"
             @click="toggleLike(review)"
           >
@@ -78,7 +76,7 @@ const goToMoviePage = (movieId) => {
               />
             </svg>
             {{ review.likeCount }}
-          </button>
+          </button> -->
         </div>
       </div>
     </div>

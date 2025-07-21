@@ -61,7 +61,7 @@ watch(
 <template>
   <div
     v-if="hasVideo || hasThumbnail"
-    class="absolute left-1/2 top-0 transform -translate-x-1/2 -z-10 w-[64vw] h-[50vh] overflow-hidden"
+    class="absolute left-1/2 top-0 transform -translate-x-1/2 -z-10 w-[65vw] h-[60vh] overflow-hidden"
   >
     <iframe
       v-if="hasVideo"

@@ -3,17 +3,24 @@ import { ref, onMounted } from "vue";
 import BaseRating from "../common/BaseRating.vue";
 import { getUserReviewInfo } from "../../api/user";
 import BaseProfileImage from "../common/BaseProfileImage.vue";
+import { useRouter } from "vue-router";
 
 const dataList = ref();
+const router = useRouter();
 
 onMounted(() => {
   getReviewById();
 });
 
+const toMovieDetail = (id) => {
+  console.log(id);
+  router.push("/movie/" + id);
+};
+
 const getReviewById = async () => {
   const res = await getUserReviewInfo(1);
   dataList.value = res.data.reviewList;
-  console.log(dataList);
+  console.log("getReviewById", dataList);
 };
 </script>
 
@@ -28,14 +35,13 @@ const getReviewById = async () => {
         실시간 최신 리뷰
       </p>
 
-      <!-- ✅ 모바일: 가로 스크롤 -->
       <div class="sm:hidden flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
         <div
           v-for="review in dataList?.slice(0, 6)"
-          :key="review.id"
+          :key="review.movieId"
           class="min-w-[280px] shrink-0 rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10"
+          @click="toMovieDetail(review.movieId)"
         >
-          <!-- 유저 + 별점 -->
           <div class="flex flex-col pb-2 border-b border-white/15">
             <div class="flex items-center gap-3">
               <BaseProfileImage size="40px" />
@@ -93,6 +99,7 @@ const getReviewById = async () => {
           v-for="review in dataList?.slice(0, 6)"
           :key="review.id"
           class="rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10"
+          @click="toMovieDetail(review.movieId)"
         >
           <!-- 유저 + 별점 -->
           <div

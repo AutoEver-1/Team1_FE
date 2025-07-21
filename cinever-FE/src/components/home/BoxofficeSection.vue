@@ -83,7 +83,9 @@ const handleMovieClick = (movie) => {
           </div>
         </div>
 
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight md:mt-2"
+        >
           {{ selectedMovie.title }}
         </h1>
 
