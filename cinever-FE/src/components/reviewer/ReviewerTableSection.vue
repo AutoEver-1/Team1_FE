@@ -19,8 +19,9 @@ const itemsPerPage = ref(10); // 단순 순번 계산용
 
 const router = useRouter();
 
-// const totalPages = getTotalPages(dataList, itemsPerPage);
-const paginatedList = getPaginatedList(dataList, currentPage, itemsPerPage);
+const goToUserDetail = (memberId) => {
+  router.push(`user/${memberId}`);
+};
 
 const reviewerAll = async (page = 1) => {
   const res = await getReviewerAll(page);
@@ -31,10 +32,6 @@ const reviewerAll = async (page = 1) => {
 
 const handlePageChange = (page) => {
   reviewerAll(page); // 새로운 페이지에 맞게 데이터 fetch
-};
-
-const goToUserDetail = (memberId) => {
-  router.push(`user/${memberId}`);
 };
 
 onMounted(() => {

@@ -105,3 +105,28 @@ export const getTop100 = async () => {
     throw error;
   }
 };
+
+// 영화 검색
+// searchType: TITLE, DIRECTOR, REVIEWER, ACTOR
+export const getMoviesBySearch = async ({
+  searchType = "Director",
+  content,
+  page = 0,
+  size = 10,
+}) => {
+  try {
+    const response = await api.get(`${movieApi}`, {
+      params: {
+        searchType,
+        content,
+        page,
+        size,
+      },
+    });
+    console.log(response.data.data);
+    return response.data.data;
+  } catch (error) {
+    console.error("API 호출 실패:", error);
+    throw error;
+  }
+};

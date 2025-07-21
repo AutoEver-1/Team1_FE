@@ -1,14 +1,21 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick, watch } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  watch,
+  computed,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getTopRated } from "../../api/movieApi";
+import { getMoviesBySearch, getTopRated } from "../../api/movieApi";
 import { debounce } from "../../services/debounce";
 // import { debounce } from "lodash";
 
 const props = defineProps({
   modelValue: String, // 검색 input의 값
   placeholder: { type: String, default: "검색어 입력" },
-  icon: [Object], // 컴포넌트
+  icon: [Object, Function], // 컴포넌트
   color: { type: String, default: "white" }, // 아이콘 색상
   hoverBg: { type: String, default: "bg-gray-800" }, // hover 배경색
   borderColor: { type: String, default: "border-2 border-white" }, // 아이콘 테두리 색상
@@ -23,27 +30,39 @@ const router = useRouter(); // 페이지 이동
 const isOpen = ref(false); // 검색창 열림 여부
 const inputRef = ref(null); // 검색 input 요소 참조
 const results = ref([]); // 자동완성 결과 리스트
-const topRatedMovieList = ref([]); // TMDB 같은 인기 영화 목록
+const resultList = ref([]); // 자동완성 객체 리스트
+const keyword = ref(props.modelValue);
 
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    keyword.value = newVal;
+  }
+);
 const isResultOpen = ref(false); // 추천 검색어 UI 열림 여부
 const preventResultOpen = ref(false); // 추천 검색어 차단 여부
 
 // ======= 함수 정의 =======
 // 인기 영화 가져오기
-const getTopRatedMovieList = async () => {
+const getRecommendedMovieList = async () => {
   if (preventResultOpen.value) return; // 추천 검색어 차단 시 즉시 종료
 
   try {
-    const res = await getTopRated();
-    topRatedMovieList.value = res.data.movieList || [];
-    console.log(res);
+    const res = await getMoviesBySearch({
+      searchType: "TITLE",
+      content: keyword.value,
+    });
+
+    // 키워드 영화 검색 미리보기
+    resultList.value = res.data?.movieList?.content || [];
+    console.log(resultList.value);
 
     // 초기 상태에 전체 영화 데이터를 results에 넣음
-    results.value = topRatedMovieList.value.map((movie) => movie.title);
+    results.value = resultList.value.map((movie) => movie.title);
 
     isResultOpen.value = results.value.length > 0; // 추천 목록 열기
   } catch (error) {
-    console.error("인기 영화 불러오기 실패:", error);
+    console.error("영화 키워드 검색 실패:", error);
     isResultOpen.value = false; // 추천 목록 닫기
   }
 };
@@ -64,15 +83,15 @@ const getTopRatedMovieList = async () => {
 // }, 500);
 
 // debounce 적용 (사용자 정의)
-const debouncedSearch = debounce(getTopRatedMovieList, 500);
+const debouncedSearch = debounce(getRecommendedMovieList, 500);
 
 // 검색어 변경될 때마다 data fetch
 const updateValue = (event) => {
-  const keyword = event.target.value;
+  keyword.value = event.target.value;
 
   preventResultOpen.value = false; // 검색어 다시 입력하면 추천 검색어 허용
 
-  emit("update:modelValue", keyword);
+  emit("update:modelValue", keyword.value);
   debouncedSearch();
 };
 
@@ -198,12 +217,12 @@ watch(isOpen, (newVal) => {
       class="absolute top-full left-0 w-full mt-1.5 bg-black/80 border border-white/20 rounded-lg shadow-lg z-50"
     >
       <li
-        v-for="(item, index) in results.slice(0, 10)"
+        v-for="(title, index) in results.slice(0, 10)"
         :key="index"
-        @click="selectKeyword(item)"
+        @click="selectKeyword(title)"
         class="text-sm px-3 py-1.5 cursor-pointer hover:bg-amber-500/80 hover:text-amber-900 transition"
       >
-        {{ item }}
+        {{ title }}
       </li>
     </ul>
   </div>
