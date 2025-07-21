@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps({
   videoId: String,
@@ -38,6 +38,24 @@ if (hasVideo.value && hasThumbnail.value) {
 } else {
   isLoaded.value = true;
 }
+
+watch(
+  () => props.videoId,
+  () => {
+    isLoaded.value = false;
+    iframeLoaded = false;
+    timeoutPassed = false;
+
+    if (hasVideo.value && hasThumbnail.value) {
+      setTimeout(() => {
+        timeoutPassed = true;
+        checkReady();
+      }, 1200);
+    } else {
+      isLoaded.value = true;
+    }
+  }
+);
 </script>
 
 <template>

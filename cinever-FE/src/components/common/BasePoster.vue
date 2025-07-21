@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import BaseRating from "./BaseRating.vue";
 import BaseBadge from "./BaseBadge.vue";
 
 const isHover = ref(false);
 
-defineProps({
+const props = defineProps({
   averageScore: Number,
   director: Array,
   genre: Array,
@@ -16,6 +16,13 @@ defineProps({
   title: String,
   tmdbScore: Number,
   cumulativeAttendance: Number,
+});
+
+const fullPosterUrl = computed(() => {
+  if (!props.posterPath) return "";
+  return props.posterPath.startsWith("http")
+    ? props.posterPath
+    : `https://image.tmdb.org/t/p/original${props.posterPath}`;
 });
 </script>
 
@@ -31,7 +38,7 @@ defineProps({
         :class="isHover ? 'w-[340px] z-50' : 'w-[120px] md:w-[160px]'"
       >
         <img
-          :src="posterPath"
+          :src="fullPosterUrl"
           alt="poster"
           class="h-[180px] md:w-[160px] md:h-full object-cover rounded-l-xl"
         />
@@ -60,7 +67,7 @@ defineProps({
               class="text-xl font-bold whitespace-nowrap overflow-hidden text-ellipsis"
               :class="isHover ? 'opacity-100' : 'opacity-0'"
             >
-              {{ title.length > 15 ? title.slice(0, 15) + "..." : title }}
+              {{ title?.length > 15 ? title.slice(0, 15) + "..." : title }}
             </h2>
 
             <div

@@ -31,7 +31,7 @@ const props = defineProps({
           <HeartIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="wishlistList.movieList" />
+          <MovieCardList :list="wishlistList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -40,7 +40,7 @@ const props = defineProps({
           <ClockIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="recentList.movieList" />
+          <MovieCardList :list="recentList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -58,7 +58,7 @@ const props = defineProps({
           <TrophyIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="favoriteList.movieList" />
+          <MovieCardList :list="favoriteList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
 
@@ -67,7 +67,7 @@ const props = defineProps({
           <TrashIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <MovieCardList :list="dislikeList.movieList" />
+          <MovieCardList :list="dislikeList.movieList?.slice(0, 5)" />
         </template>
       </BaseCard>
     </div>

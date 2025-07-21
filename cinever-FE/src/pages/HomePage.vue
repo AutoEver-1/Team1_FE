@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, defineEmits } from "vue";
+import { onMounted, onUnmounted, defineEmits, ref } from "vue";
 import BoxofficeSection from "../components/home/BoxofficeSection.vue";
 import OTTExpectSection from "../components/home/OTTExpectSection.vue";
 import OTTRecentlySection from "../components/home/OTTRecentlySection.vue";
@@ -10,6 +10,21 @@ import TopRatedMovies from "../components/home/TopRatedMovies.vue";
 import ReviewRecentlySection from "../components/home/ReviewRecentlySection.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 import Footer from "../components/common/Footer.vue";
+
+const isMobile = ref(false);
+
+onMounted(() => {
+  isMobile.value = window.innerWidth < 768;
+  window.addEventListener("resize", handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+});
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth < 768;
+};
 
 const emit = defineEmits(["hero-visible"]);
 let observer;
@@ -33,6 +48,7 @@ onUnmounted(() => {
 
 <template>
   <div
+    v-if="!isMobile"
     class="hidden md:block h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth"
   >
     <div
@@ -48,24 +64,24 @@ onUnmounted(() => {
       >
         <QuoteSection />
         <OTTExpectSection />
-        <OTTRecentlySection />
+        <!-- <OTTRecentlySection /> -->
         <ReviewRecentlySection />
-        <LatestMovies />
         <TrendingMovies />
         <TopRatedMovies />
+        <LatestMovies />
         <Footer />
       </div>
     </BaseBackground>
   </div>
 
-  <div class="block md:hidden pb-[100px]">
+  <div v-else class="block md:hidden pb-[100px]">
     <div
       class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top flex flex-col gap-[20px]"
     >
       <BoxofficeSection />
       <QuoteSection />
       <OTTExpectSection />
-      <OTTRecentlySection />
+      <!-- <OTTRecentlySection /> -->
       <ReviewRecentlySection />
       <LatestMovies />
       <TrendingMovies />
