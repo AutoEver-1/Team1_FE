@@ -13,24 +13,23 @@ import BasePagination from "../common/BasePagination.vue";
 import { getPaginatedList, getTotalPages } from "../../services/paging";
 
 const dataList = ref([]);
+const totalPages = ref(1);
 const currentPage = ref(1);
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(10); // 단순 순번 계산용
 
 const router = useRouter();
 
-const totalPages = getTotalPages(dataList, itemsPerPage);
+// const totalPages = getTotalPages(dataList, itemsPerPage);
 const paginatedList = getPaginatedList(dataList, currentPage, itemsPerPage);
 
 const reviewerAll = async (page = 1) => {
   const res = await getReviewerAll(page);
   dataList.value = res.data.reviewerList.content;
-  console.log(res.data.reviewerList.content);
-
+  totalPages.value = res.data.reviewerList.totalPages - 1;
   currentPage.value = page;
 };
 
 const handlePageChange = (page) => {
-  currentPage.value = page;
   reviewerAll(page); // 새로운 페이지에 맞게 데이터 fetch
 };
 
@@ -39,7 +38,7 @@ const goToUserDetail = (memberId) => {
 };
 
 onMounted(() => {
-  reviewerAll();
+  reviewerAll(1);
 });
 </script>
 
@@ -58,7 +57,7 @@ onMounted(() => {
       </thead>
       <tbody>
         <tr
-          v-for="(data, i) in paginatedList"
+          v-for="(data, i) in dataList"
           :key="data.memberId"
           class="backdrop-blur-2xl backdrop-saturate-150 shadow-sm hover:shadow-md brightness-90 hover:brightness-100"
           :class="getReviewerRoleMeta(data.role).roleClass"
