@@ -1,5 +1,5 @@
 <script setup>
-import BaseRating from "../common/BaseRating.vue"; // 별점 표시 컴포넌트
+import BaseRating from "../common/BaseRating.vue";
 
 const props = defineProps({
   list: {

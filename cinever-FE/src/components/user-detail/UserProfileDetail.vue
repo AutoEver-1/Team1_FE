@@ -22,9 +22,7 @@ const props = defineProps({
 
 <template>
   <div class="md:px-10 space-y-10">
-    <!-- 📌 위시 ~ 최악의 영화 : 2열 그리드 -->
     <div class="grid grid-cols-1 gap-6">
-      <!-- 각각의 BaseCard 컴포넌트 -->
       <BaseCard
         title="위시리스트 영화"
         v-if="wishlistList.movieList?.length != 0"

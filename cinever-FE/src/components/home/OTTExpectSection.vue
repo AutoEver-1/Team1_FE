@@ -18,7 +18,7 @@ const ottList = [
   {
     name: "디즈니+",
     id: 3,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+    logo: "https://static.kinolights.com/icon/btn_squircle_disneyplus.png",
   },
   {
     name: "웨이브",

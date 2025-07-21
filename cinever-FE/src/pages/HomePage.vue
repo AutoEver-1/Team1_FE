@@ -7,6 +7,7 @@ import QuoteSection from "../components/home/QuoteSection.vue";
 import LatestMovies from "../components/home/LatestMovies.vue";
 import TrendingMovies from "../components/home/TrendingMovies.vue";
 import TopRatedMovies from "../components/home/TopRatedMovies.vue";
+import ReviewRecentlySection from "../components/home/ReviewRecentlySection.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
 import Footer from "../components/common/Footer.vue";
 
@@ -48,6 +49,7 @@ onUnmounted(() => {
         <QuoteSection />
         <OTTExpectSection />
         <OTTRecentlySection />
+        <ReviewRecentlySection />
         <LatestMovies />
         <TrendingMovies />
         <TopRatedMovies />
@@ -64,6 +66,7 @@ onUnmounted(() => {
       <QuoteSection />
       <OTTExpectSection />
       <OTTRecentlySection />
+      <ReviewRecentlySection />
       <LatestMovies />
       <TrendingMovies />
       <TopRatedMovies />
