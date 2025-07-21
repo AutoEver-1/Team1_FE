@@ -141,3 +141,33 @@ export const unblockMultiReviews = async (reviewList) => {
     throw err;
   }
 };
+
+export const getWithdrawalCnt = async (dateType) => {
+  try {
+    const res = await api.get(`/api/member/admin/stats/withdrawal/${dateType}`);
+    return res.data;
+  } catch (err) {
+    console.error("탈퇴자 API 호출 실패");
+    throw err;
+  }
+};
+
+export const getTotalMember = async () => {
+  try {
+    const res = await api.get("/api/member/admin/stats/total");
+    return res.data;
+  } catch (err) {
+    console.error("총 멤버 수 API 호출 실패");
+    throw err;
+  }
+};
+
+export const getRegisterCnt = async (dateType) => {
+  try {
+    const res = await api.get(`/api/member/admin/stats/register/${dateType}`);
+    return res.data;
+  } catch (err) {
+    console.error("가입자 API 호출 실패");
+    throw err;
+  }
+};
