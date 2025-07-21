@@ -28,6 +28,9 @@ const reviewerAll = async (page = 1) => {
   dataList.value = res.data.reviewerList.content;
   totalPages.value = res.data.reviewerList.totalPages - 1;
   currentPage.value = page;
+  dataList.value.forEach((reviewer) => {
+    imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
+  });
 };
 
 const handlePageChange = (page) => {
