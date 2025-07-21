@@ -116,8 +116,14 @@ const submitReview = async () => {
     <BaseCard backgroundColor="neutral-800">
       <template #contents>
         <div class="flex gap-2 w-full flex-wrap">
-          <div v-for="ott in dataList.ottList" :key="ott.ottId">
-            <img :src="ott.logoPath" class="w-10 h-10" />
+          <div v-for="ott in dataList.ottList?.slice(0, 6)" :key="ott.ottId">
+            <img v-if="ott.logoPath" :src="ott.logoPath" class="w-10 h-10" />
+            <p
+              v-else
+              class="text-xs bg-amber-500 text-black px-3 py-1 rounded-full"
+            >
+              #{{ ott.ottName }}
+            </p>
           </div>
         </div>
       </template>

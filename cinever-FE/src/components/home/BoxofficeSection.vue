@@ -74,7 +74,7 @@ const handleMovieClick = (movie) => {
     <div
       class="relative z-20 flex flex-col items-center gap-12 px-4 pt-24 pb-4 md:py-24 lg:py-36"
     >
-      <div class="w-full max-w-6xl text-white space-y-3 hidden md:block">
+      <div class="w-full max-w-6xl text-white hidden md:block">
         <div class="relative w-12 h-6 sm:w-14 sm:h-8">
           <div
             class="absolute top-0 left-0 w-full h-full bg-red-600 text-white text-xs sm:text-sm font-bold flex justify-center items-center rounded-t-md"
@@ -83,36 +83,38 @@ const handleMovieClick = (movie) => {
           </div>
         </div>
 
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight md:mt-2"
+        >
           {{ selectedMovie.title }}
         </h1>
 
-        <div class="mt-2">
-          <BaseBadge :dataList="selectedMovie.genre" index="#" />
-        </div>
-
-        <p class="text-sm sm:text-base mt-3 font-medium">
-          개봉일
-          <span class="ml-2 text-amber-400 font-semibold">
-            {{ new Date(selectedMovie.release_date).toLocaleDateString() }}
-          </span>
-        </p>
-
-        <p class="text-sm sm:text-base font-medium">
-          누적 관객 수
-          <span class="ml-2 text-amber-400 font-semibold">
-            {{ selectedMovie.cumulativeAttendance.toLocaleString() }}명
-          </span>
-        </p>
-
-        <p class="text-xs sm:text-sm text-gray-300">
+        <p class="text-xs sm:text-sm text-gray-300 mt-2">
           감독
           <span class="ml-1">
             {{ selectedMovie.director.map((d) => d.name).join(", ") }}
           </span>
         </p>
 
-        <div class="pt-4">
+        <div class="mt-2">
+          <BaseBadge :dataList="selectedMovie.genre" index="#" />
+        </div>
+
+        <p class="text-sm sm:text-base mt-4 font-medium">
+          개봉일
+          <span class="ml-2 text-amber-400 font-semibold">
+            {{ new Date(selectedMovie.release_date).toLocaleDateString() }}
+          </span>
+        </p>
+
+        <p class="text-sm sm:text-base font-medium mt-2">
+          누적 관객 수
+          <span class="ml-2 text-amber-400 font-semibold">
+            {{ selectedMovie.cumulativeAttendance.toLocaleString() }}명
+          </span>
+        </p>
+
+        <div class="pt-10">
           <router-link
             :to="`/movie/${selectedMovie.movieId}`"
             class="inline-block border border-amber-400 text-amber-400 text-sm sm:text-base px-4 py-1.5 sm:px-5 sm:py-2 rounded font-semibold transition hover:bg-amber-400 hover:text-black"

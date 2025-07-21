@@ -35,7 +35,7 @@ const fullPosterUrl = computed(() => {
     >
       <div
         class="absolute top-0 left-0 bg-zinc-900 text-white rounded-xl shadow-2xl transition-all duration-500 ease-in-out overflow-hidden flex"
-        :class="isHover ? 'w-[340px] z-50' : 'w-[120px] md:w-[160px]'"
+        :class="isHover ? 'w-[370px] z-50' : 'w-[120px] md:w-[160px]'"
       >
         <img
           :src="fullPosterUrl"
@@ -94,7 +94,7 @@ const fullPosterUrl = computed(() => {
                   alt="IMDb"
                   class="w-6 h-auto"
                 />
-                <span class="text-sm text-white">
+                <span class="ml-2 text-sm font-medium text-amber-400">
                   {{ isHover ? tmdbScore : "-" }}
                 </span>
                 <span class="text-xs text-gray-200 opacity-50">
@@ -103,17 +103,24 @@ const fullPosterUrl = computed(() => {
               </div>
             </div>
 
-            <div class="space-y-1.5 mt-1">
-              <BaseBadge :dataList="genre" index="#" />
+            <div class="space-y-1.5 pt-2">
+              <BaseBadge :dataList="genre?.slice(0, 2)" index="#" />
               <p
-                class="text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                class="text-xs whitespace-nowrap overflow-hidden text-ellipsis pt-2"
               >
                 개봉: {{ releaseDate.split("-")[0] }}
               </p>
               <p
                 class="text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                v-if="director != ''"
               >
-                감독: {{ director.map((d) => d.name).join(", ") }}
+                감독:
+                {{
+                  director
+                    .map((d) => d.name)
+                    .join(", ")
+                    .slice(0, 15)
+                }}...
               </p>
             </div>
           </div>
