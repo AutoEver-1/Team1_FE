@@ -18,8 +18,8 @@ const toMovieDetail = (id) => {
 };
 
 const getReviewById = async () => {
-  const res = await getUserReviewInfo(1);
-  dataList.value = res.data.reviewList;
+  const res = await getUserReviewInfo(6);
+  dataList.value = res.data.reviewList.slice().reverse();
   console.log("getReviewById", dataList);
 };
 </script>

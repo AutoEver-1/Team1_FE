@@ -49,7 +49,9 @@ const props = defineProps({
           <ChatBubbleLeftRightIcon class="w-4 h-4" />
         </template>
         <template #contents>
-          <RecentReviewList :list="reivewList.reviewList?.slice(0, 3)" />
+          <RecentReviewList
+            :list="reivewList.reviewList?.slice().reverse().slice(0, 3)"
+          />
         </template>
       </BaseCard>
 
