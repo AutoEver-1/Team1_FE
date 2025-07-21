@@ -20,8 +20,9 @@ const itemsPerPage = ref(10); // 단순 순번 계산용
 const imgSrcMap = ref({});
 const router = useRouter();
 
-// const totalPages = getTotalPages(dataList, itemsPerPage);
-const paginatedList = getPaginatedList(dataList, currentPage, itemsPerPage);
+const goToUserDetail = (memberId) => {
+  router.push(`user/${memberId}`);
+};
 
 const reviewerAll = async (page = 1) => {
   const res = await getReviewerAll(page);
@@ -35,10 +36,6 @@ const reviewerAll = async (page = 1) => {
 
 const handlePageChange = (page) => {
   reviewerAll(page);
-};
-
-const goToUserDetail = (memberId) => {
-  router.push(`user/${memberId}`);
 };
 
 onMounted(() => {

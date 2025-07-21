@@ -60,8 +60,13 @@ const goToUserPage = (userId) => {
 </script>
 
 <template>
-  <div class="w-full max-w-4xl mx-auto px-6 pt-12 text-white" v-if="userInfo">
-    <div class="flex flex-col md:flex-row items-center md:items-start gap-10">
+  <div
+    class="w-full max-w-4xl mx-auto px-6 pt-2 md:pt-12 text-white"
+    v-if="userInfo"
+  >
+    <div
+      class="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-10"
+    >
       <BaseProfileImage :src="userInfo.profilePath" size="160px" />
       <div class="flex-1 w-full">
         <div class="flex items-center justify-between">
