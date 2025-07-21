@@ -199,24 +199,26 @@ const uniqueDirectors = computed(() => {
       </template>
     </BaseCard>
 
-    <BaseCard title="배우">
+    <BaseCard title="배우" class="w-[43vw]">
       <template #icon>
         <UserGroupIcon class="w-5 h-5" />
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
-          <div
-            class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
-            v-for="actor in dataList.actors"
-            @click="openPersonModal(actor)"
-          >
-            <BaseProfileImage
-              :src="actor.profilePath"
-              class="w-20 h-20 rounded-full object-cover"
-              size="80px"
-            />
-            <div class="text-xs text-gray-500 font-medium mt-1">
-              {{ actor.name }}
+        <div>
+          <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
+            <div
+              class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
+              v-for="actor in dataList.actors"
+              @click="openPersonModal(actor)"
+            >
+              <BaseProfileImage
+                :src="actor.profilePath"
+                class="w-20 h-20 rounded-full object-cover"
+                size="80px"
+              />
+              <div class="text-xs text-gray-500 font-medium mt-1">
+                {{ actor.name }}
+              </div>
             </div>
           </div>
         </div>
