@@ -7,8 +7,10 @@ import QuoteSection from "../components/home/QuoteSection.vue";
 import LatestMovies from "../components/home/LatestMovies.vue";
 import TrendingMovies from "../components/home/TrendingMovies.vue";
 import TopRatedMovies from "../components/home/TopRatedMovies.vue";
+import RecommendedYoutubeSection from "../components/home/RecommendedYoutubeSection.vue";
 import ReviewRecentlySection from "../components/home/ReviewRecentlySection.vue";
 import BaseBackground from "../components/common/BaseBackground.vue";
+import EmojiQuizBanner from "../components/home/EmojiQuizBanner.vue";
 import Footer from "../components/common/Footer.vue";
 
 const isMobile = ref(false);
@@ -68,6 +70,8 @@ onUnmounted(() => {
         <ReviewRecentlySection />
         <TrendingMovies />
         <TopRatedMovies />
+        <EmojiQuizBanner />
+        <RecommendedYoutubeSection />
         <LatestMovies />
         <Footer />
       </div>

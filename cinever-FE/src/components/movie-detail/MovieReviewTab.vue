@@ -145,16 +145,16 @@ const getStarPercentage = (star) => {
 };
 
 const wordData = ref([
-  { text: "연출", weight: 10 },
-  { text: "스토리", weight: 8 },
-  { text: "연기", weight: 12 },
-  { text: "OST", weight: 6 },
-  { text: "긴장감", weight: 9 },
-  { text: "감동", weight: 7 },
-  { text: "지루함", weight: 4 },
-  { text: "몰입감", weight: 11 },
-  { text: "캐릭터", weight: 5 },
-  { text: "전개", weight: 6 },
+  ["연출", 10],
+  ["스토리", 8],
+  ["연기", 12],
+  ["OST", 6],
+  ["긴장감", 9],
+  ["감동", 7],
+  ["지루함", 4],
+  ["몰입감", 11],
+  ["캐릭터", 5],
+  ["전개", 6],
 ]);
 </script>
 
@@ -188,13 +188,14 @@ const wordData = ref([
     </div>
 
     <div class="md:w-1/2 w-full">
-      <!-- ✅ 반드시 높이 지정 필요! -->
-      <div class="w-full h-full relative bg-white/5">
+      <div class="w-full h-full relative">
         <WordCloud
           :words="wordData"
-          :color="() => '#FACC15'"
-          :fontSizeMapper="(word) => word.weight * 5 + 12"
-          :rotation="0"
+          :color="
+            ([, weight]) =>
+              weight > 10 ? '#FDC500' : weight > 5 ? '#FFF066' : '#FFFBE1'
+          "
+          font-family="Roboto"
         />
       </div>
     </div>
