@@ -21,14 +21,18 @@ const router = useRouter(); // 페이지 이동
 
 // ======= 상태 변수 =======
 const isOpen = ref(false); // 검색창 열림 여부
-const isResultOpen = ref(false); // 추천 검색어 UI 열림 여부
 const inputRef = ref(null); // 검색 input 요소 참조
 const results = ref([]); // 자동완성 결과 리스트
 const topRatedMovieList = ref([]); // TMDB 같은 인기 영화 목록
 
+const isResultOpen = ref(false); // 추천 검색어 UI 열림 여부
+const preventResultOpen = ref(false); // 추천 검색어 차단 여부
+
 // ======= 함수 정의 =======
 // 인기 영화 가져오기
 const getTopRatedMovieList = async () => {
+  if (preventResultOpen.value) return; // 추천 검색어 차단 시 즉시 종료
+
   try {
     const res = await getTopRated();
     topRatedMovieList.value = res.data.movieList || [];
@@ -40,7 +44,7 @@ const getTopRatedMovieList = async () => {
     isResultOpen.value = results.value.length > 0; // 추천 목록 열기
   } catch (error) {
     console.error("인기 영화 불러오기 실패:", error);
-    isResultOpen.value = false;
+    isResultOpen.value = false; // 추천 목록 닫기
   }
 };
 
@@ -65,14 +69,21 @@ const debouncedSearch = debounce(getTopRatedMovieList, 500);
 // 검색어 변경될 때마다 data fetch
 const updateValue = (event) => {
   const keyword = event.target.value;
+
+  preventResultOpen.value = false; // 검색어 다시 입력하면 추천 검색어 허용
+
   emit("update:modelValue", keyword);
   debouncedSearch();
 };
 
 // 검색어 선택 시
 const selectKeyword = (item) => {
+  preventResultOpen.value = true; // 추천 검색어 차단
+
   emit("update:modelValue", item);
   results.value = [];
+  isResultOpen.value = false; // 추천창 닫기
+
   router.push({
     path: "/search",
     query: { keyword: item },
@@ -101,13 +112,14 @@ const handleClickOutside = (event) => {
 // 엔터키로 검색 실행
 const handleEnter = (event) => {
   if (event.key === "Enter" && props.modelValue.trim()) {
+    preventResultOpen.value = true; // 추천 검색어 차단
+
     router.push({
       path: "/search",
       query: { keyword: props.modelValue.trim() },
     });
   }
-
-  isResultOpen.value = false;
+  isResultOpen.value = false; // 추천 목록 닫기
 };
 
 // ======= 생명주기 & watch =======

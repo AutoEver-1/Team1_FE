@@ -9,6 +9,8 @@ import SkeletonUserCard from "../components/search/SkeletonUserCard.vue";
 import ReviewerCard from "../components/search/ReviewerCard.vue";
 import { useRoute, useRouter } from "vue-router";
 import { getReviewerAll } from "../api/reviewerApi";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid";
+import BasePagination from "../components/common/BasePagination.vue";
 
 // 탭 메뉴
 const tabs = ["영화", "리뷰어", "감독", "배우"];
@@ -88,6 +90,48 @@ const getTopRatedMovieList = async () => {
     // isLoading.value = false;
   }
 };
+
+const getTotalPages = (listRef) => {
+  return computed(() => {
+    return listRef.value
+      ? Math.ceil(listRef.value.length / itemsPerPage.value)
+      : 1;
+  });
+};
+
+const getPaginatedList = (listRef, pageRef) => {
+  return computed(() => {
+    if (!listRef.value) return [];
+    const start = (pageRef.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return listRef.value.slice(start, end);
+  });
+};
+
+const moviePage = ref(1);
+const reviewerPage = ref(1);
+const actorPage = ref(1); // 추가 필요 시
+const directorPage = ref(1); // 추가 필요 시
+const itemsPerPage = ref(12);
+
+// 페이지 수 계산
+const totalMoviePages = getTotalPages(topRatedMovieList);
+const totalReviewerPages = getTotalPages(searchedReviewers);
+const totalActorPages = getTotalPages(topRatedMovieList); // 임시
+const totalDirectorPages = getTotalPages(topRatedMovieList); // 임시
+
+// 각 페이지에 보여줄 목록
+const paginatedMovieList = getPaginatedList(topRatedMovieList, moviePage);
+const paginatedReviewerList = getPaginatedList(searchedReviewers, reviewerPage);
+const paginatedActorList = getPaginatedList(topRatedMovieList, actorPage); // 임시
+const paginatedDirectorList = getPaginatedList(topRatedMovieList, directorPage); // 임시
+
+// // 페이지 이동 함수
+// const goToPage = (page) => {
+//   if (page >= 1 && page <= totalPages.value) {
+//     currentPage.value = page;
+//   }
+// };
 </script>
 
 <template>
@@ -98,9 +142,9 @@ const getTopRatedMovieList = async () => {
         <div class="w-[70%] p-2">"{{ keyword }}" 의 검색결과</div>
       </div>
     </div>
-    <div class="relative w-[70%] min-h-screen mx-auto">
+    <div class="relative w-[70%] py-6 pb-20 mx-auto">
       <!-- 탭 메뉴 -->
-      <div class="flex my-4 border-1 border-b-2 border-white/20">
+      <div class="flex border-1 border-b-2 border-white/20">
         <button
           v-for="tab in tabs"
           :key="tab"
@@ -118,38 +162,53 @@ const getTopRatedMovieList = async () => {
 
       <!-- 영화 검색 결과 -->
       <template v-if="selectedTab === '영화'">
-        <div class="grid grid-cols-3 gap-4 mt-6">
+        <div class="grid grid-cols-3 gap-4 pt-6 pb-2">
           <template v-if="isLoading">
             <SkeletonCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
             <MovieCard
-              v-for="movie in topRatedMovieList"
+              v-for="movie in paginatedMovieList"
               :key="movie.movieId"
               :movie="movie"
               @click="goToMovieDetail(movie.movieId)"
             />
           </template>
         </div>
+        <!-- 페이지 네이션 -->
+        <BasePagination
+          v-if="!isLoading"
+          :currentPage="moviePage"
+          :totalPages="totalMoviePages"
+          @change="moviePage = $event"
+        />
       </template>
 
       <!-- 리뷰어 검색 결과 -->
       <template v-else-if="selectedTab === '리뷰어'">
         <div
-          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-8 mt-6"
+          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 gap-y-6 pt-6 pb-2"
         >
           <template v-if="isLoading">
             <SkeletonUserCard v-for="n in 16" :key="n" />
           </template>
           <template v-else>
             <ReviewerCard
-              v-for="reviewer in searchedReviewers"
+              v-for="reviewer in paginatedReviewerList"
               :key="reviewer.memberId"
               :reviewer="reviewer"
               @click="goToReviewerDetail(reviewer.memberId)"
             />
           </template>
         </div>
+
+        <!-- 페이지 네이션 -->
+        <BasePagination
+          v-if="!isLoading"
+          :currentPage="reviewerPage"
+          :totalPages="totalReviewerPages"
+          @change="reviewerPage = $event"
+        />
       </template>
 
       <!-- 감독,배우 검색 결과 -->
