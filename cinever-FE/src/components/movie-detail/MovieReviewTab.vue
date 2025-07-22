@@ -323,6 +323,7 @@ const wordData = computed(() => {
       :nickname="review.nickname"
       starColor="text-amber-500"
       :userId="review.memberId"
+      :keywords="review.keywords"
     />
   </div>
   <!-- 전체화면 로딩 오버레이 -->
