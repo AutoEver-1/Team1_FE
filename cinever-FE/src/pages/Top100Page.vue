@@ -20,7 +20,7 @@
           </button>
         </div>
         <SkeletonCard v-if="isLoading" />
-        <MiniCardList v-else :filteredMovies="filteredMovies" />
+        <MiniCardList v-show="!isLoading" :filteredMovies="filteredMovies" />
       </div>
     </div>
   </BaseBackground>
@@ -67,7 +67,7 @@ const getTop100MovieList = async (genreId = genres[0].id) => {
   } finally {
     setTimeout(() => {
       isLoading.value = false;
-    }, 400);
+    }, 500);
   }
 };
 

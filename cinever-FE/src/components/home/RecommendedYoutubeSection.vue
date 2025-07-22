@@ -1,13 +1,30 @@
 <script setup>
 import { ref } from "vue";
 
-const videoIds = [
+// const videoIds = [
+//   "f607NYuwwxw",
+//   "9lPf8wSGRxY",
+//   "Txh6s4ONZ7k",
+//   "fVTb09wkLcg",
+//   "Ys5ikAs5_IE",
+// ];
+
+const allVideoIds = [
   "f607NYuwwxw",
   "9lPf8wSGRxY",
   "82gu0kLr9ZI",
   "cGUJUPvXoZ8",
   "wNuOZo8HO-o",
+  "Txh6s4ONZ7k",
+  "fVTb09wkLcg",
+  "Ys5ikAs5_IE",
+  "y83t8J0-MU4",
+  "9ZiJMd1JNEU",
+  "adEiR-DNX88",
+  "51cPD0kTEh8",
 ];
+
+const videoIds = ref(getRandomVideos(allVideoIds, 5));
 
 const fading = ref(null); // 썸네일 사라짐 제어
 const playing = ref(null); // iframe 렌더링 제어
@@ -21,6 +38,10 @@ const handleMouseLeave = () => {
   fading.value = null;
   playing.value = null;
 };
+
+function getRandomVideos(list, count) {
+  return [...list].sort(() => Math.random() - 0.5).slice(0, count);
+}
 </script>
 
 <template>

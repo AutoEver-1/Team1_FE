@@ -24,17 +24,29 @@ const goToUserPage = (userId) => {
 </script>
 
 <template>
-  <div class="flex gap-4 bg-[#1e1c1a] p-4 rounded-xl text-white">
+  <div class="flex gap-4 bg-[#1e1c1a] py-4 px-3 md:p-4 rounded-xl text-white">
     <BaseProfileImage
       :src="avatar"
       @click="goToUserPage(userId)"
-      class="cursor-pointer"
+      class="cursor-pointer hidden md:block"
     />
     <div class="flex-1 space-y-2">
-      <p class="text-gray-400 cursor-pointer" @click="goToUserPage(userId)">
+      <div class="flex gap-2 items-center md:hidden">
+        <BaseProfileImage
+          :src="avatar"
+          @click="goToUserPage(userId)"
+          class="cursor-pointer"
+        />
+        <p class="text-gray-400 cursor-pointer" @click="goToUserPage(userId)">
+          {{ nickname }}
+        </p>
+      </div>
+      <p
+        class="hidden md:block text-gray-400 cursor-pointer"
+        @click="goToUserPage(userId)"
+      >
         {{ nickname }}
       </p>
-
       <div class="bg-black rounded-lg p-4">
         <div class="flex items-center gap-2 mb-2">
           <div class="flex">
