@@ -65,7 +65,7 @@
 
             <td class="px-4 text-center">
               <img
-                :src="reviewer.profile_img_url"
+                :src="getProfileImg(reviewer.profile_img_url)"
                 alt="profile"
                 class="w-14 h-14 rounded-full object-cover border mx-auto"
               />
@@ -167,6 +167,7 @@ import {
   unblockMultiReviewers,
   updateReviewerRole,
 } from "../../api/adminApi";
+import { getProfileImg } from "../../services/defaultImg";
 
 const reviewerList = ref([]);
 const searchKeyword = ref("");
