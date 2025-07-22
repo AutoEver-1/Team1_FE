@@ -24,6 +24,10 @@ watch(
   },
   { immediate: true }
 );
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 </script>
 
 <template>
@@ -41,5 +45,11 @@ watch(
       :current="currentTab"
       @navigate="navigateTo"
     />
+    <button
+      @click="scrollToTop"
+      class="md:hidden fixed bottom-20 right-4 z-50 bg-yellow-400 text-black px-3 py-2 rounded-full shadow-lg text-sm hover:bg-yellow-500 transition-all"
+    >
+      ↑
+    </button>
   </div>
 </template>

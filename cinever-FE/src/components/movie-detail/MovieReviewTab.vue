@@ -5,20 +5,19 @@ import BaseButton from "../common/BaseButton.vue";
 import BaseStarRating from "../common/BaseStarRating.vue";
 import BaseTextArea from "../common/BaseTextArea.vue";
 import { ref, computed } from "vue";
-import { fetchKeywords } from "../../api/flask";
 import { createReview, updateReview, deleteReview } from "../../api/reviewApi";
 import { useUserStore } from "../../stores/userStore";
 import WordCloud from "vue3-word-cloud";
 
 const keyword = ref("");
 const rating = ref(0);
-const extractedKeywords = ref([]);
 const userStore = useUserStore();
 const isLoading = ref(false);
 
 const props = defineProps({
   dataList: Object,
   movieId: Number,
+  keywordList: Object,
 });
 
 const filteredReviews = computed(() =>
@@ -56,9 +55,6 @@ const handleUpdate = async () => {
   }
 
   try {
-    extractedKeywords.value = await fetchKeywords(keyword.value);
-    console.log("키워드:", extractedKeywords.value);
-
     await updateReview(props.movieId, {
       memberId: userStore.user.memberId,
       context: keyword.value,
@@ -87,8 +83,6 @@ const handleSubmit = async () => {
 
   try {
     isLoading.value = true; // 로딩 시작
-
-    extractedKeywords.value = await fetchKeywords(keyword.value);
 
     await createReview(props.movieId, {
       memberId: userStore.user.memberId,
@@ -147,18 +141,10 @@ const getStarPercentage = (star) => {
   return total ? ((starCounts.value[star] || 0) / total) * 100 : 0;
 };
 
-const wordData = ref([
-  ["연출", 10],
-  ["스토리", 8],
-  ["연기", 12],
-  ["OST", 6],
-  ["긴장감", 9],
-  ["감동", 7],
-  ["지루함", 4],
-  ["몰입감", 11],
-  ["캐릭터", 5],
-  ["전개", 6],
-]);
+const wordData = computed(() => {
+  const map = props.keywordList ?? {};
+  return Object.entries(map);
+});
 </script>
 
 <template>
@@ -191,7 +177,7 @@ const wordData = ref([
     </div>
 
     <div class="md:w-1/2 w-full">
-      <div class="w-full h-40 md:h-full relative">
+      <div class="w-full h-40 md:h-full relative" v-if="wordData?.length">
         <WordCloud
           :words="wordData"
           :color="
@@ -200,6 +186,15 @@ const wordData = ref([
           "
           font-family="Roboto"
         />
+      </div>
+      <div
+        v-else
+        class="hidden md:flex w-full h-40 md:h-full flex-col items-center justify-center text-sm text-gray-400"
+      >
+        아직 키워드 데이터가 충분하지 않아요.
+        <span class="ml-1 text-yellow-400"
+          >리뷰를 작성하면 워드클라우드가 생성돼요!</span
+        >
       </div>
     </div>
   </div>
@@ -220,7 +215,7 @@ const wordData = ref([
       <BaseButton
         :label="isLoading ? '' : '등록'"
         :disabled="isLoading"
-        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 flex justify-center items-center"
+        class="md:w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 flex justify-center items-center"
         @click="handleSubmit"
       >
         <svg
@@ -262,6 +257,7 @@ const wordData = ref([
       :nickname="review.nickname"
       starColor="text-amber-500"
       :userId="userStore.user.memberId"
+      :keywords="review.keywords"
     />
 
     <!-- 작성/수정 폼 -->
