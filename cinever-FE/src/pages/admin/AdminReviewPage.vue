@@ -64,7 +64,7 @@
 
             <td class="px-4 text-center">
               <img
-                :src="entry.movie.posterPath"
+                :src="getProfileImg(entry.movie.posterPath)"
                 alt="poster"
                 class="w-12 h-16 object-cover rounded border inline-block"
               />
@@ -140,6 +140,7 @@ import {
   blockMultiReviews,
   unblockMultiReviews,
 } from "../../api/adminApi";
+import { getProfileImg } from "../../services/defaultImg";
 
 const reviewList = ref([]);
 const searchKeyword = ref("");

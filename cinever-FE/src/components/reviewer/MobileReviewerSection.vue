@@ -7,6 +7,8 @@ import {
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
+import { getReviewerRoleMeta } from "../../utils/reviewerRole";
+import { getProfileImg } from "../../services/defaultImg";
 
 const dataList = ref([]);
 const page = ref(1);
@@ -60,21 +62,22 @@ onMounted(async () => {
       class="w-[90vw] mx-auto bg-white/5 backdrop-blur-md rounded-xl shadow-md hover:shadow-lg transition duration-300 overflow-hidden flex flex-row gap-4 p-4"
     >
       <div
-        class="flex flex-col items-center justify-center w-24"
+        class="flex flex-col items-center justify-center w-40"
         @click="toDetailUser(data.memberId)"
       >
         <img
-          :src="data.profile_img_url"
+          :src="getProfileImg(data.profile_img_url)"
           alt="profile"
           class="w-16 h-16 rounded-full object-cover"
         />
-        <div class="mt-2 text-center">
-          <p class="text-sm font-semibold">{{ data.nickname }}</p>
-          <span
-            class="inline-block mt-1 text-[10px] font-bold bg-amber-500 text-black px-2 py-0.5 rounded"
+        <div class="mt-2 flex flex-col items-center gap-1">
+          <div
+            class="w-fit px-2 py-0.5 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150"
+            :class="getReviewerRoleMeta(data.role).badgeClass"
           >
-            {{ data.role }}
-          </span>
+            {{ getReviewerRoleMeta(data.role).roleName }}
+          </div>
+          <p class="text-sm font-semibold">{{ data.nickname }}</p>
         </div>
       </div>
 
