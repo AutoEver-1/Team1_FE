@@ -145,6 +145,29 @@ const wordData = computed(() => {
   const map = props.keywordList ?? {};
   return Object.entries(map);
 });
+
+// 동적 색상 계산 함수
+const getColorByWeight = ([, weight]) => {
+  const weights = wordData.value.map(([, w]) => w);
+  const min = Math.min(...weights);
+  const max = Math.max(...weights);
+
+  if (min === max) {
+    // 모든 값이 같으면 단일 색상
+    return "#FDC500";
+  }
+
+  const range = max - min;
+  const step = range / 3;
+
+  if (weight <= min + step) {
+    return "#FFFBE1"; // 가장 약함
+  } else if (weight <= min + step * 2) {
+    return "#FFF066"; // 중간
+  } else {
+    return "#FDC500"; // 가장 강함
+  }
+};
 </script>
 
 <template>
@@ -180,10 +203,7 @@ const wordData = computed(() => {
       <div class="w-full h-40 md:h-full relative" v-if="wordData?.length">
         <WordCloud
           :words="wordData"
-          :color="
-            ([, weight]) =>
-              weight > 10 ? '#FDC500' : weight > 5 ? '#FFF066' : '#FFFBE1'
-          "
+          :color="getColorByWeight"
           font-family="Roboto"
         />
       </div>
