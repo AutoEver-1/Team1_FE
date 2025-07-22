@@ -263,7 +263,7 @@ const getColorByWeight = ([, weight]) => {
       </BaseButton>
     </div>
   </div>
-  <div class="bg-[#16130f] p-6 space-y-4 gap-1 mb-4">
+  <div class="bg-[#16130f] px-2 py-6 md:p-6 space-y-4 gap-1 mb-4">
     <p class="text-white">
       <span class="text-amber-500 text-xl font-semibold">My</span> 리뷰
     </p>
@@ -327,7 +327,7 @@ const getColorByWeight = ([, weight]) => {
     </div>
   </div>
 
-  <div class="min-h-screen bg-[#16130f] p-6 space-y-4">
+  <div class="min-h-screen bg-[#16130f] px-2 py-6 md:p-6 space-y-4">
     <p class="text-white">
       <span class="text-amber-500 text-xl font-semibold">{{
         filteredReviews?.length
