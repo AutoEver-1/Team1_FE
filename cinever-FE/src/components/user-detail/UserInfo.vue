@@ -5,6 +5,7 @@ import BaseModal from "../../components/common/BaseModal.vue";
 import { useUserStore } from "../../stores/userStore";
 import { useRouter } from "vue-router";
 import UserEdit from "./UserEdit.vue";
+import { getReviewerRoleMeta } from "../../utils/reviewerRole";
 
 const router = useRouter();
 const props = defineProps({
@@ -69,16 +70,20 @@ const goToUserPage = (userId) => {
     >
       <BaseProfileImage :src="userInfo.profilePath" size="160px" />
       <div class="flex-1 w-full">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-center md:justify-between">
           <div class="flex flex-col gap-1">
-            <h2 class="text-2xl font-bold">
-              {{ userInfo.nickname }}
-              <span
-                class="ml-2 inline-block text-sm font-bold bg-amber-500 text-black px-2 py-0.5 rounded"
+            <div class="flex gap-2 items-center flex-wrap">
+              <h2 class="text-2xl font-bold">
+                {{ userInfo.nickname }}
+              </h2>
+              <div
+                class="w-fit mt-1 px-3 py-1.5 text-sm font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150 whitespace-nowrap"
+                :class="getReviewerRoleMeta(userInfo.roleName).badgeClass"
               >
-                {{ userInfo.roleName }}
-              </span>
-            </h2>
+                {{ getReviewerRoleMeta(userInfo.roleName).roleName }}
+              </div>
+            </div>
+
             <p class="mt-1 text-sm font-semibold text-gray-500">
               {{ userInfo.gender }} · {{ birthLabel }}
             </p>
@@ -106,13 +111,20 @@ const goToUserPage = (userId) => {
           >
             {{ isFollowing ? "팔로우 취소" : "+ 팔로우 하기" }}
           </button>
-          <button
-            v-else
-            class="hidden md:block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
-            @click="openUserModal"
-          >
-            프로필 수정
-          </button>
+          <div v-else class="flex flex-col gap-2">
+            <button
+              class="hidden md:block text-sm border border-white px-4 py-1.5 rounded hover:bg-white/10"
+              @click="openUserModal"
+            >
+              프로필 수정
+            </button>
+            <!-- <button
+              class="hidden md:block text-sm border border-red-500 text-red-500 px-4 py-1.5 rounded hover:bg-red-500/10"
+              @click="openUserModal"
+            >
+              탈퇴하기
+            </button> -->
+          </div>
         </div>
 
         <!-- 모바일 팔로우 버튼 -->

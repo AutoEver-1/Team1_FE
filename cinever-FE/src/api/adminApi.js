@@ -147,7 +147,7 @@ export const getWithdrawalCnt = async (dateType) => {
     const res = await api.get(`/api/member/admin/stats/withdrawal/${dateType}`);
     return res.data;
   } catch (err) {
-    console.error("탈퇴자 API 호출 실패");
+    console.error("탈퇴자 추세 API 호출 실패");
     throw err;
   }
 };
@@ -167,7 +167,29 @@ export const getRegisterCnt = async (dateType) => {
     const res = await api.get(`/api/member/admin/stats/register/${dateType}`);
     return res.data;
   } catch (err) {
-    console.error("가입자 API 호출 실패");
+    console.error("가입자 추세 API 호출 실패");
+    throw err;
+  }
+};
+
+export const getReviewTrendCnt = async (dateType) => {
+  try {
+    const res = await api.get(
+      `/api/review/admin/stats/trend?dateType=${dateType}`
+    );
+    return res.data;
+  } catch (err) {
+    console.error("리뷰 추세 API 호출 실패");
+    throw err;
+  }
+};
+
+export const getTotalReviewCnt = async (dateType) => {
+  try {
+    const res = await api.get("/api/review/admin/stats/total");
+    return res.data;
+  } catch (err) {
+    console.error("총 리뷰 수 API 호출 실패");
     throw err;
   }
 };
