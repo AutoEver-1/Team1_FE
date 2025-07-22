@@ -16,9 +16,9 @@ export const roleNameMap = {
   USER: "리뷰어",
   CRITIC: "비평가",
   INFLUENCER: "인플루언서",
+  ADMIN: "관리자",
 };
 
-// 선택적으로 하나로 묶어서 리턴하는 함수도 만들 수 있음
 export const getReviewerRoleMeta = (role = "USER") => ({
   roleClass: roleClassMap[role] || roleClassMap.USER,
   badgeClass: badgeClassMap[role] || badgeClassMap.USER,
