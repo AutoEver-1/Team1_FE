@@ -215,7 +215,7 @@ const wordData = computed(() => {
       <BaseButton
         :label="isLoading ? '' : '등록'"
         :disabled="isLoading"
-        class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 flex justify-center items-center"
+        class="md:w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 flex justify-center items-center"
         @click="handleSubmit"
       >
         <svg

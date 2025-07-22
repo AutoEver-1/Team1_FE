@@ -39,7 +39,7 @@ const getReviewById = async () => {
         <div
           v-for="review in dataList?.slice(0, 6)"
           :key="review.movieId"
-          class="min-w-[280px] shrink-0 rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10"
+          class="min-w-[280px] max-w-[360px] shrink-0 rounded-2xl border border-white/15 p-4 shadow-lg backdrop-blur transition hover:scale-[1.02] hover:bg-white/10"
           @click="toMovieDetail(review.movieId)"
         >
           <div class="flex flex-col pb-2 border-b border-white/15">
@@ -86,7 +86,7 @@ const getReviewById = async () => {
                 {{ review.reviewdDate?.split("T")[0] }}
               </p>
               <p class="mt-1 pb-4 text-xs leading-relaxed text-white/90">
-                {{ review.context }}
+                {{ review.context?.slice(0, 55) }}
               </p>
             </div>
           </div>

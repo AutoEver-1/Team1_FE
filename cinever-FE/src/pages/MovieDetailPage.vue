@@ -22,7 +22,6 @@ const route = useRoute();
 const movieData = ref();
 const reviewData = ref();
 const movieId = route.params.id;
-const youtubeId = ref();
 const selectedTab = ref("detail");
 const router = useRouter();
 
@@ -55,9 +54,6 @@ const getMovieById = async () => {
   movieData.value = res.data;
 
   console.log("getMovieById", movieData.value);
-
-  const videoPath = movieData.value.video_path;
-  youtubeId.value = new URL(videoPath).searchParams.get("v");
 };
 </script>
 
