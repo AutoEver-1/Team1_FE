@@ -64,8 +64,13 @@ const onError = (id) => {
               getReviewerRoleMeta(data.role).roleClass,
             ]"
           >
-            <div class="absolute -top-1 left-2 px-1 py-0.5 z-10 w-10">
-              <BaseRankingBadge :rank="i + 1" size="44" color="gold" />
+            <div class="absolute top-2 left-1 px-1 py-0.5 z-10 w-10">
+              <div
+                class="flex justify-center items-center rounded-full bg-white/30 text-white p-1 backdrop:blur-sm"
+              >
+                {{ i + 1 }}
+              </div>
+              <!-- <BaseRankingBadge :rank="i + 1" size="44" color="gold" /> -->
             </div>
 
             <div

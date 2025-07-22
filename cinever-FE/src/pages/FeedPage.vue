@@ -7,6 +7,7 @@ import BaseRating from "../components/common/BaseRating.vue";
 import { CalendarIcon } from "@heroicons/vue/24/outline";
 import { getFollowingReview } from "../api/reviewApi";
 import BaseProfileImage from "../components/common/BaseProfileImage.vue";
+import { getReviewerRoleMeta } from "../utils/reviewerRole";
 
 // const allReviews = [
 //   {
@@ -59,8 +60,13 @@ const grouped = computed(() => {
     map.get(r.reviewedDate).push(r);
   });
 
-  // 그룹도 최신순
-  return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  // 그룹 내 리뷰들은 reverse() 해서 최신순으로 바꿈
+  const entries = [...map.entries()].map(([date, reviews]) => {
+    return [date, reviews.slice().reverse()];
+  });
+
+  // 날짜별 그룹은 최신 날짜부터 정렬
+  return entries.sort((a, b) => b[0].localeCompare(a[0]));
 });
 
 const formatDate = (dateStr) => {
@@ -155,7 +161,7 @@ onBeforeUnmount(() => {
 
 const getReviewList = async () => {
   const res = await getFollowingReview();
-  allReviews.value = res.reviewList.slice().reverse();
+  allReviews.value = res.reviewList;
   console.log(allReviews);
 };
 </script>
@@ -217,6 +223,12 @@ const getReviewList = async () => {
                       >
                         {{ review.followingRole }}
                       </span>
+                                        <div
+                    class="w-fit px-2 py-0.5 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150"
+                    :class="getReviewerRoleMeta(review.roleName).badgeClass"
+                  >
+                    {{ getReviewerRoleMeta(review.roleName).roleName }}
+                  </div>
                     </p>
                     <p class="text-[10px] text-white/60 sm:text-xs">
                       <!-- {{ review.user.preference }} -->

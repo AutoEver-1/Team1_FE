@@ -104,6 +104,8 @@
                   >
                     <option value="ADMIN">ADMIN</option>
                     <option value="REVIEWER">REVIEWER</option>
+                    <option value="INFLUENCER">INFLUENCER</option>
+                    <option value="CRITIC">CRITIC</option>
                   </select>
                   <button
                     class="ml-2 px-2 py-1 text-xs border rounded bg-amber-100 text-amber-600"
