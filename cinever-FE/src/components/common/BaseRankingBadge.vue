@@ -46,6 +46,13 @@ const gradientId = computed(() => {
         <stop offset="70%" stop-color="rgba(169, 113, 66, 0.9)" />
         <stop offset="100%" stop-color="rgba(92, 58, 0, 0.9)" />
       </linearGradient>
+
+      <!-- 금색 그라데이션 -->
+      <linearGradient id="blackGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="100%" stop-color="rgba(0, 0, 0, 0.9)" />
+        <stop offset="50%" stop-color="rgba(125, 125, 125, 0.9)" />
+        <stop offset="0%" stop-color="rgba(255, 255, 255, 0.9)" />
+      </linearGradient>
     </defs>
 
     <!-- 배경 -->
