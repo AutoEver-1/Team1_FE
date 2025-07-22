@@ -82,7 +82,7 @@ onMounted(async () => {
       </div>
 
       <div class="flex flex-col justify-center items-center flex-1">
-        <div class="flex flex-wrap gap-2 mb-2">
+        <div class="flex flex-wrap gap-2 mb-2 hidden">
           <span
             v-for="genre in data.genre_preference"
             :key="genre"

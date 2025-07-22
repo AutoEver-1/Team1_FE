@@ -186,7 +186,7 @@ const goToUserPage = (userId) => {
   <!-- 팔로잉 모달 -->
   <BaseModal
     v-model:isOpen="isFollowingModalOpen"
-    contentClass="w-full max-w-lg p-6"
+    contentClass="w-full max-w-lg p-6 overflow-y-auto max-h-[80vh]"
   >
     <template #header><h3 class="text-lg font-bold">팔로잉 목록</h3></template>
     <template #default>
@@ -211,7 +211,7 @@ const goToUserPage = (userId) => {
   <!-- 팔로워 모달 -->
   <BaseModal
     v-model:isOpen="isFollowersModalOpen"
-    contentClass="w-full max-w-lg p-6"
+    contentClass="w-full max-w-lg p-6 overflow-y-auto max-h-[80vh]"
   >
     <template #header><h3 class="text-lg font-bold">팔로워 목록</h3></template>
     <template #default>

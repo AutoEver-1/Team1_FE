@@ -51,7 +51,6 @@
                           {{ r.role }}
                         </p>
                       </div>
-                      <BaseBadge :dataList="r.genre_preference" index="#" />
                     </div>
                   </div>
                   <div

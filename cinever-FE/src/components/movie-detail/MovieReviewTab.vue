@@ -281,7 +281,7 @@ const getColorByWeight = ([, weight]) => {
     />
 
     <!-- 작성/수정 폼 -->
-    <div v-if="!myReviews.length === 0 || isEditing" class="p-4 rounded-md">
+    <div v-if="!myReviews?.length === 0 || isEditing" class="p-4 rounded-md">
       <div class="mb-2 flex">
         <BaseStarRating v-model="rating" />
       </div>
@@ -376,3 +376,14 @@ const getColorByWeight = ([, weight]) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* ✅ scrollbar 숨기기 */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

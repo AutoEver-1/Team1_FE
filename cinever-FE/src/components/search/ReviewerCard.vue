@@ -51,7 +51,7 @@ const { roleClass, badgeClass, roleName } = getReviewerRoleMeta(
 
       <!-- 리뷰어 닉네임 -->
       <h2
-        class="text-lg font-semibold truncate w-full max-w-[180px]"
+        class="text-lg font-semibold truncate w-full max-w-[180px] text-center"
         title="reviewer.nickname"
       >
         {{ reviewer.nickname }}

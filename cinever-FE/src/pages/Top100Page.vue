@@ -34,19 +34,19 @@ import BaseBackground from "../components/common/BaseBackground.vue";
 import SkeletonCard from "../components/top100/SkeletonCard.vue";
 
 const genres = [
-  { id: 2, name: "가족" },
-  { id: 32, name: "공포" },
-  { id: 15, name: "드라마" },
-  { id: 13, name: "로맨스" },
-  { id: 28, name: "미스터리" },
-  { id: 24, name: "범죄" },
+  { id: 3, name: "미스터리" },
+  { id: 26, name: "SF" },
+  { id: 22, name: "범죄" },
+  { id: 9, name: "가족" },
+  { id: 1, name: "공포" },
+  { id: 8, name: "드라마" },
+  { id: 11, name: "로맨스" },
   { id: 21, name: "스릴러" },
-  { id: 12, name: "애니메이션" },
-  { id: 26, name: "어드벤처" },
-  { id: 6, name: "액션" },
-  { id: 11, name: "코미디" },
-  { id: 4, name: "판타지" },
-  { id: 27, name: "SF" },
+  { id: 2, name: "애니메이션" },
+  { id: 10, name: "어드벤처" },
+  { id: 21, name: "액션" },
+  { id: 15, name: "코미디" },
+  { id: 7, name: "판타지" },
 ];
 
 const movies = ref([]);
@@ -67,7 +67,7 @@ const getTop100MovieList = async (genreId = genres[0].id) => {
   } finally {
     setTimeout(() => {
       isLoading.value = false;
-    }, 500);
+    }, 100);
   }
 };
 

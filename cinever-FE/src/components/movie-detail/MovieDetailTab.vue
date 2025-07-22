@@ -151,20 +151,26 @@ const uniqueDirectors = computed(() => {
         <BuildingOfficeIcon class="w-5 h-5" />
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
+        <div
+          class="flex w-[100%] overflow-x-scroll overflow-y-hidden hide-scrollbar"
+        >
           <div
-            class="flex flex-col items-center min-w-20 text-center mt-5"
+            class="flex flex-col items-center text-center mt-5"
             v-for="company in dataList.productionCompanies"
           >
             <div
-              class="w-20 h-20 bg-white/80 p-1 flex justify-center items-center rounded-full"
+              v-if="company.name"
+              class="mr-6 min-w-20 w-20 h-20 bg-white/80 p-1 flex justify-center items-center rounded-full"
             >
               <img
                 :src="'https://image.tmdb.org/t/p/original' + company.name"
                 class="w-full object-cover"
               />
             </div>
-            <div class="w-20 text-xs text-gray-500 font-medium mt-2">
+            <div
+              class="mr-6 w-20 text-xs text-gray-500 font-medium mt-2"
+              v-if="company.name"
+            >
               {{ company.logo_path }}
             </div>
           </div>
@@ -209,7 +215,9 @@ const uniqueDirectors = computed(() => {
       </template>
       <template #contents>
         <div>
-          <div class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden">
+          <div
+            class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden hide-scrollbar"
+          >
             <div
               class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
               v-for="actor in dataList.actors"

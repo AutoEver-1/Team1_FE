@@ -98,17 +98,6 @@ const onError = (id) => {
                     {{ getReviewerRoleMeta(data.role).roleName }}
                   </div>
                 </div>
-
-                <!-- 장르 배지 -->
-                <div class="mt-1 flex gap-1">
-                  <span
-                    v-for="genre in data.genre_preference"
-                    :key="genre"
-                    class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
-                  >
-                    #{{ genre }}
-                  </span>
-                </div>
               </div>
             </div>
           </td>

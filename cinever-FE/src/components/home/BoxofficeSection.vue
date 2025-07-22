@@ -81,7 +81,7 @@ const handleMovieClick = (movie) => {
   </div>
   <div
     v-if="selectedMovie"
-    class="relative w-full md:min-h-[100vh] md:bg-black text-white overflow-hidden md:top-12"
+    class="relative w-full md:min-h-[100vh] md:bg-black text-white overflow-hidden md:top-12 flex justify-center items-center item-center"
   >
     <div class="absolute top-0 left-0 w-full h-[95%] z-0 hidden md:block">
       <BaseYoutubeVideo
@@ -114,7 +114,7 @@ const handleMovieClick = (movie) => {
     </div>
 
     <div
-      class="relative z-20 flex flex-col items-center gap-12 px-4 pt-24 pb-4 md:py-24 lg:py-36"
+      class="relative z-20 flex flex-col items-center gap-32 px-4 pt-24 pb-4 md:py-24 lg:py-36"
     >
       <div class="w-full max-w-6xl text-white hidden md:block">
         <div class="relative w-12 h-6 sm:w-14 sm:h-8">

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useUserStore } from "../stores/userStore";
 
 const api = axios.create({
-  baseURL: "http://cinever.store/",
+  baseURL: "http://localhost:8080",
   headers: {
     "Content-Type": "application/json",
   },

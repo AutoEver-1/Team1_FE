@@ -29,7 +29,6 @@ const ottList = [
 ];
 
 const selectedOtt = ref(ottList[0].id);
-const allDataList = ref({});
 const dataList = ref([]);
 
 // OTT ID → 데이터 키 매핑
@@ -46,41 +45,22 @@ const flattenMovieList = (rawData, ottId) => {
   return rawData?.[key] ?? [];
 };
 
-// 전체 OTT 데이터 로딩 (한 번만)
-const loadAllOttData = async () => {
-  const result = {};
-
-  for (const ott of ottList) {
-    try {
-      const [expectRes, recentlyRes] = await Promise.all([
-        getOttExpect(ott.id),
-        getOttRecently(ott.id),
-      ]);
-
-      const expectList = flattenMovieList(expectRes.data, ott.id);
-      const recentlyList = flattenMovieList(recentlyRes.data, ott.id);
-
-      result[ott.id] = [...expectList, ...recentlyList]; // ✅ 합쳐서 저장
-    } catch (err) {
-      console.error(`${ott.name} 데이터 불러오기 실패`, err);
-      result[ott.id] = [];
-    }
+const loadAllOttData = async (id) => {
+  try {
+    const res_ex = await getOttExpect(id);
+    const res_re = await getOttRecently(id);
+    console.log(res_ex, res_re);
+    dataList.value = [
+      ...res_ex.data[ottMovieKeyMap[id]],
+      ...res_re.data[ottMovieKeyMap[id]],
+    ]; // ✅ 합쳐서 저장
+  } catch (err) {
+    console.error(` 데이터 불러오기 실패`, err);
   }
-
-  allDataList.value = result;
-  updateDataList(selectedOtt.value);
-};
-
-// 선택한 OTT의 영화 데이터 세팅
-const updateDataList = (ottId) => {
-  selectedOtt.value = ottId;
-  dataList.value =
-    allDataList.value[ottId]?.filter((movie) => movie.posterPath) ?? [];
-  console.log(dataList.value);
 };
 
 onMounted(() => {
-  loadAllOttData();
+  loadAllOttData(ottList[0].id);
 });
 </script>
 
@@ -109,7 +89,7 @@ onMounted(() => {
                 : 'bg-transparent text-amber-200 border border-amber-400 hover:bg-amber-400 hover:text-black w-24 md:w-28',
             ].join(' ')
           "
-          @click="updateDataList(ott.id)"
+          @click="loadAllOttData(ott.id)"
         />
       </div>
 

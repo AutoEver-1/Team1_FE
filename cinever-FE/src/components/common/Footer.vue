@@ -1,17 +1,6 @@
 <template>
   <footer class="bg-[#12100E] text-gray-400 px-6 py-10 text-sm">
     <div
-      class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center mb-6"
-    >
-      <p class="text-white font-medium text-base">
-        지금까지
-        <span class="text-amber-500 font-bold">1,300명</span>이
-        <span class="text-amber-500 font-bold">18,542,300개의 평가</span>를
-        남겼어요
-      </p>
-    </div>
-
-    <div
       class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8"
     >
       <div class="space-y-2">
