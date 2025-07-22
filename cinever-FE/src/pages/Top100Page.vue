@@ -67,7 +67,7 @@ const getTop100MovieList = async (genreId = genres[0].id) => {
   } finally {
     setTimeout(() => {
       isLoading.value = false;
-    }, 100);
+    }, 500);
   }
 };
 

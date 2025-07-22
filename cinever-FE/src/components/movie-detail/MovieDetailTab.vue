@@ -109,7 +109,11 @@ const uniqueDirectors = computed(() => {
               <BaseRating :score="dataList.averageScore" size="20" />
               <div>
                 <span class="ml-2 text-xl font-medium text-amber-400">
-                  {{ dataList.averageScore ? dataList.averageScore : "-" }}
+                  {{
+                    dataList.averageScore
+                      ? dataList.averageScore?.toFixed(2)
+                      : "-"
+                  }}
                 </span>
                 <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
                   {{ "\u00A0/ 5.0" }}

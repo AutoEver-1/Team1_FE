@@ -218,7 +218,7 @@ const getColorByWeight = ([, weight]) => {
       </div>
     </div>
   </div>
-  <div v-if="myReviews.length === 0" class="p-4 rounded-md">
+  <div v-if="myReviews?.length === 0" class="p-4 rounded-md">
     <div class="mb-2 flex">
       <BaseStarRating v-model="rating" />
     </div>
@@ -313,13 +313,13 @@ const getColorByWeight = ([, weight]) => {
     </div>
     <div class="flex gap-2 justify-end mt-3">
       <BaseButton
-        v-if="myReviews.length > 0 && !isEditing"
+        v-if="myReviews?.length > 0 && !isEditing"
         label="수정"
         class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
         @click="startEdit"
       />
       <BaseButton
-        v-if="myReviews.length > 0 && !isEditing"
+        v-if="myReviews?.length > 0 && !isEditing"
         label="삭제"
         class="w-[15%] bg-yellow-400 hover:bg-yellow-500 text-black h-9 px-2 whitespace-nowrap overflow-hidden text-ellipsis text-[min(3.5vw,14px)]"
         @click="handleDelete"
