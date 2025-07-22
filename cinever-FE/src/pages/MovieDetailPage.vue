@@ -98,7 +98,11 @@ const getMovieById = async () => {
                   <MovieDetailTab :dataList="movieData" />
                 </div>
                 <div v-else-if="selectedTab === 'review'">
-                  <MovieReviewTab :dataList="reviewData" :movieId="movieId" />
+                  <MovieReviewTab
+                    :dataList="reviewData"
+                    :keywordList="movieData.keywordMap"
+                    :movieId="movieId"
+                  />
                 </div>
               </div>
             </div>

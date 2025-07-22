@@ -15,6 +15,7 @@ defineProps({
   content: String,
   nickname: String,
   userId: Number,
+  keywords: Object,
 });
 
 const goToUserPage = (userId) => {
@@ -33,6 +34,7 @@ const goToUserPage = (userId) => {
       <p class="text-gray-400 cursor-pointer" @click="goToUserPage(userId)">
         {{ nickname }}
       </p>
+
       <div class="bg-black rounded-lg p-4">
         <div class="flex items-center gap-2 mb-2">
           <div class="flex">
@@ -43,7 +45,16 @@ const goToUserPage = (userId) => {
           }}</span>
           <span class="font-thin text-gray-400 text-xs mt-1">/ 5.0</span>
         </div>
-        <p class="text-sm leading-snug whitespace-pre-wrap">
+        <div class="flex flex-wrap gap-1">
+          <span
+            v-for="(tag, i) in keywords"
+            :key="i"
+            class="bg-yellow-400/90 text-black text-xs font-medium px-2 py-0.5 rounded-full"
+          >
+            #{{ tag }}
+          </span>
+        </div>
+        <p class="text-sm leading-snug whitespace-pre-wrap mt-2">
           {{ content }}
         </p>
         <div class="mt-2 flex justify-end text-white/60">
