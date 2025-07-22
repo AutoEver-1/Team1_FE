@@ -11,7 +11,7 @@ import { getReviewerRoleMeta } from "../../utils/reviewerRole";
 import { getProfileImg } from "../../services/defaultImg";
 
 const dataList = ref([]);
-const page = ref(1);
+const page = ref(0);
 const hasMore = ref(true);
 const observerEl = ref(null);
 let observer = null;
