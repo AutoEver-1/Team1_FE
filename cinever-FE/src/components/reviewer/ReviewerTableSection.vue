@@ -120,14 +120,18 @@ const onError = (id) => {
             </p>
           </td>
           <td class="px-4 py-4 text-center">
-            <div class="flex justify-center gap-3">
+            <div class="flex justify-center gap-3 items-center">
               <RouterLink
                 v-for="(movie, idx) in data.wishlist?.slice(0, 3)"
                 :key="movie.movieId || idx"
                 :to="`/movie/${movie.movieId}`"
               >
                 <img
-                  :src="movie.posterPath"
+                  :src="
+                    movie.posterPath
+                      ? movie.posterPath
+                      : 'src/assets/images/logo.png'
+                  "
                   alt="wishlist_poster"
                   class="w-12 h-18 rounded object-cover transition-transform duration-300 hover:scale-110"
                 />

@@ -48,7 +48,7 @@ const posterSrc = computed(() => {
 const rawScore = props.movie.tmdbScore || 0;
 
 // 별점은 .5 단위로 반올림
-const ratingScore = computed(() => Math.round(rawScore * 2) / 2);
+const ratingScore = computed(() => Math.round(rawScore * 2) / 2 / 2);
 
 // 점수 출력 문자열: 소숫점 1자리까지만 자르기
 const ratingScoreDisplay = computed(() => rawScore.toFixed(1));

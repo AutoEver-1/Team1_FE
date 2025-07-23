@@ -1,6 +1,6 @@
 import api from "./index";
 
-const movieApi = "/api/movie";
+const movieApi = "/movie";
 
 // 명대사 (famous quote)
 export const getFamous = async () => {
@@ -110,7 +110,7 @@ export const getTop100 = async (genreId) => {
 
 export const toggleWishlist = async (movieId, isWishlisted) => {
   const method = isWishlisted ? "delete" : "post";
-  return await api[method](`/api/movie/${movieId}/wish`);
+  return await api[method](`/movie/${movieId}/wish`);
 };
 
 // 영화 검색

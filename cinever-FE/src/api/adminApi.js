@@ -2,7 +2,7 @@ import api from "./index";
 
 export const getAdminReviewerList = async () => {
   try {
-    const res = await api.get("/api/reviewer/all/admin");
+    const res = await api.get("/reviewer/all/admin");
     return res.data;
   } catch (err) {
     console.error("관리자 리뷰어 목록 조회 실패:", err);
@@ -12,7 +12,7 @@ export const getAdminReviewerList = async () => {
 
 export const getSingleAdminReviewer = async () => {
   try {
-    const res = await api.get("/api/reviewer/single/admin");
+    const res = await api.get("/reviewer/single/admin");
     return res.data;
   } catch (err) {
     console.error("단일 관리자 리뷰어 조회 실패:", err);
@@ -22,7 +22,7 @@ export const getSingleAdminReviewer = async () => {
 
 export const getAdminReviewList = async (searchType = "", content = "") => {
   try {
-    const res = await api.get("/api/review/admin", {
+    const res = await api.get("/review/admin", {
       params: { searchType, content },
     });
     return res.data;
@@ -34,7 +34,7 @@ export const getAdminReviewList = async (searchType = "", content = "") => {
 
 export const blockReviewer = async (memberId, isBanned) => {
   try {
-    const res = await api.patch(`/api/reviewer/block/${memberId}`, {
+    const res = await api.patch(`/reviewer/block/${memberId}`, {
       isBanned,
     });
     return res.data;
@@ -46,7 +46,7 @@ export const blockReviewer = async (memberId, isBanned) => {
 
 export const unblockReviewer = async (memberId, isBanned) => {
   try {
-    const res = await api.patch(`/api/reviewer/unblock/${memberId}`, {
+    const res = await api.patch(`/reviewer/unblock/${memberId}`, {
       isBanned,
     });
     return res.data;
@@ -58,7 +58,7 @@ export const unblockReviewer = async (memberId, isBanned) => {
 
 export const blockMultiReviewers = async (reviewerList) => {
   try {
-    const res = await api.patch(`/api/reviewer/block/multi`, { reviewerList });
+    const res = await api.patch(`/reviewer/block/multi`, { reviewerList });
     return res.data;
   } catch (err) {
     console.error("다중 리뷰어 차단 실패:", err);
@@ -68,7 +68,7 @@ export const blockMultiReviewers = async (reviewerList) => {
 
 export const unblockMultiReviewers = async (reviewerList) => {
   try {
-    const res = await api.patch(`/api/reviewer/unblock/multi`, {
+    const res = await api.patch(`/reviewer/unblock/multi`, {
       reviewerList,
     });
     return res.data;
@@ -80,7 +80,7 @@ export const unblockMultiReviewers = async (reviewerList) => {
 
 export const updateReviewerRole = async (memberId, role) => {
   try {
-    const res = await api.patch(`/api/reviewer/role/${memberId}`, { role });
+    const res = await api.patch(`/reviewer/role/${memberId}`, { role });
     return res.data;
   } catch (err) {
     console.error("리뷰어 역할 변경 실패:", err);
@@ -90,7 +90,7 @@ export const updateReviewerRole = async (memberId, role) => {
 
 export const updateMultiReviewerRole = async (reviewerList) => {
   try {
-    const res = await api.patch(`/api/reviewer/role/multi`, { reviewerList });
+    const res = await api.patch(`/reviewer/role/multi`, { reviewerList });
     return res.data;
   } catch (err) {
     console.error("다중 리뷰어 역할 변경 실패:", err);
@@ -100,7 +100,7 @@ export const updateMultiReviewerRole = async (reviewerList) => {
 
 export const blockReview = async (reviewId, isBanned) => {
   try {
-    const res = await api.patch(`/api/review/block/${reviewId}`, {
+    const res = await api.patch(`/review/block/${reviewId}`, {
       isBanned,
     });
     return res.data;
@@ -112,7 +112,7 @@ export const blockReview = async (reviewId, isBanned) => {
 
 export const unblockReview = async (reviewId, isBanned) => {
   try {
-    const res = await api.patch(`/api/review/unblock/${reviewId}`, {
+    const res = await api.patch(`/review/unblock/${reviewId}`, {
       isBanned,
     });
     return res.data;
@@ -124,7 +124,7 @@ export const unblockReview = async (reviewId, isBanned) => {
 
 export const blockMultiReviews = async (reviewList) => {
   try {
-    const res = await api.patch(`/api/review/block/multi`, { reviewList });
+    const res = await api.patch(`/review/block/multi`, { reviewList });
     return res.data;
   } catch (err) {
     console.error("다중 리뷰 차단 실패:", err);
@@ -134,7 +134,7 @@ export const blockMultiReviews = async (reviewList) => {
 
 export const unblockMultiReviews = async (reviewList) => {
   try {
-    const res = await api.patch(`/api/review/unblock/multi`, { reviewList });
+    const res = await api.patch(`/review/unblock/multi`, { reviewList });
     return res.data;
   } catch (err) {
     console.error("다중 리뷰 차단 해제 실패:", err);
@@ -144,7 +144,7 @@ export const unblockMultiReviews = async (reviewList) => {
 
 export const getWithdrawalCnt = async (dateType) => {
   try {
-    const res = await api.get(`/api/member/admin/stats/withdrawal/${dateType}`);
+    const res = await api.get(`/member/admin/stats/withdrawal/${dateType}`);
     return res.data;
   } catch (err) {
     console.error("탈퇴자 추세 API 호출 실패");
@@ -154,7 +154,7 @@ export const getWithdrawalCnt = async (dateType) => {
 
 export const getTotalMember = async () => {
   try {
-    const res = await api.get("/api/member/admin/stats/total");
+    const res = await api.get("/member/admin/stats/total");
     return res.data;
   } catch (err) {
     console.error("총 멤버 수 API 호출 실패");
@@ -164,7 +164,7 @@ export const getTotalMember = async () => {
 
 export const getRegisterCnt = async (dateType) => {
   try {
-    const res = await api.get(`/api/member/admin/stats/register/${dateType}`);
+    const res = await api.get(`/member/admin/stats/register/${dateType}`);
     return res.data;
   } catch (err) {
     console.error("가입자 추세 API 호출 실패");
@@ -174,9 +174,7 @@ export const getRegisterCnt = async (dateType) => {
 
 export const getReviewTrendCnt = async (dateType) => {
   try {
-    const res = await api.get(
-      `/api/review/admin/stats/trend?dateType=${dateType}`
-    );
+    const res = await api.get(`/review/admin/stats/trend?dateType=${dateType}`);
     return res.data;
   } catch (err) {
     console.error("리뷰 추세 API 호출 실패");
@@ -186,7 +184,7 @@ export const getReviewTrendCnt = async (dateType) => {
 
 export const getTotalReviewCnt = async (dateType) => {
   try {
-    const res = await api.get("/api/review/admin/stats/total");
+    const res = await api.get("/review/admin/stats/total");
     return res.data;
   } catch (err) {
     console.error("총 리뷰 수 API 호출 실패");
