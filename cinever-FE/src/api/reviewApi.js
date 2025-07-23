@@ -1,6 +1,6 @@
 import api from "./index";
 
-const reviewApi = "/api/review";
+const reviewApi = "/review";
 
 // ✅ 영화 리뷰 가져오기
 export const getReview = async (movieId) => {

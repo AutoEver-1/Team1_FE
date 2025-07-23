@@ -1,7 +1,7 @@
 import { formatDate } from "../services/formatDate";
 import api from "./index";
 
-const authApi = "/api";
+const authApi = "";
 
 export const signup = async (formData) => {
   try {

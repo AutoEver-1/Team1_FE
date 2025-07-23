@@ -114,7 +114,7 @@ const handleMovieClick = (movie) => {
     </div>
 
     <div
-      class="relative z-20 flex flex-col items-center gap-32 px-4 pt-24 pb-4 md:py-24 lg:py-36"
+      class="relative z-20 flex flex-col items-center gap-20 px-4 pt-24 pb-4 md:py-24 lg:py-36"
     >
       <div class="w-full max-w-6xl text-white hidden md:block">
         <div class="relative w-12 h-6 sm:w-14 sm:h-8">

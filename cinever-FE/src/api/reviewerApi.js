@@ -1,6 +1,6 @@
 import api from "./index";
 
-const reviewerApi = "/api/reviewer";
+const reviewerApi = "/reviewer";
 
 export const getReviewerAll = async (page = 0) => {
   try {

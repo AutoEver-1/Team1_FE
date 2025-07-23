@@ -17,6 +17,7 @@ import DefaultProfile from "../../assets/images/default_profile.png";
 const dataList = ref([]);
 const imgSrcMap = ref({});
 const swiperInstance = ref(null);
+const isLoading = ref(true);
 
 const handlePrev = () => {
   swiperInstance.value?.slidePrev();
@@ -26,12 +27,19 @@ const handleNext = () => {
 };
 
 onMounted(async () => {
-  const res = await getReviewerAll();
-  dataList.value = res.data.reviewerList.content;
-  // imgSrcMap 초기화
-  dataList.value.forEach((reviewer) => {
-    imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
-  });
+  isLoading.value = true;
+  try {
+    const res = await getReviewerAll();
+    dataList.value = res.data.reviewerList.content;
+    // imgSrcMap 초기화
+    dataList.value.forEach((reviewer) => {
+      imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
+    });
+  } catch (e) {
+    console.error("getReviewerAll", e);
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 const onError = (id) => {
@@ -40,6 +48,40 @@ const onError = (id) => {
 </script>
 
 <template>
+  <!-- 로딩 화면 -->
+  <div
+    v-if="isLoading"
+    class="w-full h-[90vh] flex flex-col justify-center items-center bg-black text-white gap-6"
+  >
+    <!-- 로딩 애니메이션 -->
+    <div class="relative w-16 h-16">
+      <div
+        class="absolute inset-0 rounded-full border-4 border-amber-400 border-t-transparent animate-spin"
+      ></div>
+      <div
+        class="absolute inset-2 rounded-full bg-black flex items-center justify-center"
+      >
+        <svg
+          class="w-6 h-6 text-amber-400 animate-pulse"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.75 3.75L14.25 12L9.75 20.25"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- 로딩 텍스트 -->
+    <p class="text-sm sm:text-base text-gray-300 animate-pulse">
+      인기 유저를 불러오는 중입니다...
+    </p>
+  </div>
   <div class="relative w-full">
     <Swiper
       @swiper="(swiper) => (swiperInstance = swiper)"
@@ -113,11 +155,11 @@ const onError = (id) => {
             >
               <div class="flex flex-wrap gap-2 mt-3 justify-center">
                 <span
-                  v-for="genre in data.genre_preference"
-                  :key="genre"
+                  v-for="genre in data.genre_preference?.slice(0, 2)"
+                  :key="genre.genre"
                   class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
                 >
-                  #{{ genre }}
+                  #{{ genre.genre }}
                 </span>
               </div>
 

@@ -1,6 +1,6 @@
 import api from "./index";
 
-const userApi = "/api/user";
+const userApi = "/user";
 
 export const getUserInfo = async (id) => {
   try {

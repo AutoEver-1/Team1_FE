@@ -82,13 +82,13 @@ onMounted(async () => {
       </div>
 
       <div class="flex flex-col justify-center items-center flex-1">
-        <div class="flex flex-wrap gap-2 mb-2 hidden">
+        <div class="flex flex-wrap gap-2 mb-2">
           <span
-            v-for="genre in data.genre_preference"
-            :key="genre"
+            v-for="genre in data.genre_preference?.slice(0, 2)"
+            :key="genre.genre"
             class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
           >
-            #{{ genre }}
+            #{{ genre.genre }}
           </span>
         </div>
 
@@ -114,9 +114,13 @@ onMounted(async () => {
             :to="`/movie/${movie.movieId}`"
           >
             <img
-              :src="movie.poster_path"
+              :src="
+                movie.posterPath
+                  ? movie.posterPath
+                  : 'src/assets/images/logo.png'
+              "
               alt="wish"
-              class="w-14 h-20 rounded object-cover hover:opacity-90 transition"
+              class="w-14 h-20 rounded object-contain hover:opacity-90 transition"
             />
           </RouterLink>
         </div>

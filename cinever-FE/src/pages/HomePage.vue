@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, defineEmits, ref } from "vue";
 import BoxofficeSection from "../components/home/BoxofficeSection.vue";
 import OTTExpectSection from "../components/home/OTTExpectSection.vue";
-import OTTRecentlySection from "../components/home/OTTRecentlySection.vue";
+// import OTTRecentlySection from "../components/home/OTTRecentlySection.vue";
 import QuoteSection from "../components/home/QuoteSection.vue";
 import LatestMovies from "../components/home/LatestMovies.vue";
 import TrendingMovies from "../components/home/TrendingMovies.vue";
