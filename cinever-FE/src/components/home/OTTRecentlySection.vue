@@ -18,7 +18,7 @@ const ottList = [
   {
     name: "디즈니+",
     id: 3,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+    logo: "https://static.kinolights.com/icon/btn_squircle_disneyplus.png",
   },
   {
     name: "웨이브",
@@ -47,12 +47,18 @@ const handleOttSelect = (ottId) => {
 
 <template>
   <div
-    class="relative z-10 flex flex-col items-center justify-center min-h-[100vh] text-white pt-16"
+    class="relative z-10 flex flex-col items-center justify-center text-white w-full"
   >
-    <div class="w-[70%]">
-      <p class="text-white text-2xl font-bold mb-4">OTT별 최근 개봉작</p>
+    <div class="max-w-7xl px-4 w-full">
+      <p
+        class="text-white text-md sm:text-2xl font-semibold md:font-bold mb-3 md:mb-6 text-left"
+      >
+        OTT별 최근 개봉작
+      </p>
 
-      <div class="flex gap-4 mb-10">
+      <div
+        class="flex gap-3 text-xs overflow-x-auto flex-nowrap whitespace-nowrap no-scrollbar mb-5 md:mb-10 w-full"
+      >
         <BaseButton
           v-for="ott in ottList"
           :key="ott.id"
@@ -60,19 +66,18 @@ const handleOttSelect = (ottId) => {
           :icon="ott.logo"
           :btnClass="
             [
+              'px-4 py-2 text-xs md:text-sm rounded-full transition-all duration-200 inline-flex items-center gap-2',
               ott.id === selectedOtt
-                ? 'bg-amber-400 text-black font-semibold w-40'
-                : 'bg-transparent text-amber-200 border border-amber-400 rounded px-2 py-0.5 text-xs font-semibold',
-              'px-6 py-2 rounded-full w-32',
+                ? 'bg-amber-400 text-black font-semibold shadow w-28 md:w-36'
+                : 'bg-transparent text-amber-200 border border-amber-400 hover:bg-amber-400 hover:text-black w-24 md:w-28',
             ].join(' ')
           "
           @click="handleOttSelect(ott.id)"
         />
       </div>
 
-      <div class="grid gap-4">
+      <div class="flex gap-6 flex-col">
         <BasePosterSlider :dataList="dataList" />
-        <!-- <BasePosterSlider :dataList="dataList" /> -->
       </div>
     </div>
   </div>

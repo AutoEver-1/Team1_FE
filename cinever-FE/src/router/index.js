@@ -7,6 +7,13 @@ import ReviewPage from "../pages/ReviewPage.vue";
 import UserPage from "../pages/UserPage.vue";
 import MovieDetailPage from "../pages/MovieDetailPage.vue";
 import AuthLayout from "../layouts/AuthLayout.vue";
+import Top100Page from "../pages/Top100Page.vue";
+import AdminLayout from "../layouts/AdminLayout.vue";
+import AdminReviewerPage from "../pages/admin/AdminReviewerPage.vue";
+import AdminReviewPage from "../pages/admin/AdminReviewPage.vue";
+import AdminStatisticsPage from "../pages/admin/AdminStatisticsPage.vue";
+import FeedPage from "../pages/FeedPage.vue";
+import SearchPage from "../pages/SearchPage.vue";
 
 const routes = [
   {
@@ -14,14 +21,19 @@ const routes = [
     component: MainLayout,
     children: [
       { path: "", name: "Home", component: HomePage },
+      { path: "/home", name: "", component: HomePage },
       { path: "/review", name: "Review", component: ReviewPage },
-      { path: "/user", name: "User", component: UserPage },
+      { path: "/user/:id", name: "User", component: UserPage },
+      { path: "/top100", name: "Top100", component: Top100Page },
+      { path: "/feed", name: "Feed", component: FeedPage },
+
       {
         path: "/movie/:id",
         name: "MovieDetail",
         component: MovieDetailPage,
         props: true,
       },
+      { path: "/search", name: "Search", component: SearchPage },
     ],
   },
 
@@ -35,11 +47,24 @@ const routes = [
     component: AuthLayout,
     children: [{ path: "", component: SignupPage }],
   },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      { path: "", component: AdminReviewerPage },
+      { path: "reviewer", component: AdminReviewerPage },
+      { path: "review", component: AdminReviewPage },
+      { path: "statistics", component: AdminStatisticsPage },
+    ],
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  },
 });
 
 export default router;

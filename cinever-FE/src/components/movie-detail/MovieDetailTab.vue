@@ -3,7 +3,18 @@ import BaseCard from "../common/BaseCard.vue";
 import BaseRating from "../common/BaseRating.vue";
 import BaseBadge from "../common/BaseBadge.vue";
 import BaseModal from "../common/BaseModal.vue";
-import { ref } from "vue";
+import BaseProfileImage from "../common/BaseProfileImage.vue";
+import { ref, computed } from "vue";
+import {
+  CalendarIcon,
+  Squares2X2Icon,
+  GlobeAltIcon,
+  StarIcon,
+  BuildingOfficeIcon,
+  UserGroupIcon,
+  UserCircleIcon,
+  PhotoIcon,
+} from "@heroicons/vue/24/outline";
 
 const props = defineProps({
   dataList: Object,
@@ -16,7 +27,6 @@ const isPersonModalOpen = ref(false);
 const selectedPerson = ref(null);
 
 const openPersonModal = (person) => {
-  console.log(person);
   selectedPerson.value = person;
   isPersonModalOpen.value = true;
 };
@@ -40,44 +50,27 @@ const prevImage = () => {
     currentImageIndex.value--;
   }
 };
+
+const uniqueDirectors = computed(() => {
+  const seen = new Set();
+  return (props.dataList.director || []).filter((d) => {
+    if (seen.has(d.personId)) return false;
+    seen.add(d.personId);
+    return true;
+  });
+});
 </script>
 <template>
   <div class="space-y-3">
     <BaseCard title="개봉" :content="dataList.releaseDate.split('-')[0]">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
+        <CalendarIcon class="w-5 h-5" />
       </template>
     </BaseCard>
 
     <BaseCard title="장르">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"
-          />
-        </svg>
+        <Squares2X2Icon class="w-5 h-5" />
       </template>
       <template #contents>
         <div
@@ -90,20 +83,7 @@ const prevImage = () => {
 
     <BaseCard title="언어">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 0c1.657 0 3 4.03 3 9s-1.343 9-3 9-3-4.03-3-9 1.343-9 3-9z"
-          />
-        </svg>
+        <GlobeAltIcon class="w-5 h-5" />
       </template>
       <template #contents>
         <div
@@ -116,22 +96,7 @@ const prevImage = () => {
 
     <BaseCard title="별점">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 2l3.09 6.26L22 9.27l-5.45 5.32L17.91 22 12 18.27 6.09 22l1.36-7.41L2 9.27l6.91-1.01L12 2z"
-          />
-        </svg>
+        <StarIcon class="w-5 h-5" />
       </template>
       <template #contents>
         <div class="flex gap-4 mt-1">
@@ -144,7 +109,11 @@ const prevImage = () => {
               <BaseRating :score="dataList.averageScore" size="20" />
               <div>
                 <span class="ml-2 text-xl font-medium text-amber-400">
-                  {{ dataList.averageScore ? dataList.averageScore : "-" }}
+                  {{
+                    dataList.averageScore
+                      ? dataList.averageScore?.toFixed(2)
+                      : "-"
+                  }}
                 </span>
                 <span class="text-xs font-medium text-gray-200 opacity-50 mt-2">
                   {{ "\u00A0/ 5.0" }}
@@ -179,30 +148,30 @@ const prevImage = () => {
 
     <BaseCard title="제작사">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          class="w-6 h-6"
-        >
-          <path
-            d="M3 2h18v20H3V2zm2 2v16h14V4H5zm3 2h2v2H8V6zm0 4h2v2H8v-2zm0 4h2v2H8v-2zm4-8h2v2h-2V6zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"
-          />
-        </svg>
+        <BuildingOfficeIcon class="w-5 h-5" />
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-x-scroll">
+        <div
+          class="flex w-[100%] overflow-x-scroll overflow-y-hidden hide-scrollbar"
+        >
           <div
-            class="flex flex-col items-center min-w-20 text-center mt-5"
+            class="flex flex-col items-center text-center mt-5"
             v-for="company in dataList.productionCompanies"
           >
             <div
-              class="w-20 h-20 bg-white/80 p-1 flex justify-center items-center rounded-full"
+              v-if="company.name"
+              class="mr-6 min-w-20 w-20 h-20 bg-white/80 p-1 flex justify-center items-center rounded-full"
             >
-              <img :src="company.logo_path" class="w-full object-cover" />
+              <img
+                :src="'https://image.tmdb.org/t/p/original' + company.name"
+                class="w-full object-cover"
+              />
             </div>
-            <div class="text-xs text-gray-500 font-medium mt-2">
-              {{ company.name }}
+            <div
+              class="mr-6 w-20 text-xs text-gray-500 font-medium mt-2"
+              v-if="company.name"
+            >
+              {{ company.logo_path }}
             </div>
           </div>
         </div>
@@ -211,21 +180,12 @@ const prevImage = () => {
 
     <BaseCard title="감독">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-        >
-          <path
-            d="M4 4h16v4H4V4zm0 6h16v10H4V10zm2 2v6h12v-6H6zm3.5-9L13 8h2l-3.5-5H9.5zm5 0L18 8h-2l-3.5-5h2z"
-          />
-        </svg>
+        <UserCircleIcon class="w-5 h-5" />
       </template>
       <template #contents>
         <BaseCard
-          v-for="d in dataList.director"
+          v-for="d in uniqueDirectors"
+          :key="d.personId"
           backgroundColor="black"
           class="flex gap-4 cursor-pointer hover:bg-white/5 transition"
           @click="openPersonModal(d)"
@@ -234,7 +194,7 @@ const prevImage = () => {
             <div class="w-16 h-16 rounded-full overflow-hidden">
               <img :src="d.profilePath" class="w-full h-full object-cover" />
             </div>
-            <div class="sapce-y-0">
+            <div class="space-y-0">
               <p class="text-sm">{{ d.name }}</p>
               <p class="text-xs text-gray-400 mt-1">
                 {{ d.gender }}
@@ -249,33 +209,28 @@ const prevImage = () => {
       </template>
     </BaseCard>
 
-    <BaseCard title="배우">
+    <BaseCard title="배우" class="w-[43vw]">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-          width="20"
-          height="20"
-        >
-          <path
-            d="M17 10.5V7c0-1.1-.9-2-2-2H3C1.9 5 1 5.9 1 7v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z"
-          />
-        </svg>
+        <UserGroupIcon class="w-5 h-5" />
       </template>
       <template #contents>
-        <div class="flex gap-6 w-[100%] overflow-scroll">
+        <div>
           <div
-            class="flex flex-col items-center min-w-20 text-center cursor-pointer"
-            v-for="actor in dataList.actors"
-            @click="openPersonModal(actor)"
+            class="flex gap-6 w-[100%] overflow-x-scroll overflow-y-hidden hide-scrollbar"
           >
-            <img
-              :src="actor.profilePath"
-              class="w-20 h-20 rounded-full object-cover"
-            />
-            <div class="text-xs text-gray-500 font-medium mt-1">
-              {{ actor.name }}
+            <div
+              class="flex flex-col items-center min-w-20 text-center cursor-pointer overflow-hidden"
+              v-for="actor in dataList.actors"
+              @click="openPersonModal(actor)"
+            >
+              <BaseProfileImage
+                :src="actor.profilePath"
+                class="w-20 h-20 rounded-full object-cover"
+                size="80px"
+              />
+              <div class="text-xs text-gray-500 font-medium mt-1">
+                {{ actor.name }}
+              </div>
             </div>
           </div>
         </div>
@@ -284,28 +239,7 @@ const prevImage = () => {
 
     <BaseCard title="스틸컷">
       <template #icon>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          width="20"
-          height="20"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v11a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z"
-          />
-          <circle
-            cx="12"
-            cy="13"
-            r="4"
-            stroke="currentColor"
-            stroke-width="2"
-          />
-        </svg>
+        <PhotoIcon class="w-5 h-5" />
       </template>
       <template #contents>
         <div

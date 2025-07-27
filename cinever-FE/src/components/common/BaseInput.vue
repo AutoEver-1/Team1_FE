@@ -17,7 +17,7 @@ const inputValue = computed({
 
 <template>
   <div :class="['flex items-center border rounded-full', inputClass]">
-    <span class="mr-2 text-amber-400 text-xl">🔍</span>
+    <span class="mr-2 text-amber-400 text-xl"></span>
     <input
       type="text"
       :placeholder="placeholder"

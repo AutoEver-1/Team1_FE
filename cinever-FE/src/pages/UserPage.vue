@@ -1,106 +1,159 @@
+<script setup>
+import UserInfo from "../components/user-detail/UserInfo.vue";
+import BaseTab from "../components/common/BaseTab.vue";
+import { ref, onMounted, watch } from "vue";
+import UserMovieDetail from "../components/user-detail/UserMovieDetail.vue";
+import UserProfileDetail from "../components/user-detail/UserProfileDetail.vue";
+import UserReviewDetail from "../components/user-detail/UserReviewDetail.vue";
+import {
+  getUserWishlistInfo,
+  getUserRecentInfo,
+  getUserFavoriteInfo,
+  getUserDislikeInfo,
+  getUserReviewInfo,
+} from "../api/user";
+import { useRouter, useRoute } from "vue-router";
+import { followUser, unfollowUser, getUserInfo } from "../api/user";
+
+const detailTab = [
+  { id: "profile", name: "프로필" },
+  { id: "review", name: "리뷰" },
+  { id: "movie", name: "영화" },
+  { id: "wishlist", name: "위시리스트" },
+];
+
+const userInfo = ref(null);
+const isFollowing = ref(false);
+const router = useRouter();
+const route = useRoute();
+const selectedTab = ref(route.query.tab || "profile");
+const wishlistList = ref([]);
+const recentList = ref([]);
+const favoriteList = ref([]);
+const dislikeList = ref([]);
+const reivewList = ref([]);
+
+onMounted(() => {
+  const id = route.params.id;
+  fetchUserInfo(id);
+  userWishlistInfo(id);
+  userRecentInfo(id);
+  userFavoriteInfo(id);
+  userDislikeInfo(id);
+  userReviewInfo(id);
+});
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    fetchUserInfo(newId);
+    userWishlistInfo(newId);
+    userRecentInfo(newId);
+    userFavoriteInfo(newId);
+    userDislikeInfo(newId);
+    userReviewInfo(newId);
+    selectedTab.value = "profile";
+  }
+);
+
+watch(selectedTab, (newTab) => {
+  router.replace({ query: { ...route.query, tab: newTab } });
+});
+
+const userWishlistInfo = async (id) => {
+  const res = await getUserWishlistInfo(id);
+  wishlistList.value = res.data;
+  console.log("userWishlistInfo", wishlistList.value);
+};
+
+const userRecentInfo = async (id) => {
+  const res = await getUserRecentInfo(id);
+  recentList.value = res.data;
+  console.log("recentList", recentList.value);
+};
+
+const userFavoriteInfo = async (id) => {
+  const res = await getUserFavoriteInfo(id);
+  favoriteList.value = res.data;
+  console.log("favoriteList", favoriteList.value);
+};
+
+const userDislikeInfo = async (id) => {
+  const res = await getUserDislikeInfo(id);
+  dislikeList.value = res.data;
+  console.log("dislikeList", dislikeList.value);
+};
+
+const userReviewInfo = async (id) => {
+  const res = await getUserReviewInfo(id);
+  reivewList.value = res.data;
+  console.log("reivewList", reivewList.value);
+};
+
+const fetchUserInfo = async (id) => {
+  const res = await getUserInfo(id);
+  userInfo.value = res.data;
+  isFollowing.value = res.data.isFollowing;
+  console.log("fetchUserInfo", res);
+};
+
+const handleToggleFollow = async () => {
+  try {
+    if (isFollowing.value) {
+      await unfollowUser(userInfo.value.memberId);
+    } else {
+      await followUser(userInfo.value.memberId);
+    }
+    await fetchUserInfo(userInfo.value.memberId);
+  } catch (e) {
+    console.error("팔로우 처리 실패", e);
+  }
+};
+</script>
+
 <template>
-  <div class="flex flex-col items-center px-4 py-10">
-    <!-- 프로필 컨테이너 -->
-    <div class="flex w-[90%] w-max-3xl">
-      <img
-        src="/src/assets/Avatar.png"
-        alt="프로필"
-        class="w-[100px] sm:w-[200px]"
+  <div
+    class="bg-[url('../../assets/images/backgroundImg.png')] bg-cover bg-top pb-20"
+  >
+    <div class="pt-24 flex-1">
+      <UserInfo
+        :userInfo="userInfo"
+        :reviewCount="reivewList.totalReviewCount"
+        :isFollowing="isFollowing"
+        @toggle-follow="handleToggleFollow"
       />
-      <div class="flex items-center ml-5 sm:ml-10">
-        <p class="text-xl sm:text-3xl font-bold">User 1</p>
-        <p
-          class="text-xs sm:text-sm text-black font-bold px-2 mt-1 sm:mt-2 rounded bg-yellow-400 ml-1"
-        >
-          영화 평론가
-        </p>
-      </div>
-    </div>
 
-    <div class="w-[90%] max-w-4xl mt-20 relative">
-      <div class="w-full text-left mb-4">
-        <p class="text-xl font-bold">최근에 본 영화</p>
-      </div>
+      <div class="min-h-screen flex justify-center mt-12 max-w-4xl mx-auto">
+        <div class="w-[90%] md:w-full space-y-6">
+          <BaseTab
+            v-model:selectedId="selectedTab"
+            :tabList="detailTab"
+            isFlex=""
+          />
 
-      <!-- 좌우 버튼 -->
-      <button
-        @click="scrollLeft"
-        class="hidden md:flex absolute left-[-50px] top-1/2 -translate-y-1/2 z-10 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-3 rounded-full shadow"
-      >
-        ←
-      </button>
-      <button
-        @click="scrollRight"
-        class="hidden md:flex absolute right-[-50px] top-1/2 -translate-y-1/2 z-10 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-3 rounded-full shadow"
-      >
-        →
-      </button>
-
-      <!-- 슬라이더 영역 -->
-      <div
-        ref="sliderRef"
-        class="overflow-x-auto whitespace-nowrap scroll-smooth flex gap-6 no-scrollbar"
-      >
-        <img
-          v-for="i in 10"
-          :key="i"
-          src="/src/assets/Avatar.png"
-          alt="영화"
-          class="inline-block rounded shadow-md shrink-0"
-        />
-      </div>
-    </div>
-    <div class="w-[90%] max-w-4xl mt-20 relative">
-      <div class="w-full text-left mb-4">
-        <p class="text-xl font-bold">위시리스트</p>
-      </div>
-
-      <!-- 좌우 버튼 -->
-      <button
-        @click="scrollLeft"
-        class="hidden md:flex absolute left-[-50px] top-1/2 -translate-y-1/2 z-10 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-3 rounded-full shadow"
-      >
-        ←
-      </button>
-
-      <!-- 슬라이더 영역 -->
-      <div
-        ref="sliderRef"
-        class="overflow-x-auto whitespace-nowrap scroll-smooth flex gap-6 no-scrollbar"
-      >
-        <img
-          v-for="i in 10"
-          :key="i"
-          src="/src/assets/Avatar.png"
-          alt="영화"
-          class="inline-block rounded shadow-md shrink-0"
-        />
+          <div class="pb-20" v-if="selectedTab === 'profile'">
+            <UserProfileDetail
+              :wishlistList="wishlistList"
+              :recentList="recentList"
+              :favoriteList="favoriteList"
+              :dislikeList="dislikeList"
+              :reivewList="reivewList"
+            />
+          </div>
+          <div v-else-if="selectedTab === 'review'">
+            <UserReviewDetail :reivewList="reivewList" />
+          </div>
+          <div v-else-if="selectedTab === 'movie'">
+            <UserMovieDetail :dataList="recentList" movieType="영화" />
+          </div>
+          <div v-else-if="selectedTab === 'wishlist'">
+            <UserMovieDetail
+              :dataList="wishlistList"
+              movieType="보고싶은 영화"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-
-const sliderRef = ref(null);
-
-const scrollLeft = () => {
-  sliderRef.value?.scrollBy({ left: -680, behavior: "smooth" });
-};
-const scrollRight = () => {
-  sliderRef.value?.scrollBy({ left: 184, behavior: "smooth" });
-};
-</script>
-
-<style scoped>
-/* ✅ 스크롤바 숨김 유틸 */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none; /* Firefox */
-}
-</style>

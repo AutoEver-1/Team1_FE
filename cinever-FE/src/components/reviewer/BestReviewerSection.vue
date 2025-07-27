@@ -1,67 +1,237 @@
 <script setup>
-import { ref } from "vue";
-import BaseButton from "../common/BaseButton.vue";
+import { ref, onMounted } from "vue";
+import { getReviewerAll } from "../../../src/api/reviewerApi";
+import BaseRankingBadge from "../common/BaseRankingBadge.vue";
+import {
+  HeartIcon,
+  StarIcon,
+  ChatBubbleLeftEllipsisIcon,
+} from "@heroicons/vue/24/solid";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation, Mousewheel } from "swiper/modules";
+import { getReviewerRoleMeta } from "../../utils/reviewerRole";
+import DefaultProfile from "../../assets/images/default_profile.png";
 
-defineProps({
-  dataList: Object,
-});
+const dataList = ref([]);
+const imgSrcMap = ref({});
+const swiperInstance = ref(null);
+const isLoading = ref(true);
 
-const sliderX = ref(0);
-const cardWidth = 224;
-const maxOffset = -((10 - 4) * cardWidth);
-
-const scrollLeft = () => {
-  sliderX.value = Math.min(sliderX.value + cardWidth, 0);
+const handlePrev = () => {
+  swiperInstance.value?.slidePrev();
+};
+const handleNext = () => {
+  swiperInstance.value?.slideNext();
 };
 
-const scrollRight = () => {
-  sliderX.value = Math.max(sliderX.value - cardWidth, maxOffset);
+onMounted(async () => {
+  isLoading.value = true;
+  try {
+    const res = await getReviewerAll();
+    dataList.value = res.data.reviewerList.content;
+    // imgSrcMap 초기화
+    dataList.value.forEach((reviewer) => {
+      imgSrcMap.value[reviewer.memberId] = reviewer.profile_img_url;
+    });
+  } catch (e) {
+    console.error("getReviewerAll", e);
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+const onError = (id) => {
+  imgSrcMap.value[id] = DefaultProfile;
 };
 </script>
 
 <template>
-  <div class="relative overflow-hidden group w-full mx-auto">
-    <!-- 슬라이더 리스트 -->
-    <div
-      class="flex gap-4 transition-transform duration-500 ease-in-out"
-      :style="{ transform: `translateX(${sliderX}px)` }"
-    >
+  <!-- 로딩 화면 -->
+  <div
+    v-if="isLoading"
+    class="w-full h-[90vh] flex flex-col justify-center items-center bg-black text-white gap-6"
+  >
+    <!-- 로딩 애니메이션 -->
+    <div class="relative w-16 h-16">
       <div
-        v-for="i in 10"
-        :key="'slider-card-' + i"
-        class="relative w-[210px] shrink-0 flex flex-col items-center p-3 rounded-[10px] border border-white/20 bg-white/10 backdrop-blur-md shadow-md hover:bg-white/15 hover:backdrop-blur-lg transition duration-300"
+        class="absolute inset-0 rounded-full border-4 border-amber-400 border-t-transparent animate-spin"
+      ></div>
+      <div
+        class="absolute inset-2 rounded-full bg-black flex items-center justify-center"
       >
-        <img
-          src="/src/assets/Avatar.png"
-          alt="프로필"
-          class="rounded w-full h-auto mb-2"
-        />
-        <p class="text-white text-sm font-semibold">user name</p>
-        <p class="text-xs text-gray-300 mt-1">❤️ 3.4k, ✏️ 200, 🎥 1.9k</p>
-
-        <!-- 랭킹 넘버 -->
-        <div
-          class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full font-bold"
+        <svg
+          class="w-6 h-6 text-amber-400 animate-pulse"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
         >
-          {{ i }}
-        </div>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9.75 3.75L14.25 12L9.75 20.25"
+          />
+        </svg>
       </div>
     </div>
 
-    <!-- 좌우 버튼에 클릭 이벤트만 연결 -->
-    <BaseButton
-      label="◀"
-      @click="scrollLeft"
-      btnClass="absolute h-full top-1/2 left-0 -translate-y-1/2 
-                bg-black/50 text-white p-3 rounded-full 
-                opacity-0 group-hover:opacity-100 transition"
-    />
-    <BaseButton
-      label="▶"
-      @click="scrollRight"
-      btnClass="absolute h-full top-1/2 right-0 -translate-y-1/2 
-                bg-black/50 text-white p-3 rounded-full 
-                opacity-0 group-hover:opacity-100 transition"
-    />
+    <!-- 로딩 텍스트 -->
+    <p class="text-sm sm:text-base text-gray-300 animate-pulse">
+      인기 유저를 불러오는 중입니다...
+    </p>
+  </div>
+  <div class="relative w-full">
+    <Swiper
+      @swiper="(swiper) => (swiperInstance = swiper)"
+      :modules="[Navigation, Mousewheel]"
+      :space-between="10"
+      :slides-per-view="1.2"
+      :breakpoints="{
+        1024: { slidesPerView: 3.2 },
+        1280: { slidesPerView: 5 },
+      }"
+      class="w-full"
+    >
+      <SwiperSlide
+        v-for="(data, i) in dataList"
+        :key="data.memberId"
+        class="group py-2"
+      >
+        <RouterLink :to="'/user/' + data.memberId">
+          <div
+            :class="[
+              'relative backdrop-blur-xl backdrop-saturate-150 rounded-xl overflow-hidden transition duration-300 h-[320px] w-[218px] flex flex-col justify-center',
+              getReviewerRoleMeta(data.role).roleClass,
+            ]"
+          >
+            <div class="absolute top-2 left-1 px-1 py-0.5 z-10 w-10">
+              <div
+                class="flex justify-center items-center rounded-full bg-white/30 text-white p-1 backdrop:blur-sm"
+              >
+                {{ i + 1 }}
+              </div>
+              <!-- <BaseRankingBadge :rank="i + 1" size="44" color="gold" /> -->
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center transition-all duration-300 h-[320px] group-hover:h-[120px]"
+            >
+              <!-- <BaseProfileImage
+                :src="avatar"
+                @click="goToUserPage(userId)"
+                class="transition-all duration-300 w-32 h-32 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-6"
+                size="128px"
+              /> -->
+              <img
+                :src="imgSrcMap[data.memberId]"
+                alt="profile"
+                class="transition-all duration-300 w-32 h-32 rounded-full object-cover group-hover:w-14 group-hover:h-14 mt-6"
+                @error="onError(data.memberId)"
+              />
+              <div
+                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:gap-2"
+              >
+                <!-- <div
+                class="mt-2 flex flex-col items-center justify-center gap-2 group-hover:flex-row group-hover:gap-2"
+              > -->
+                <p
+                  class="text-lg font-semibold text-center group-hover:text-sm break-words w-full max-w-[160px] mx-auto"
+                >
+                  {{ data.nickname }}
+                </p>
+                <div
+                  class="w-fit px-3 py-1 text-xs font-semibold rounded-full border backdrop-blur-md backdrop-saturate-150 shadow-sm group-hover:px-1.5 group-hover:py-0 group-hover:text-[10px]"
+                  :class="getReviewerRoleMeta(data.role).badgeClass"
+                >
+                  {{ getReviewerRoleMeta(data.role).roleName }}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="transition-all duration-300 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-[500px] overflow-hidden px-2"
+            >
+              <div class="flex flex-wrap gap-2 mt-3 justify-center">
+                <span
+                  v-for="genre in data.genre_preference?.slice(0, 2)"
+                  :key="genre.genre"
+                  class="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/10 text-white"
+                >
+                  #{{ genre.genre }}
+                </span>
+              </div>
+
+              <div
+                class="flex justify-around text-sm text-gray-300 mt-4 mb-2 px-5"
+              >
+                <div class="flex flex-col items-center">
+                  <HeartIcon class="w-4 h-4 text-red-400 mb-1" />
+                  <span>{{ data.follower_cnt }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <ChatBubbleLeftEllipsisIcon
+                    class="w-4 h-4 text-slate-200 mb-1"
+                  />
+                  <span>{{ data.review_count }}</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <StarIcon class="w-4 h-4 text-amber-400 mb-1" />
+                  <span>{{ data.review_avg?.toFixed(1) || "0.0" }}</span>
+                </div>
+              </div>
+
+              <div class="flex gap-2 justify-center mt-2">
+                <RouterLink
+                  v-for="(movie, idx) in data.wishlist?.slice(0, 3) || []"
+                  :key="movie.movieId || idx"
+                  :to="`/movie/${movie.movieId}`"
+                  class="relative"
+                >
+                  <img
+                    v-if="movie.posterPath"
+                    :src="movie.posterPath"
+                    alt="wish"
+                    class="w-14 h-20 rounded object-cover hover:opacity-90 transition"
+                  />
+                </RouterLink>
+              </div>
+            </div>
+          </div>
+        </RouterLink>
+      </SwiperSlide>
+    </Swiper>
+
+    <button
+      @click="handlePrev"
+      class="custom-swiper-prev hidden lg:block absolute left-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition"
+    >
+      ◀
+    </button>
+
+    <button
+      @click="handleNext"
+      class="custom-swiper-next hidden lg:block absolute right-[-60px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-black transition"
+    >
+      ▶
+    </button>
   </div>
 </template>
+
+<style scoped>
+.swiper-slide {
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.swiper-slide-active > div {
+  transform: scale(1.05);
+  z-index: 10;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.group:hover > div {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+</style>
